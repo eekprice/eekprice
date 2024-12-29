@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Button from './components/Button'; 
 import SideProjectsButton from './components/SideProjectsButton';
 import { headers } from './styles/typography';
@@ -7,56 +7,163 @@ import './App.css';
 import { ReactComponent as HeroPattern } from './assets/hero-pattern.svg';
 import { ReactComponent as Melg } from './assets/melg.svg';
 import { ReactComponent as Mesm } from './assets/mesm.svg';
+import SectionContainer from './components/SectionContainer';
+import Sticky from './components/Sticky';
+import YouTubePreview from './components/YouTubePreview';
+import CaseStudyHero from './components/caseStudyHero';
+import { caseStudies } from './data/caseStudiesData';
+import PersonalityScene from './components/PersonalityScene';
+import ADHDScene from './components/ADHDScene';
+import HeroSection from './components/section/HeroSection';
+import AboutMeSection from './components/section/AboutMeSection';
 
 function App() {
   const [isSmall, setIsSmall] = useState(false);
+  const [showNav, setShowNav] = useState(false);
+  const heroRef = useRef(null);
+  const [isHeroVisible, setIsHeroVisible] = useState(false);
+  const [textStyle, setTextStyle] = useState({ opacity: 1 }); // Simplified style for "I'm Erica"
+  const [imageStyle, setImageStyle] = useState({ opacity: 1 });
+  const [subTextStyle, setSubTextStyle] = useState({ opacity: 1 });
+  const [showContent, setShowContent] = useState(false);
+  const [animationStage, setAnimationStage] = useState(0); // Stage 0: Initial state, text is not shown
+  const [aboutMeAnimationStage, setAboutMeAnimationStage] = useState(0);
 
-  const handleClick = () => {
-    alert('Button clicked!');
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsHeroVisible(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          // Set styles for "I'm Erica" without animation
+          setTextStyle({ opacity: 1 });
+          setSubTextStyle({ opacity: 1 });
+          setImageStyle({ opacity: 1 });
+        } else {
+          // Reset styles when not visible
+          setTextStyle({ opacity: 0 });
+          setSubTextStyle({ opacity: 0 });
+          setImageStyle({ opacity: 0 });
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (heroRef.current) {
+      observer.observe(heroRef.current);
+    }
+
+    return () => {
+      if (heroRef.current) {
+        observer.unobserve(heroRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const timers = [
+      setTimeout(() => setAnimationStage(1), 200), // Stage 1: Fly in from top
+      setTimeout(() => setAnimationStage(2), 1000), // Stage 2: Move to final position
+    ];
+
+    return () => timers.forEach(timer => clearTimeout(timer));
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowNav(true);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAboutMeAnimationStage(1);
+    }, 1000); // Adjust the delay as needed
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleReadFullStudy = () => {
+    alert('Read full study clicked!');
   };
 
   return (
     <div className="App dotted-background">
-      <div className="flex items-center justify-center h-screen space-x-4">
-        <Button onClick={handleClick}>Click Me</Button>
-        <div className="font-inter text-base text-text-primary">Hello World</div>
-        <SideProjectsButton />
-      </div>
+      <div ref={heroRef} className="w-full min-h-screen flex items-center justify-center relative">
+        <HeroPattern className="absolute inset-0 w-1/2 h-1/2 text-white opacity-10 mx-auto my-auto" />
       
-      <div className="w-full h-[500px] flex items-center justify-center relative">
-        <HeroPattern className="absolute inset-0 w-full h-full text-white opacity-10" />
+        <HeroSection />
+        
+        
+      </div>
+      <SectionContainer
+        title="About Me"
+        className=""
+      >
+        <AboutMeSection itemVariants={{}} />
+      </SectionContainer>
+      {/* Animated Scenes */}
+      <PersonalityScene />
+      
+      <ADHDScene />
 
-        {/* hero container */}
-        <div className="flex flex-row items-center space-x-8 z-10">
-          {isSmall ? (
-            <div className="border-2 border-[#003347] rounded-full">
-              <Mesm 
-                className="w-24 h-24 transition-all duration-500 ease-in-out cursor-pointer"
-                onClick={() => setIsSmall(false)}
-              />
-            </div>
-          ) : (
-            <div className="border-2 border-[#003347] ">
-              <Melg 
-                className="transition-all duration-500 ease-in-out cursor-pointer -mt-10 -mb-10 -ml-16"
-                onClick={() => setIsSmall(true)}
-              />
-            </div>
-          )}
+      {/* Learn about me section */}
+      <SectionContainer title="Learn about me">
+        <YouTubePreview 
+          videoUrl="https://youtu.be/X6M0LBz8Xv8" 
+          thumbnailUrl="https://img.youtube.com/vi/X6M0LBz8Xv8/0.jpg" 
+        />
+        <YouTubePreview 
+          videoUrl="https://youtu.be/X6M0LBz8Xv8" 
+          thumbnailUrl="https://img.youtube.com/vi/j9BY-Ufpu64/0.jpg" 
+        />
+        <YouTubePreview 
+          videoUrl="https://youtu.be/D3L5KOIaGDk" 
+          thumbnailUrl="https://img.youtube.com/vi/D3L5KOIaGDk/0.jpg" 
+        />
+      </SectionContainer>
 
-          {/* Outer vertical container */}
-          <div className="flex flex-col space-y-4">
-            {/* Text content container */}
-            <div className="flex flex-col space-y-2 outline outline-2 outline-text-primary rounded-lg p-4">
-              <h1 className="text-3xl font-merriweather font-light z-10 text-text-primary">I'm Erica</h1>
-              <h2 className="text-5xl font-merriweather font-normal text-text-primary">
-                A Principal Product Designer
-              </h2>
-            </div>
-            {/* Navigation */}
-            <Nav />
-          </div>
-        </div>
+      {/* Case Studies Section */}
+      <div>
+        <h2>Case Studies</h2>
+        {caseStudies.map((study, index) => (
+          <CaseStudyHero
+            key={index}
+            title={study.title}
+            slides={study.slides}
+            onReadFullStudy={handleReadFullStudy}
+          />
+        ))}
+      </div>
+
+      {/* Add margin between sections */}
+      <div className="my-12"></div>
+
+      {/* My Projects section */}
+      
+      <div className="p-4 flex flex-row max-w-[1000px] mx-auto">
+        <div className="border-2 border-blue-500 p-4" style={{ width: '60%' }}></div>
+        <SectionContainer title="My Projects">
+          <Sticky text="Project 1" />
+          <Sticky text="Project 2" />
+          <Sticky text="Project 3" />
+        </SectionContainer>
+      </div>
+
+      {/* Add margin between sections */}
+      <div className="my-12"></div>
+
+      {/* New bottom spacer */}
+      <div className="h-64"></div>
+
+      {/* Floating Nav with slide-in animation */}
+      <div
+        className={`fixed bottom-0 left-1/2 transform -translate-x-1/2 transition-transform duration-500 ${
+          showNav ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+        } m-2`}
+      >
+        <Nav />
       </div>
     </div>
   );
