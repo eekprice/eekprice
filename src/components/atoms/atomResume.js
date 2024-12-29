@@ -1,8 +1,8 @@
 function AtomResume() {
     return (
-      <div className="flex flex-col items-center space-y-4 p-4 rounded-lg cursor-pointer hover:opacity-80">
+      <div className="flex flex-col items-center space-y-2 rounded-lg cursor-pointer hover:opacity-80 group">
         {/* Resume Icon */}
-        <div className="w-16 h-16 rounded-2xl border-2 border-text-primary flex items-center justify-center">
+        <div className="w-12 h-12 rounded-lg border outline-surface-outlinePrimary flex items-center justify-center transition-colors duration-300 group-hover:bg-gray-200 group-hover:rotate-3">
           <svg 
             className="w-8 h-8 text-text-primary" 
             viewBox="0 0 24 24" 
@@ -19,7 +19,7 @@ function AtomResume() {
         </div>
         
         {/* Text */}
-        <span className="text-xl font-merriweather font-light text-text-primary">
+        <span className="absolute text-sm font-int font-light text-text-secondary translate-y-11 group-hover:text-text-primary">
           Resume
         </span>
       </div>
