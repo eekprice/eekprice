@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Button from './components/Button'; 
 import SideProjectsButton from './components/SideProjectsButton';
 import { headers } from './styles/typography';
@@ -12,23 +12,76 @@ import Sticky from './components/Sticky';
 import YouTubePreview from './components/YouTubePreview';
 import CaseStudyHero from './components/caseStudyHero';
 import { caseStudies } from './data/caseStudiesData';
+import PersonalityScene from './components/PersonalityScene';
+import ADHDScene from './components/ADHDScene';
+import HeroSection from './components/section/HeroSection';
+import AboutMeSection from './components/section/AboutMeSection';
 
 function App() {
   const [isSmall, setIsSmall] = useState(false);
   const [showNav, setShowNav] = useState(false);
+  const heroRef = useRef(null);
+  const [isHeroVisible, setIsHeroVisible] = useState(false);
+  const [textStyle, setTextStyle] = useState({ opacity: 1 }); // Simplified style for "I'm Erica"
+  const [imageStyle, setImageStyle] = useState({ opacity: 1 });
+  const [subTextStyle, setSubTextStyle] = useState({ opacity: 1 });
+  const [showContent, setShowContent] = useState(false);
+  const [animationStage, setAnimationStage] = useState(0); // Stage 0: Initial state, text is not shown
+  const [aboutMeAnimationStage, setAboutMeAnimationStage] = useState(0);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const heroHeight = 500; // Adjust based on your hero section height
-      if (window.scrollY > heroHeight) {
-        setShowNav(true);
-      } else {
-        setShowNav(false);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsHeroVisible(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          // Set styles for "I'm Erica" without animation
+          setTextStyle({ opacity: 1 });
+          setSubTextStyle({ opacity: 1 });
+          setImageStyle({ opacity: 1 });
+        } else {
+          // Reset styles when not visible
+          setTextStyle({ opacity: 0 });
+          setSubTextStyle({ opacity: 0 });
+          setImageStyle({ opacity: 0 });
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (heroRef.current) {
+      observer.observe(heroRef.current);
+    }
+
+    return () => {
+      if (heroRef.current) {
+        observer.unobserve(heroRef.current);
       }
     };
+  }, []);
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+  useEffect(() => {
+    const timers = [
+      setTimeout(() => setAnimationStage(1), 200), // Stage 1: Fly in from top
+      setTimeout(() => setAnimationStage(2), 1000), // Stage 2: Move to final position
+    ];
+
+    return () => timers.forEach(timer => clearTimeout(timer));
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowNav(true);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAboutMeAnimationStage(1);
+    }, 1000); // Adjust the delay as needed
+
+    return () => clearTimeout(timer);
   }, []);
 
   const handleReadFullStudy = () => {
@@ -37,41 +90,23 @@ function App() {
 
   return (
     <div className="App dotted-background">
-      <div className="w-full h-[500px] flex items-center justify-center relative">
-        <HeroPattern className="absolute inset-0 w-full h-full text-white opacity-10" />
-
-        {/* hero container */}
-        <div className="flex flex-row items-center space-x-8 z-10">
-          {isSmall ? (
-            <div className="border-2 border-[#003347] rounded-full">
-              <Mesm 
-                className="w-24 h-24 transition-all duration-500 ease-in-out cursor-pointer"
-                onClick={() => setIsSmall(false)}
-              />
-            </div>
-          ) : (
-            <div className="">
-              <Melg 
-                className="transition-all duration-500 ease-in-out cursor-pointer -mt-10 -mb-10 -ml-16"
-                onClick={() => setIsSmall(true)}
-              />
-            </div>
-          )}
-
-          {/* Outer vertical container */}
-          <div className="flex flex-col space-y-4">
-            {/* Text content container */}
-            <div className="flex flex-col space-y-2 rounded-lg p-4">
-              <h1 className="text-3xl font-merriweather font-light z-10 text-text-primary">I'm Erica</h1>
-              <h2 className="text-5xl font-merriweather font-normal text-text-primary">
-                A Principal Product Designer
-              </h2>
-            </div>
-            {/* Navigation */}
-            <Nav />
-          </div>
-        </div>
+      <div ref={heroRef} className="w-full min-h-screen flex items-center justify-center relative">
+        <HeroPattern className="absolute inset-0 w-1/2 h-1/2 text-white opacity-10 mx-auto my-auto" />
+      
+        <HeroSection />
+        
+        
       </div>
+      <SectionContainer
+        title="About Me"
+        className=""
+      >
+        <AboutMeSection itemVariants={{}} />
+      </SectionContainer>
+      {/* Animated Scenes */}
+      <PersonalityScene />
+      
+      <ADHDScene />
 
       {/* Learn about me section */}
       <SectionContainer title="Learn about me">
@@ -90,8 +125,8 @@ function App() {
       </SectionContainer>
 
       {/* Case Studies Section */}
-      <div className="p-4">
-        <h2 className="text-4xl font-merriweather font-normal text-text-primary">Case Studies</h2>
+      <div>
+        <h2>Case Studies</h2>
         {caseStudies.map((study, index) => (
           <CaseStudyHero
             key={index}
@@ -107,7 +142,7 @@ function App() {
 
       {/* My Projects section */}
       
-      <div className="border-2 border-red-500 p-4 flex flex-row max-w-[1000px] mx-auto">
+      <div className="p-4 flex flex-row max-w-[1000px] mx-auto">
         <div className="border-2 border-blue-500 p-4" style={{ width: '60%' }}></div>
         <SectionContainer title="My Projects">
           <Sticky text="Project 1" />
