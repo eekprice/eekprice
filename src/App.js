@@ -3,7 +3,6 @@ import Button from './components/Button';
 import SideProjectsButton from './components/SideProjectsButton';
 import { headers } from './styles/typography';
 import Nav from './components/Nav';
-import './App.css';
 import { ReactComponent as HeroPattern } from './assets/hero-pattern.svg';
 import { ReactComponent as Melg } from './assets/melg.svg';
 import { ReactComponent as Mesm } from './assets/mesm.svg';
@@ -12,10 +11,12 @@ import Sticky from './components/Sticky';
 import YouTubePreview from './components/YouTubePreview';
 import CaseStudyHero from './components/caseStudyHero';
 import { caseStudies } from './data/caseStudiesData';
-import PersonalityScene from './components/PersonalityScene';
+import PersonalityScene from './components/section/PersonalitySection.js';
 import ADHDScene from './components/ADHDScene';
 import HeroSection from './components/section/HeroSection';
-import AboutMeSection from './components/section/AboutMeSection';
+import AboutMeSection from './components/section/AtomAboutMeContent';
+import './styles/fonts.css';
+import DarkModeToggle from './components/DarkModeToggle';
 
 function App() {
   const [isSmall, setIsSmall] = useState(false);
@@ -28,6 +29,7 @@ function App() {
   const [showContent, setShowContent] = useState(false);
   const [animationStage, setAnimationStage] = useState(0); // Stage 0: Initial state, text is not shown
   const [aboutMeAnimationStage, setAboutMeAnimationStage] = useState(0);
+  const [greyBoxAnimationStage, setGreyBoxAnimationStage] = useState(0);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -84,29 +86,36 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setGreyBoxAnimationStage(1);
+    }, 500); // Adjust the delay as needed
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleReadFullStudy = () => {
     alert('Read full study clicked!');
   };
 
   return (
-    <div className="App dotted-background">
-      <div ref={heroRef} className="w-full min-h-screen flex items-center justify-center relative">
-        <HeroPattern className="absolute inset-0 w-1/2 h-1/2 text-white opacity-10 mx-auto my-auto" />
+    <div className="App bg-backdrop-background-light dark:bg-backdrop-background-dark dotted-background">
+      <header className="p-4">
+        <DarkModeToggle />
+      </header>
+      <div ref={heroRef} className="w-full min-h-[500px] flex items-center justify-center relative">
+        <HeroPattern className="absolute inset-0 w-1/2 h-1/2 text-surface-foreground100-light dark:text-surface-foreground100-dark opacity-10 mx-auto my-auto" />
       
         <HeroSection />
         
         
       </div>
-      <SectionContainer
-        title="About Me"
-        className=""
-      >
-        <AboutMeSection itemVariants={{}} />
-      </SectionContainer>
-      {/* Animated Scenes */}
+
+      <div className="mb-16">
       <PersonalityScene />
+      </div>
       
-      <ADHDScene />
+      
 
       {/* Learn about me section */}
       <SectionContainer title="Learn about me">
