@@ -2,9 +2,11 @@ function AtomContact() {
   return (
     <div className="flex flex-col items-center space-y-2 rounded-lg cursor-pointer hover:opacity-80 group">
       {/* Email Icon */}
-      <div className="w-12 h-12 rounded-lg border outline-surface-outlinePrimary flex items-center justify-center transition-colors duration-300 group-hover:bg-gray-200 group-hover:rotate-3">
+      <div className=" border border-surface-outline-light dark:border-surface-outline-dark
+      w-12 h-12 rounded-lg border  flex items-center justify-center transition-colors duration-300 group-hover:bg-gray-200 group-hover:rotate-3">
         <svg 
-          className="w-8 h-8 text-text-primary" 
+          className="w-8 h-8
+           text-surface-foreground100-light dark:text-surface-foreground400-dark" 
           viewBox="0 0 24 24" 
           fill="none" 
           stroke="currentColor"
@@ -19,7 +21,7 @@ function AtomContact() {
       </div>
       
       {/* Text */}
-      <span className="absolute text-sm font-int font-light text-text-secondary translate-y-11 group-hover:text-text-primary">
+      <span className="absolute text-sm font-int font-light text-surface-foreground400-light dark:text-surface-foreground400-dark translate-y-11 group-hover:text-surface-foreground200-light dark:group-hover:text-surface-foreground200-dark">
         Contact
       </span>
     </div>

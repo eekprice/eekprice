@@ -1,7 +1,8 @@
 /** @type {import('tailwindcss').Config} */
-const customColors = require('./src/styles/colors.js')
+const colors = require('tailwindcss/colors');
 
 module.exports = {
+  darkMode: 'class',
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
@@ -11,7 +12,94 @@ module.exports = {
         merriweather: ['Merriweather', 'serif'],
         inter: ['Inter', 'sans-serif'],
       },
-      colors: customColors,
+      colors: {
+        backdrop: {
+          background: {
+            light: colors.white,
+            dark: colors.slate[800],
+          },
+        },
+        blockHighlight: {
+          outlineSurface: {
+            light: colors.blue[300],
+            dark: colors.blue[200],
+          },
+          outlineFill: {
+            light: colors.white,
+            dark: colors.slate[800],
+          },
+        },
+        surface: {
+          background100: {
+            light: colors.white,
+            dark: colors.slate[800],
+          },
+          background200: {
+            light: colors.slate[50],
+            dark: colors.slate[700],
+          },
+          background300: {
+            light: colors.purple[50],
+            dark: colors.purple[800],
+          },
+          foreground100: {
+            light: colors.slate[800],
+            dark: colors.slate[200],
+          },
+          foreground200: {
+            light: colors.slate[600],
+            dark: colors.slate[200],
+          },
+          foreground300: {
+            light: colors.slate[900],
+            dark: colors.slate[200],
+          },
+          foreground400: {
+            light: colors.slate[400],
+            dark: colors.slate[400],
+          },
+          outline: {
+            light: colors.gray[200],
+            dark: colors.slate[600],
+          },
+        },
+        primary: {
+          surface: {
+            light: colors.teal[50],
+            dark: colors.teal[900],
+          },
+          foreground: {
+            light: colors.teal[900],
+            dark: colors.teal[100],
+          },
+          outline: {
+            light: colors.teal[400],
+            dark: colors.teal[500],
+          },
+        },
+        highlight: {
+          backgroundTextHighlight: {
+            light: colors.yellow[200],
+            dark: colors.yellow[100],
+          },
+          foregroundTextHighlight: {
+            light: colors.slate[900],
+            dark: colors.slate[700],
+          },
+          backgroundSticky: {
+            light: colors.yellow[200],
+            dark: colors.yellow[400],
+          },
+          foregroundSticky: {
+            light: colors.slate[800],
+            dark: colors.slate[600],
+          },
+          outline: {
+            light: colors.yellow[300],
+            dark: colors.yellow[700],
+          },
+        },
+      },
       animation: {
         flyInTop: 'flyInTop 1s ease-out forwards',
         flyInBottom: 'flyInBottom 2s ease-out forwards',
@@ -47,13 +135,16 @@ module.exports = {
           to: { transform: 'translateY(-40px)' },
         },
       },
-      extend: {
-        animationDelay: {
-          '200': '200ms',
-          '400': '400ms',
-          '600': '600ms',
-        },
+      animationDelay: {
+        '200': '200ms',
+        '400': '400ms',
+        '600': '600ms',
       },
+    },
+  },
+  variants: {
+    extend: {
+      // Extend variants here if needed
     },
   },
   plugins: [],

@@ -8,8 +8,8 @@ function Stickie({ text }) {
       <div className="absolute top-11 left-2 w-32 h-32 bg-blue-300 transform rotate-[-5deg] shadow-md transition-transform duration-300 group-hover:rotate-[-7deg] rounded-md"></div>
       
       {/* Foreground sticky layer where the text is displayed */}
-      <div className="relative w-full h-full bg-yellow-300 p-4 shadow-lg top-8 transition-transform duration-300 group-hover:-translate-y-2 rounded-md">
-        <span className="text-m font-bold text-text-primary">{text}</span>
+      <div className="relative w-full h-full bg-highlight-backgroundSticky-light dark:bg-highlight-backgroundSticky-dark p-4 shadow-lg top-8 transition-transform duration-300 group-hover:-translate-y-2 rounded-md">
+        <span className="text-sm font-medium text-highlight-foregroundSticky-light dark:text-highlight-foregroundSticky-dark">{text}</span>
       </div>
     </div>
   );

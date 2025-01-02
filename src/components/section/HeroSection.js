@@ -171,10 +171,10 @@ function HeroSection() {
           )
         )}
 
-        <motion.div className="flex flex-col space-y-4 w-full items-left" variants={itemVariants}>
+        <motion.div className="pt-32 flex flex-col space-y-4 w-full items-left" variants={itemVariants}>
           <div className="flex items-center justify-between w-full space-x-4 rounded-lg relative text-left">
             <motion.h1 
-              className="text-3xl font-merriweather font-light z-10 text-text-primary" 
+              className="pt-8 text-3xl font-merriweather font-light z-10 text-surface-foreground100-light dark:text-surface-foreground100-dark" 
               variants={slideInFromTop}
               custom={0}
             >
@@ -183,35 +183,57 @@ function HeroSection() {
 
             <div className="flex space-x-2">
               <motion.div 
-                className="text-sm inline-block bg-gray-100 border border-gray-200 text-gray-800 rounded-lg shadow-sm px-1"
+                className="text-sm inline-block
+                 bg-surface-background200-light dark:bg-surface-background200-dark 
+                 border border-surface-outline-light dark:border-surface-outline-dark 
+                 text-surface-foreground100-light dark:text-surface-foreground100-dark 
+                 rounded-lg shadow-sm px-1"
                 variants={itemVariants}
                 custom={5}
               >
                 Optimistic
               </motion.div>
               <motion.div 
-                className="text-sm inline-block bg-gray-100 border border-gray-200 text-gray-800 rounded-lg shadow-sm px-1"
+                className="text-sm inline-block
+                 bg-surface-background200-light dark:bg-surface-background200-dark 
+                 border border-surface-outline-light dark:border-surface-outline-dark 
+                 text-surface-foreground100-light dark:text-surface-foreground100-dark 
+                 rounded-lg shadow-sm px-1"
                 variants={itemVariants}
                 custom={6}
               >
                 Animated
               </motion.div>
               <motion.div 
-                className="text-sm inline-block bg-gray-100 border border-gray-200 text-gray-800 rounded-lg shadow-sm px-1"
+                className="text-sm inline-block 
+                bg-surface-background200-light dark:bg-surface-background200-dark 
+                border border-surface-outline-light dark:border-surface-outline-dark
+                 text-surface-foreground100-light dark:text-surface-foreground100-dark 
+                 rounded-lg shadow-sm px-1"
                 variants={itemVariants}
                 custom={7}
               >
-                Strategic & Empowering
+                Strategic
               </motion.div>
             </div>
           </div>
           <motion.h2 
-            className="text-5xl font-merriweather font-normal text-text-primary" 
+            className="text-5xl font-merriweather font-normal text-text-primary text-surface-foreground100-light dark:text-surface-foreground100-dark" 
             variants={itemVariants}
             custom={0}
           >
             <TypingEffect text="A Product Design Manager" delay={1000} maxBlinksAfterTyping={6} />
           </motion.h2>
+
+          <motion.p 
+            className="text-xs font-merriweather font-normal text-surface-foreground100-light dark:text-surface-foreground100-dark max-w-2xl mx-auto leading-loose"
+            variants={itemVariants}
+            custom={8}
+          >
+            I’m a self-starter obsessed with solving complex and niche problems. I thrive on optimizing team velocity and building coping mechanisms that empower designers to grow. <br />
+            <br />
+            If you’re looking for someone who can make meaningful connections, break down silos, and drive impactful change—I’m your person.
+          </motion.p>
 
           <motion.div
             variants={slideInFromBottom}

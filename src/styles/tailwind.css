@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+.dotted-background {
+  background-image: radial-gradient(circle, #f4f3f3 1px, transparent 1px); /* Use a specific color */
+  background-size: 10px 10px; /* Adjust the size of the dots */
+}
+
+.dark .dotted-background {
+  background-image: radial-gradient(circle, hsl(0, 0%, 8%) 1px, transparent 1px); /* Use a specific color for dark mode */
+}
+  
+  .svg-hover {
+    transition: transform 0.3s ease;
+  }
+  
+  .svg-hover:hover {
+    transform: scale(1.1);
+  }
+  
+  
