@@ -11,10 +11,10 @@ import Sticky from './components/Sticky';
 import YouTubePreview from './components/YouTubePreview';
 import CaseStudyHero from './components/caseStudyHero';
 import { caseStudies } from './data/caseStudiesData';
-import PersonalityScene from './components/section/PersonalitySection.js';
+import PersonalityScene from './components/atoms/PersonalityAtom.js';
 import ADHDScene from './components/ADHDScene';
 import HeroSection from './components/section/HeroSection';
-import AboutMeSection from './components/section/AtomAboutMeContent';
+import AboutMeSection from './components/atoms/AtomAboutMeContent.js';
 import './styles/fonts.css';
 import DarkModeToggle from './components/DarkModeToggle';
 
@@ -111,28 +111,11 @@ function App() {
         
       </div>
 
-      <div className="mb-16">
-      <PersonalityScene />
-      </div>
+      
       
       
 
-      {/* Learn about me section */}
-      <SectionContainer title="Learn about me">
-        <YouTubePreview 
-          videoUrl="https://youtu.be/X6M0LBz8Xv8" 
-          thumbnailUrl="https://img.youtube.com/vi/X6M0LBz8Xv8/0.jpg" 
-        />
-        <YouTubePreview 
-          videoUrl="https://youtu.be/X6M0LBz8Xv8" 
-          thumbnailUrl="https://img.youtube.com/vi/j9BY-Ufpu64/0.jpg" 
-        />
-        <YouTubePreview 
-          videoUrl="https://youtu.be/D3L5KOIaGDk" 
-          thumbnailUrl="https://img.youtube.com/vi/D3L5KOIaGDk/0.jpg" 
-        />
-      </SectionContainer>
-
+      
       {/* Case Studies Section */}
       <div>
         <h2>Case Studies</h2>
