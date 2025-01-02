@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import AboutMeContent from './AtomAboutMeContent';
 import YouTubeCard from '../atoms/youTubeThumnail';
+import ValuethumbnailImage from '../../assets/Values.png';
 
-const PersonalityScene = () => {
+const PersonalityScene = ({ thumbnailUrl }) => {
   const textRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -31,8 +32,11 @@ const PersonalityScene = () => {
   }, [hasAnimated]);
 
   return (
-    <div className="flex items-start justify-start max-w-2xl mx-auto p-6">
-      <div className="flex flex-row items-start gap-6">
+    //Body
+    <div className="flex items-start justify-start mx-auto p-6">
+      {/* Content Container */}
+      <div className="flex flex-col items-start gap-6">
+        {/* Text Container */}
         <h2
           ref={textRef}
           className={`text-4xl font-bold transition-transform duration-500 ${
@@ -80,11 +84,12 @@ const PersonalityScene = () => {
               rounded-full" style={{ bottom: '-5px', right: '-5px' }}></div>
           </motion.div>
         </h2>
-        <YouTubeCard 
+        {/* <YouTubeCard 
           videoId="X6M0LBz8Xv8" 
-          title="Sample Video Title" 
-          thumbnailUrl="https://img.youtube.com/vi/X6M0LBz8Xv8/0.jpg" 
-        />
+          title="My Values" 
+          thumbnailUrl={ValuethumbnailImage}
+          duration="5:32"
+        /> */}
       </div>
     </div>
   );
