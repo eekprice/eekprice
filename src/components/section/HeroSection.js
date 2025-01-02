@@ -4,16 +4,19 @@ import { ReactComponent as HeroPattern } from '../../assets/hero-pattern.svg';
 import { ReactComponent as Melg } from '../../assets/melg.svg';
 import { ReactComponent as Mesm } from '../../assets/mesm.svg';
 import Nav from '../Nav';
+import PersonalityScene from '../atoms/PersonalityAtom';
 
 function HeroSection() {
   const [isSmall, setIsSmall] = useState(false);
   const heroRef = useRef(null);
   const [hasAnimated, setHasAnimated] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !hasAnimated) {
+          setIsVisible(true);
           setHasAnimated(true);
         }
       },
@@ -139,14 +142,14 @@ function HeroSection() {
   return (
     <motion.div
       ref={heroRef}
-      className="w-full flex items-center justify-center relative mb-10"
+      className="w-full flex items-start justify-center relative mt-10"
       initial="hidden"
       animate={hasAnimated ? "visible" : "hidden"}
       variants={containerVariants}
     >
     
 
-      <motion.div className="flex flex-row items-center space-x-8 z-10" variants={itemVariants}>
+      <motion.div className="flex flex-row items-start space-x-8" variants={itemVariants}>
         {hasAnimated && (
           isSmall ? (
             <div className="border-2 border-[#003347] rounded-full">
@@ -171,7 +174,7 @@ function HeroSection() {
           )
         )}
 
-        <motion.div className="pt-32 flex flex-col space-y-4 w-full items-left" variants={itemVariants}>
+        <motion.div className=" flex flex-col space-y-4 w-full items-left" variants={itemVariants}>
           <div className="flex items-center justify-between w-full space-x-4 rounded-lg relative text-left">
             <motion.h1 
               className="pt-8 text-3xl font-merriweather font-light z-10 text-surface-foreground100-light dark:text-surface-foreground100-dark" 
@@ -224,25 +227,25 @@ function HeroSection() {
           >
             <TypingEffect text="A Product Design Manager" delay={1000} maxBlinksAfterTyping={6} />
           </motion.h2>
-
-          <motion.p 
-            className="text-xs font-merriweather font-normal text-surface-foreground100-light dark:text-surface-foreground100-dark max-w-2xl mx-auto leading-loose"
-            variants={itemVariants}
-            custom={8}
-          >
-            I’m a self-starter obsessed with solving complex and niche problems. I thrive on optimizing team velocity and building coping mechanisms that empower designers to grow. <br />
-            <br />
-            If you’re looking for someone who can make meaningful connections, break down silos, and drive impactful change—I’m your person.
-          </motion.p>
-
           <motion.div
-            variants={slideInFromBottom}
-            initial="hidden"
-            animate={hasAnimated ? "visible" : "hidden"}
+            initial={{ scale: 0 }}
+            animate={hasAnimated ? { scale: 1 } : { scale: 0 }}
+            transition={{
+              type: 'spring',
+              stiffness: 100,
+              damping: 10,
+              delay: 3,
+            }}
+            className="flex items-start justify-start w-full h-full"
+            style={{ transformOrigin: 'top left' }}
             custom={8}
           >
-            {/* Removed AboutMeSection component */}
+            <PersonalityScene />
           </motion.div>
+          
+            
+
+          
           
         </motion.div>
       </motion.div>
