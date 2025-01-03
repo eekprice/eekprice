@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ReactComponent as HeroPattern } from '../../assets/hero-pattern.svg';
 import { ReactComponent as Melg } from '../../assets/melg.svg';
 import { ReactComponent as Mesm } from '../../assets/mesm.svg';
 import Nav from '../Nav';
@@ -58,22 +57,6 @@ function HeroSection() {
   const slideInFromTop = {
     hidden: { opacity: 0, y: -50 },
     visible: { opacity: 1, y: 0 },
-  };
-
-  const slideInFromBottom = {
-    hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0 },
-  };
-
-  const blinkEffect = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: [0, 1, 0, 1, 0, 1],
-      transition: {
-        duration: 2,
-        ease: "easeInOut",
-      },
-    },
   };
 
   const melgVariants = {
@@ -142,19 +125,17 @@ function HeroSection() {
   return (
     <motion.div
       ref={heroRef}
-      className="w-full flex items-start justify-center relative mt-10"
+      className="w-full flex flex-row items-center justify-center relative mt-[10%] p-8"
       initial="hidden"
       animate={hasAnimated ? "visible" : "hidden"}
       variants={containerVariants}
     >
-    
-
       <motion.div className="flex flex-row items-start space-x-8" variants={itemVariants}>
         {hasAnimated && (
           isSmall ? (
             <div className="border-2 border-[#003347] rounded-full">
               <Mesm 
-                className="w-24 h-24 cursor-pointer"
+                className="w-16 h-16 "
                 onClick={() => setIsSmall(false)}
               />
             </div>
@@ -167,15 +148,15 @@ function HeroSection() {
               transition={{ type: "spring", stiffness: 100, delay: 2 }}
             >
               <Melg 
-                className="cursor-pointer -mt-10 -mb-10 -ml-16"
+                className="-mt-10 -mb-10 -ml-16"
                 onClick={() => setIsSmall(true)}
               />
             </motion.div>
           )
         )}
 
-        <motion.div className=" flex flex-col space-y-4 w-full items-left" variants={itemVariants}>
-          <div className="flex items-center justify-between w-full space-x-4 rounded-lg relative text-left">
+        <motion.div className="flex flex-col space-y-4 w-full items-left" variants={itemVariants}>
+          <div className="flex flex-row items-center justify-between w-full space-x-4 rounded-lg relative text-left">
             <motion.h1 
               className="pt-8 text-3xl font-merriweather font-light z-10 text-surface-foreground100-light dark:text-surface-foreground100-dark" 
               variants={slideInFromTop}
@@ -184,35 +165,23 @@ function HeroSection() {
               <TypingEffect text=" I'm Erica" maxBlinksAfterTyping={1} />
             </motion.h1>
 
-            <div className="flex space-x-2">
+            <div className="flex flex-row space-x-2">
               <motion.div 
-                className="text-sm inline-block
-                 bg-surface-background200-light dark:bg-surface-background200-dark 
-                 border border-surface-outline-light dark:border-surface-outline-dark 
-                 text-surface-foreground100-light dark:text-surface-foreground100-dark 
-                 rounded-lg shadow-sm px-1"
+                className="text-sm inline-block bg-surface-background200-light dark:bg-surface-background200-dark border border-surface-outline-light dark:border-surface-outline-dark text-surface-foreground100-light dark:text-surface-foreground100-dark rounded-lg shadow-sm px-1"
                 variants={itemVariants}
                 custom={5}
               >
                 Optimistic
               </motion.div>
               <motion.div 
-                className="text-sm inline-block
-                 bg-surface-background200-light dark:bg-surface-background200-dark 
-                 border border-surface-outline-light dark:border-surface-outline-dark 
-                 text-surface-foreground100-light dark:text-surface-foreground100-dark 
-                 rounded-lg shadow-sm px-1"
+                className="text-sm inline-block bg-surface-background200-light dark:bg-surface-background200-dark border border-surface-outline-light dark:border-surface-outline-dark text-surface-foreground100-light dark:text-surface-foreground100-dark rounded-lg shadow-sm px-1"
                 variants={itemVariants}
                 custom={6}
               >
                 Animated
               </motion.div>
               <motion.div 
-                className="text-sm inline-block 
-                bg-surface-background200-light dark:bg-surface-background200-dark 
-                border border-surface-outline-light dark:border-surface-outline-dark
-                 text-surface-foreground100-light dark:text-surface-foreground100-dark 
-                 rounded-lg shadow-sm px-1"
+                className="text-sm inline-block bg-surface-background200-light dark:bg-surface-background200-dark border border-surface-outline-light dark:border-surface-outline-dark text-surface-foreground100-light dark:text-surface-foreground100-dark rounded-lg shadow-sm px-1"
                 variants={itemVariants}
                 custom={7}
               >
@@ -242,15 +211,8 @@ function HeroSection() {
           >
             <PersonalityScene />
           </motion.div>
-          
-            
-
-          
-          
         </motion.div>
       </motion.div>
-
-
     </motion.div>
   );
 }
