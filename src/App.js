@@ -19,6 +19,9 @@ import AboutMeSection from './components/atoms/AtomAboutMeContent.js';
 import './styles/fonts.css';
 import DarkModeToggle from './components/DarkModeToggle';
 import { useMediaQuery } from 'react-responsive';
+import { motion } from 'framer-motion';
+import { ReactComponent as ArrowSvg } from './assets/Arrow.svg';
+import TypingEffect from './components/TypingEffect';
 
 function App() {
   const [isSmall, setIsSmall] = useState(false);
@@ -36,6 +39,9 @@ function App() {
   const [showHeroSection, setShowHeroSection] = useState(false); // New state to control HeroSection visibility
   const [loadingComplete, setLoadingComplete] = useState(false); // New state to track loading completion
   const [minLoadingTimePassed, setMinLoadingTimePassed] = useState(false); // New state for minimum loading time
+  const caseStudiesSectionRef = useRef(null); // Add this ref
+  const [startTyping, setStartTyping] = useState(false); // Add this state
+  const hasTriggeredTyping = useRef(false); // Add this to track if animation has played
 
   // Define media queries
   const isDesktop = useMediaQuery({ minWidth: 1024 });
@@ -126,6 +132,42 @@ function App() {
     }
   }, [loadingComplete, minLoadingTimePassed]);
 
+  useEffect(() => {
+    if (!showHeroSection) return; // Only run when showHeroSection is true
+
+    console.log('Setting up observer');
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        console.log('Intersection:', entry.isIntersecting);
+        console.log('Has triggered:', hasTriggeredTyping.current);
+
+        if (entry.isIntersecting && !hasTriggeredTyping.current) {
+          console.log('Starting typing animation');
+          setStartTyping(true);
+          hasTriggeredTyping.current = true;
+          observer.disconnect();
+        }
+      },
+      { 
+        threshold: 0,
+        rootMargin: '0px'
+      }
+    );
+
+    // Small delay to ensure DOM is ready
+    setTimeout(() => {
+      if (caseStudiesSectionRef.current) {
+        console.log('Observer attached to:', caseStudiesSectionRef.current);
+        observer.observe(caseStudiesSectionRef.current);
+      } else {
+        console.log('No ref element found');
+      }
+    }, 100);
+
+    return () => observer.disconnect();
+  }, [showHeroSection]); // Add showHeroSection as dependency
+
   const handleReadFullStudy = () => {
     alert('Read full study clicked!');
   };
@@ -155,16 +197,48 @@ function App() {
       {showHeroSection && (
         <>
           {/* Case Studies Section */}
-          <div>
-            <h2>Case Studies</h2>
-            {caseStudies.map((study, index) => (
-              <CaseStudyHero
-                key={index}
-                title={study.title}
-                slides={study.slides}
-                onReadFullStudy={handleReadFullStudy}
-              />
-            ))}
+          <div className="relative max-w-[1000px] mx-auto px-4 py-8">
+            <div 
+              ref={caseStudiesSectionRef}
+              className="flex items-center mb-8 relative"
+              style={{ minHeight: '50px' }}
+            >
+              <motion.div 
+                className="absolute -left-16 top-1/2 -translate-y-1/2"
+                initial={{ scale: 1, opacity: 1 }}
+                animate={{ 
+                  scale: 1,
+                  opacity: 1,
+                  x: 0,
+                  rotate: 0
+                }}
+                whileHover={{ scale: 1.1, rotate: 10 }}
+              >
+                <ArrowSvg className="w-12 h-12 text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current" />
+              </motion.div>
+              <h2 className="text-3xl font-merriweather font-light text-surface-foreground100-light dark:text-surface-foreground100-dark pl-4">
+                {startTyping ? (
+                  <TypingEffect 
+                    key="typing-effect"
+                    text="Case Studies" 
+                    maxBlinksAfterTyping={2}
+                  />
+                ) : (
+                  <span className="opacity-0">Case Studies</span>
+                )}
+              </h2>
+            </div>
+            <div className="space-y-8">
+              {caseStudies.map((study, index) => (
+                <CaseStudyHero
+                  key={index}
+                  title={study.title}
+                  slides={study.slides}
+                  onReadFullStudy={handleReadFullStudy}
+                  delay={index * 1000}
+                />
+              ))}
+            </div>
           </div>
 
           {/* Add margin between sections */}

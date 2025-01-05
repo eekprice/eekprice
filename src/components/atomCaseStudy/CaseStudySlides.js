@@ -91,7 +91,7 @@ const CaseStudyPreview = ({ title, slides, onReadFullStudy }) => {
   return (
     
    
-   <div className="max-w-[1200px] mx-auto relative">
+   <div className="max-w-[1200px] mx-auto relative pb-4">
       
       <div
         className="overflow-x-auto cursor-grab scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 relative"
