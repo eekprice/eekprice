@@ -14,6 +14,24 @@ function HeroSection() {
   const heroRef = useRef(null);
   const [hasAnimated, setHasAnimated] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [showSecret, setShowSecret] = useState(false);
+  const [fartCount, setFartCount] = useState(() => {
+    const savedCount = localStorage.getItem('fartCount');
+    return savedCount ? parseInt(savedCount, 10) : 0;
+  });
+  
+  // Create a ref for the audio instead of a direct instance
+  const fartSoundRef = useRef(null);
+
+  // Save to localStorage whenever fartCount changes
+  useEffect(() => {
+    localStorage.setItem('fartCount', fartCount.toString());
+  }, [fartCount]);
+
+  // Initialize audio in useEffect
+  useEffect(() => {
+    fartSoundRef.current = new Audio('https://www.myinstants.com/media/sounds/quick-fart.mp3');
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -122,6 +140,14 @@ function HeroSection() {
     );
   }
 
+  const handleSecretClick = () => {
+    setShowSecret(!showSecret);
+    if (!showSecret && fartSoundRef.current) {
+      fartSoundRef.current.play();
+      setFartCount(prev => prev + 1);
+    }
+  };
+
   return (
     <motion.div
       ref={heroRef}
@@ -216,7 +242,7 @@ function HeroSection() {
             </motion.div>
 
             <motion.div
-              className="absolute -right-20 top-1/2 -translate-y-1/2"
+              className="absolute -right-20 top-1/2 -translate-y-1/2 cursor-pointer"
               initial={{ scale: 0, opacity: 0 }}
               animate={hasAnimated ? { 
                 scale: [0, 1.2, 0.9, 1.1, 1],
@@ -230,6 +256,7 @@ function HeroSection() {
                 stiffness: 300
               }}
               whileHover={{ scale: 1.1, rotate: 10 }}
+              onClick={handleSecretClick}
             >
               <StarsSvg className="w-16 h-16 text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current" />
             </motion.div>
@@ -269,6 +296,27 @@ function HeroSection() {
           </motion.div>
         </motion.div>
       </motion.div>
+
+      {/* Secret Poop Modal */}
+      {showSecret && (
+        <motion.div 
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setShowSecret(false)}
+        >
+          <motion.div 
+            className="flex flex-col items-center gap-4"
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: "spring", bounce: 0.5 }}
+          >
+            <span className="text-9xl">💩</span>
+            <span className="text-white text-xl font-bold">Fart Count: {fartCount}</span>
+          </motion.div>
+        </motion.div>
+      )}
     </motion.div>
   );
 }

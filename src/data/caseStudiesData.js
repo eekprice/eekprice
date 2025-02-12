@@ -131,5 +131,39 @@ export const caseStudies = [
     ],
     link: "https://example.com/case-study-2"
   },
+  {
+    title: "poop",
+    slides: [
+      {
+        content: (
+          <div className="flex flex-col justify-between h-full p-4
+           bg-surface-background200-light dark:bg-surface-background200-dark
+           text-surface-foreground100-light dark:text-surface-foreground100-dark
+           border-2 border-surface-border100-light dark:border-surface-border100-dark
+           rounded-lg">
+            <h3 className="text-xl font-bold mb-4">Design Philosophy</h3>
+            <div className="space-y-4">
+              <p className="text-sm">
+                As a Product Design Manager, I believe in creating intuitive, user-centered experiences that solve real problems. 
+                My approach combines research, iteration, and collaboration to deliver impactful solutions.
+              </p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-3 bg-surface-background100-light dark:bg-surface-background100-dark rounded-lg">
+                  <h4 className="font-bold mb-2">Research First</h4>
+                  <p className="text-xs">Understanding users through thorough research and data analysis</p>
+                </div>
+                <div className="p-3 bg-surface-background100-light dark:bg-surface-background100-dark rounded-lg">
+                  <h4 className="font-bold mb-2">Iterate & Improve</h4>
+                  <p className="text-xs">Continuous improvement through feedback and iteration</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ),
+        width: 'w-[400px]'
+      }
+    ],
+    link: "https://example.com/philosophy"
+  },
   // Add more case studies as needed
 ]; 

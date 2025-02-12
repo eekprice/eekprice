@@ -22,6 +22,8 @@ import { useMediaQuery } from 'react-responsive';
 import { motion } from 'framer-motion';
 import { ReactComponent as ArrowSvg } from './assets/Arrow.svg';
 import TypingEffect from './components/TypingEffect';
+import RocketBackground from './components/atoms/RocketBackground';
+import EmergencyStop from './components/EmergencyStop';
 
 function App() {
   const [isSmall, setIsSmall] = useState(false);
@@ -174,9 +176,11 @@ function App() {
 
   return (
     <div className="App bg-backdrop-background-light dark:bg-backdrop-background-dark dotted-background">
-      <header className="p-4">
+      <header className="p-4 flex justify-end items-center gap-4 fixed top-0 right-0 z-50">
+        <EmergencyStop />
         <DarkModeToggle />
       </header>
+      <RocketBackground />
       <div ref={heroRef} className="w-full min-h-[500px] flex items-start justify-center relative">
         <HeroDoodle
           className="absolute text-surface-foreground100-light dark:text-surface-foreground100-dark mx-auto my-auto"
