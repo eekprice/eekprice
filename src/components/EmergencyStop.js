@@ -108,17 +108,15 @@ const EmergencyStop = () => {
     <div className="relative group">
       <motion.button
         onClick={handleEmergencyStop}
-        className="p-3 rounded-full 
-                  bg-yellow-400 hover:bg-yellow-500
-                  border-4 border-red-500
-                  shadow-lg hover:shadow-xl
-                  transition-all duration-300 ease-in-out
+        className="bg-transparent border-0 p-0 shadow-none
                   flex items-center justify-center
-                  group relative"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+                  cursor-pointer appearance-none"
+        animate={{ y: [0, -4, 0] }}
+        transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+        whileHover={{ scale: 1.08, rotate: 6 }}
+        whileTap={{ scale: 0.96 }}
       >
-        <span className="text-2xl" role="img" aria-label="pineapple">🍍</span>
+        <span className="text-3xl drop-shadow-none" role="img" aria-label="pineapple">🍍</span>
       </motion.button>
       
       {/* Tooltip */}

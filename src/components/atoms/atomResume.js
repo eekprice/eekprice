@@ -20,7 +20,7 @@ function AtomResume() {
         </div>
         
         {/* Text */}
-        <span className="absolute text-sm font-int font-light text-surface-foreground400-light dark:text-surface-foreground400-dark translate-y-11 group-hover:text-surface-foreground100-light dark:group-hover:text-surface-foreground100-dark">
+        <span className="absolute text-sm font-int font-normal text-surface-foreground200-light dark:text-surface-foreground200-dark translate-y-[52px] group-hover:text-surface-foreground100-light dark:group-hover:text-surface-foreground100-dark">
           Resume
         </span>
       </div>

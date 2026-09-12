@@ -32,7 +32,7 @@ const SideProjectsButton = () => {
         onKeyPress={(e) => e.key === 'Enter' && handleTextClick()} // Handles Enter key for accessibility
         aria-label="Navigate to Side Projects page" // Descriptive label for screen readers
       >
-        <span className="text-surface-foreground100-light dark:text-surface-foreground100-dark font-medium text-sm leading-[150%] font-inter">
+        <span className="text-surface-foreground100-light dark:text-surface-foreground100-dark font-medium text-sm leading-[150%] font-inter whitespace-nowrap">
           Side Projects
         </span>
       </div>

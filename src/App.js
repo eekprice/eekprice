@@ -17,19 +17,17 @@ import HeroSection from './components/section/HeroSectionDesktop.js';
 import HeroSectionMobile from './components/section/HeroSectionMobile.js';
 import AboutMeSection from './components/atoms/AtomAboutMeContent.js';
 import './styles/fonts.css';
-import DarkModeToggle from './components/DarkModeToggle';
 import { useMediaQuery } from 'react-responsive';
 import { motion } from 'framer-motion';
 import { ReactComponent as ArrowSvg } from './assets/Arrow.svg';
 import TypingEffect from './components/TypingEffect';
-import RocketBackground from './components/atoms/RocketBackground';
 import EmergencyStop from './components/EmergencyStop';
 
 function App() {
   const [isSmall, setIsSmall] = useState(false);
   const [showNav, setShowNav] = useState(false);
   const heroRef = useRef(null);
-  const [isHeroVisible, setIsHeroVisible] = useState(false);
+  const [isHeroVisible, setIsHeroVisible] = useState(true);
   const [textStyle, setTextStyle] = useState({ opacity: 1 }); // Simplified style for "I'm Erica"
   const [imageStyle, setImageStyle] = useState({ opacity: 1 });
   const [subTextStyle, setSubTextStyle] = useState({ opacity: 1 });
@@ -178,9 +176,7 @@ function App() {
     <div className="App bg-backdrop-background-light dark:bg-backdrop-background-dark dotted-background">
       <header className="p-4 flex justify-end items-center gap-4 fixed top-0 right-0 z-50">
         <EmergencyStop />
-        <DarkModeToggle />
       </header>
-      <RocketBackground />
       <div ref={heroRef} className="w-full min-h-[500px] flex items-start justify-center relative">
         <HeroDoodle
           className="absolute text-surface-foreground100-light dark:text-surface-foreground100-dark mx-auto my-auto"
@@ -264,13 +260,25 @@ function App() {
           {/* New bottom spacer */}
           <div className="h-64"></div>
 
+          {/* Haze layer behind the floating nav: blurs/fades page content near the
+              bottom so text around the bar stays legible */}
+          <div
+            className={`fixed bottom-0 left-0 right-0 h-40 z-40 pointer-events-none backdrop-blur-sm bg-white/60 dark:bg-slate-900/60 transition-opacity duration-500 ${
+              showNav ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{
+              WebkitMaskImage: 'linear-gradient(to top, black 25%, transparent)',
+              maskImage: 'linear-gradient(to top, black 25%, transparent)',
+            }}
+          />
+
           {/* Floating Nav with slide-in animation */}
           <div
-            className={`fixed bottom-0 left-1/2 transform -translate-x-1/2 transition-transform duration-500 ${
+            className={`fixed bottom-0 left-1/2 z-50 transform -translate-x-1/2 pb-8 transition-transform duration-500 ${
               showNav ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
-            } m-2`}
+            }`}
           >
-            <Nav />
+            <Nav showProfileInNav={!isHeroVisible} />
           </div>
         </>
       )}

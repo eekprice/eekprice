@@ -1,38 +1,80 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import SideProjectsButton from './SideProjectsButton';
 import AtomContact from './atoms/atomContact';
 import AtomResume from './atoms/atomResume';
 import Stickies from './atoms/atomStickies.js';
-import { ReactComponent as Mustache } from '../assets/mustache.svg';
+import { ReactComponent as Mesm } from '../assets/mesm.svg';
 
-function Nav() {
+function Nav({ showProfileInNav = false }) {
   // Add dark mode toggle function
   const toggleDarkMode = () => {
     document.documentElement.classList.toggle('dark');
   };
 
   return (
-    <nav className="sticky top-0 left-0 right-0 z-50 bg-surface-background100-light dark:bg-surface-background100-dark py-4">
+    <nav className="relative z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center gap-4">
           <div className="flex items-center relative">
-            {/* Add mustache with absolute positioning */}
-            <div className="absolute left-[45px] top-[45px] z-10 w-8">
-              <Mustache className="text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current" />
-            </div>
-            
             {/* Navigation bar styled as a horizontal Auto Layout */}
-            <nav className="bg-surface-background100-light dark:bg-surface-background100-dark
-             text-surface-foreground100-light dark:text-surface-foreground100-dark 
-             border border-1 border-surface-outline-light dark:border-surface-outline-dark 
-             inline-flex flex-col md:flex-row items-center rounded-2xl overflow-hidden pl-5 h-auto md:h-16 ">
+            <motion.nav
+             layout
+             className="bg-surface-background100-light dark:bg-surface-background100-dark
+             text-surface-foreground100-light dark:text-surface-foreground100-dark
+             border border-1 border-surface-outline-light dark:border-surface-outline-dark
+             inline-flex w-max flex-col md:flex-row items-center rounded-2xl px-3 pt-1 h-16">
+
+              <AnimatePresence>
+                {showProfileInNav && (
+                  <motion.div
+                    key="nav-profile"
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Back to top"
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }
+                    }}
+                    className="relative flex flex-col items-center flex-shrink-0 mr-2 overflow-visible cursor-pointer"
+                    initial={{ width: 0, opacity: 0 }}
+                    animate={{ width: 56, opacity: 1 }}
+                    exit={{ width: 0, opacity: 0 }}
+                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <motion.div
+                      className="w-12 h-12 rounded-full border-2 border-[#003347] dark:border-slate-200 overflow-hidden bg-surface-background200-light dark:bg-surface-background200-dark"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: [0, 1.2, 1] }}
+                      exit={{ scale: 0 }}
+                      transition={{ duration: 0.5, times: [0, 0.65, 1], ease: "easeOut" }}
+                    >
+                      <motion.div
+                        initial={{ scale: 1.7, y: 18, opacity: 0 }}
+                        animate={{ scale: 1, y: 0, opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ delay: 0.32, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                      >
+                        <Mesm className="w-12 h-12" />
+                      </motion.div>
+                    </motion.div>
+                    <span className="absolute text-sm font-int font-normal whitespace-nowrap text-surface-foreground200-light dark:text-surface-foreground200-dark translate-y-[60px]">
+                      Erica Price
+                    </span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
               
               {/* Sticky note element*/}
-              <Stickies text="Case Study" />
+              <div className="relative ml-4">
+                <Stickies text="Case Study" />
+              </div>
               
               {/* Container for navigation items, similar to a nested Frame */}
-              <div className="p-3 pb-4 border-l border border-1 border-surface-outline-light dark:border-surface-outline-dark h-full flex flex-col md:flex-row">
+              <div className="p-3 pb-4 h-full flex flex-col md:flex-row">
                 
                 {/* List of navigation items, like a horizontal Auto Layout with spacing */}
                 <ul className="flex flex-col md:flex-row items-center gap-x-4">
@@ -53,13 +95,13 @@ function Nav() {
                   </div>
                 </ul>
               </div>
-            </nav>
+            </motion.nav>
           </div>
           
           {/* Add dark mode toggle button */}
           <motion.button
             onClick={toggleDarkMode}
-            className="p-3 rounded-full 
+            className="ml-2 p-3.5 rounded-full 
                      bg-surface-background200-light dark:bg-surface-background200-dark
                      text-surface-foreground100-light dark:text-surface-foreground100-dark
                      border-2 border-surface-border100-light dark:border-surface-border100-dark

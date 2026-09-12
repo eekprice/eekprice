@@ -1,53 +1,65 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-function TypingEffect({ text, delay = 0, maxBlinksAfterTyping = 6 }) {
+function TypingEffect({ text, delay = 0, maxBlinksAfterTyping = 6, onComplete }) {
   const [displayedText, setDisplayedText] = useState('');
-  const [showCursor, setShowCursor] = useState(true);
+  const [showCursor, setShowCursor] = useState(false);
   const [blinkCount, setBlinkCount] = useState(0);
   const [typingComplete, setTypingComplete] = useState(false);
+  const onCompleteRef = useRef(onComplete);
   const typingSpeed = 50;
 
-  // Handle typing animation
+  onCompleteRef.current = onComplete;
+
   useEffect(() => {
     let currentIndex = 0;
-    setDisplayedText(''); // Reset text
+    let intervalId;
 
-    const typingInterval = setInterval(() => {
-      if (currentIndex < text.length) {
-        setDisplayedText(text.substring(0, currentIndex + 1));
-        currentIndex++;
-      } else {
-        clearInterval(typingInterval);
-        setTypingComplete(true);
-      }
-    }, typingSpeed);
+    const delayTimeout = setTimeout(() => {
+      setShowCursor(true);
+      intervalId = setInterval(() => {
+        currentIndex += 1;
+        setDisplayedText(text.substring(0, currentIndex));
+        if (currentIndex >= text.length) {
+          clearInterval(intervalId);
+          setTypingComplete(true);
+          onCompleteRef.current?.();
+          onCompleteRef.current = null;
+        }
+      }, typingSpeed);
+    }, delay);
 
-    return () => clearInterval(typingInterval);
-  }, [text]);
+    return () => {
+      clearTimeout(delayTimeout);
+      clearInterval(intervalId);
+    };
+  }, [text, delay]);
 
-  // Handle cursor blinking
   useEffect(() => {
     if (!typingComplete) return;
 
     const cursorInterval = setInterval(() => {
-      if (blinkCount >= maxBlinksAfterTyping * 2) { // Multiply by 2 because each blink is two states (on/off)
-        setShowCursor(false);
-        clearInterval(cursorInterval);
-        return;
-      }
-      setShowCursor(prev => !prev);
-      setBlinkCount(prev => prev + 1);
-    }, 500); // 500ms for each blink state (1 second per full blink)
+      setShowCursor((prev) => !prev);
+      setBlinkCount((prev) => prev + 1);
+    }, 500);
 
     return () => clearInterval(cursorInterval);
+  }, [typingComplete]);
+
+  useEffect(() => {
+    if (typingComplete && blinkCount >= maxBlinksAfterTyping * 2) {
+      setShowCursor(false);
+    }
   }, [typingComplete, blinkCount, maxBlinksAfterTyping]);
 
   return (
-    <span>
-      {displayedText}
-      {showCursor && <span className="cursor">|</span>}
+    <span className="relative inline-block whitespace-nowrap">
+      <span className="invisible" aria-hidden="true">{text}|</span>
+      <span className="absolute left-0 top-0">
+        {displayedText}
+        <span className={`cursor ${showCursor ? 'opacity-100' : 'opacity-0'}`}>|</span>
+      </span>
     </span>
   );
 }
 
-export default TypingEffect; 
+export default TypingEffect;
