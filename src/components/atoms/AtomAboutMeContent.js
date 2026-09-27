@@ -3,8 +3,8 @@ import { motion } from 'framer-motion';
 
 function AboutMeSection({ itemVariants }) {
   return (
-    <motion.div className="flex flex-col w-full items-start px-4" variants={itemVariants}>
-      <div className="m-4 leading-loose">
+    <motion.div className="flex flex-col w-full items-start px-3 md:px-4" variants={itemVariants}>
+      <div className="m-2 md:m-4 leading-loose">
         <p className="text-sm md:text-lg font-merriweather font-normal text-surface-foreground300-light dark:text-surface-foreground300-dark leading-loose">
           I'm Erica—bubbly, energetic, and always curious. I thrive on variety and excitement, which is why I'm never bored. My ADHD fuels my passion for exploring the many facets of life, from teaching and designing to latte art and making up silly games with my 5-year-old son.
         </p>

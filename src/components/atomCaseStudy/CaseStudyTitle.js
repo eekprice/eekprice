@@ -3,7 +3,7 @@ import CaseStudyPreview from './CaseStudySlides';
 
 const CaseStudyContainer = ({ title, slides, onReadFullStudy }) => {
   return (
-    <div className="max-w-[1200px] mx-auto p-4">
+    <div className="max-w-[1200px] mx-auto p-3 md:p-4">
       <div className="flex justify-between items-center mb-4">
         <div>
           <h3 className="text-2xl font-normal text-text-primary">{title}</h3>

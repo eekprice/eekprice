@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ReactComponent as Melg } from '../../assets/melg.svg';
+import { ReactComponent as Mesm } from '../../assets/mesm.svg';
 import PersonalityScene from '../atoms/PersonalityAtom';
 import { ReactComponent as HeartSvg } from '../../assets/Heart.svg';
 import { ReactComponent as StarSvg } from '../../assets/Star.svg';
@@ -86,15 +86,15 @@ function HeroSectionMobile() {
               variants={melgVariants}
               transition={{ type: "spring", stiffness: 100, delay: 2 }}
             >
-              <Melg 
-                className="w-48 -mt-10 -mb-10 -ml-16 cursor-pointer"
+              <Mesm
+                className="w-16 h-16 rounded-full cursor-pointer"
                 onClick={handleSecretClick}
               />
             </motion.div>
         )}
 
-        <motion.div className="flex flex-col space-y-2 w-full items-center" variants={itemVariants}>
-          <div className="flex flex-row items-center justify-between w-full gap-2 rounded-lg relative text-left">
+        <motion.div className="flex flex-col space-y-2 flex-1 min-w-0 items-start" variants={itemVariants}>
+          <div className="flex flex-row flex-wrap items-center justify-between w-full gap-2 rounded-lg relative text-left">
             <motion.h1 
               className="flex-shrink-0 text-xl font-merriweather font-light z-10 text-surface-foreground100-light dark:text-surface-foreground100-dark" 
               variants={slideInFromTop}
@@ -102,7 +102,7 @@ function HeroSectionMobile() {
             >
               <TypingEffect text=" I'm Erica" maxBlinksAfterTyping={1} />
             </motion.h1>
-            <div className="flex flex-row flex-nowrap items-center justify-end min-w-0 gap-1">
+            <div className="flex flex-row flex-wrap items-center justify-end min-w-0 gap-1">
               <motion.div
                 className="text-xs whitespace-nowrap bg-surface-background200-light dark:bg-surface-background200-dark border border-surface-outline-light dark:border-surface-outline-dark text-surface-foreground100-light dark:text-surface-foreground100-dark rounded-lg shadow-sm px-1"
                 variants={itemVariants}
@@ -172,7 +172,7 @@ function HeroSectionMobile() {
           damping: 10,
           delay: 3,
         }}
-        className="flex items-center justify-center w-full h-full -mt-10 relative px-10"
+        className="flex items-center justify-center w-full h-full mt-4 relative px-4"
         style={{ transformOrigin: 'top left' }}
         custom={8}
       >

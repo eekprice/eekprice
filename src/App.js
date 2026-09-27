@@ -173,7 +173,7 @@ function App() {
   };
 
   return (
-    <div className="App bg-backdrop-background-light dark:bg-backdrop-background-dark dotted-background">
+    <div className="App bg-backdrop-background-light dark:bg-backdrop-background-dark dotted-background overflow-x-hidden">
       <header className="p-4 flex justify-end items-center gap-4 fixed top-0 right-0 z-50">
         <EmergencyStop />
       </header>
@@ -197,14 +197,14 @@ function App() {
       {showHeroSection && (
         <>
           {/* Case Studies Section */}
-          <div className="relative max-w-[1000px] mx-auto px-4 py-8">
+          <div className="relative max-w-[1000px] mx-auto px-2 md:px-4 py-8">
             <div 
               ref={caseStudiesSectionRef}
               className="flex items-center mb-8 relative"
               style={{ minHeight: '50px' }}
             >
-              <motion.div 
-                className="absolute -left-16 top-1/2 -translate-y-1/2"
+              <motion.div
+                className="hidden md:block absolute -left-16 top-1/2 -translate-y-1/2"
                 initial={{ scale: 1, opacity: 1 }}
                 animate={{ 
                   scale: 1,
@@ -245,8 +245,8 @@ function App() {
           <div className="my-12"></div>
 
           {/* My Projects section */}
-          <div className="p-4 flex flex-row max-w-[1000px] mx-auto">
-            <div className="border-2 border-blue-500 p-4" style={{ width: '60%' }}></div>
+          <div className="p-4 flex flex-col md:flex-row max-w-[1000px] mx-auto">
+            <div className="hidden md:block border-2 border-blue-500 p-4" style={{ width: '60%' }}></div>
             <SectionContainer title="My Projects">
               <Sticky text="Project 1" />
               <Sticky text="Project 2" />
