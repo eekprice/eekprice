@@ -1,41 +1,44 @@
 import React, { useRef, useState, useEffect } from 'react';
 import AboutMeContent from './AtomAboutMeContent';
 
-const PersonalityScene = () => {
+// The outlined "selected block" that holds the about text. The text fades in
+// `revealDelay` ms after the block scrolls into view. Desktop keeps the long
+// pause so it lands after the hero choreography; mobile passes something short.
+const PersonalityScene = ({ revealDelay = 4000 }) => {
   const textRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    const node = textRef.current;
+    if (!node) return undefined;
+    let timer;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => {
-            setIsVisible(true);
-          }, 4000);
+        if (entry.isIntersecting && !timer) {
+          timer = setTimeout(() => setIsVisible(true), revealDelay);
+          observer.disconnect();
         }
       },
       { threshold: 0.1 }
     );
 
-    if (textRef.current) {
-      observer.observe(textRef.current);
-    }
+    observer.observe(node);
 
     return () => {
-      if (textRef.current) {
-        observer.unobserve(textRef.current);
-      }
+      clearTimeout(timer);
+      observer.disconnect();
     };
-  }, []);
+  }, [revealDelay]);
 
   return (
-    <div className="flex items-start justify-start max-w-[600px] ">
-      <div className="flex flex-row items-start ">
+    <div className="flex items-start justify-start w-full max-w-[600px]">
+      <div className="flex flex-row items-start w-full">
         <div
           ref={textRef}
-          className="bg-surface-background300-light dark:bg-surface-background300-dark border-2 
+          className="bg-surface-background300-light dark:bg-surface-background300-dark border-2
           border-blockHighlight-outlineSurface-light dark:border-blockHighlight-outlineSurface-dark
-          relative flex items-center justify-center mt-0 md:mt-4 "
+          relative flex items-center justify-center mt-0 lg:mt-4 w-full"
         >
           <div style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.5s' }}>
             <AboutMeContent />
@@ -64,4 +67,4 @@ const PersonalityScene = () => {
   );
 };
 
-export default PersonalityScene; 
+export default PersonalityScene;

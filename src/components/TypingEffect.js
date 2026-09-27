@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-function TypingEffect({ text, delay = 0, maxBlinksAfterTyping = 6, onComplete }) {
+// Types `text` one character at a time with a blinking cursor.
+// `instant` skips the animation and renders plain wrapping text. Use it for
+// anything long enough to wrap on a phone, or when the user prefers reduced
+// motion. The typed path keeps `whitespace-nowrap` so the line doesn't reflow
+// as characters arrive.
+function TypingEffect({ text, delay = 0, maxBlinksAfterTyping = 6, onComplete, instant = false }) {
   const [displayedText, setDisplayedText] = useState('');
   const [showCursor, setShowCursor] = useState(false);
   const [blinkCount, setBlinkCount] = useState(0);
@@ -11,6 +16,11 @@ function TypingEffect({ text, delay = 0, maxBlinksAfterTyping = 6, onComplete })
   onCompleteRef.current = onComplete;
 
   useEffect(() => {
+    if (instant) {
+      onCompleteRef.current?.();
+      return undefined;
+    }
+
     let currentIndex = 0;
     let intervalId;
 
@@ -32,10 +42,10 @@ function TypingEffect({ text, delay = 0, maxBlinksAfterTyping = 6, onComplete })
       clearTimeout(delayTimeout);
       clearInterval(intervalId);
     };
-  }, [text, delay]);
+  }, [text, delay, instant]);
 
   useEffect(() => {
-    if (!typingComplete) return;
+    if (!typingComplete) return undefined;
 
     const cursorInterval = setInterval(() => {
       setShowCursor((prev) => !prev);
@@ -51,12 +61,16 @@ function TypingEffect({ text, delay = 0, maxBlinksAfterTyping = 6, onComplete })
     }
   }, [typingComplete, blinkCount, maxBlinksAfterTyping]);
 
+  if (instant) {
+    return <span>{text}</span>;
+  }
+
   return (
     <span className="relative inline-block whitespace-nowrap">
       <span className="invisible" aria-hidden="true">{text}|</span>
       <span className="absolute left-0 top-0">
         {displayedText}
-        <span className={`cursor ${showCursor ? 'opacity-100' : 'opacity-0'}`}>|</span>
+        <span className={`cursor ${showCursor ? 'opacity-100' : 'opacity-0'}`} aria-hidden="true">|</span>
       </span>
     </span>
   );

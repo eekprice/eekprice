@@ -2,11 +2,9 @@ import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 
 const EmergencyStop = () => {
-  const [isEmergencyStopped, setIsEmergencyStopped] = useState(false);
-  const [clickCount, setClickCount] = useState(0);
+  const [, setClickCount] = useState(0);
 
   const handleEmergencyStop = () => {
-    setIsEmergencyStopped(true);
     // Add a div that covers the entire screen and prevents interaction
     const blocker = document.createElement('div');
     blocker.style.position = 'fixed';

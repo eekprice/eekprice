@@ -1,14 +1,4 @@
-@font-face {
-    font-family: 'SF Pro';
-    src: url('./fonts/SF-Pro-Display-Regular.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
-}
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Optional: Set SF Pro as the default font for your application */
+/* Tailwind directives live in styles/tailwind.css. Only site-wide base rules go here. */
 body {
-    font-family: 'SF Pro', sans-serif;
+  font-family: theme('fontFamily.inter');
 }

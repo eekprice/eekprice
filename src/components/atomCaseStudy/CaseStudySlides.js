@@ -1,73 +1,71 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useIsMobile } from '../../hooks/useMediaQuery';
 
-const CaseStudySlides = ({ slides, className }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+// Horizontal strip of slides. On phones every slide is 85vw wide and snaps,
+// so the next one peeks in from the right as a hint to swipe.
+const CaseStudySlides = ({ slides }) => {
   const scrollContainerRef = useRef(null);
+  const isMobile = useIsMobile();
   const [showLeftOverlay, setShowLeftOverlay] = useState(false);
   const [showRightOverlay, setShowRightOverlay] = useState(true);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (scrollContainerRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
-        setShowLeftOverlay(scrollLeft > 0);
-        setShowRightOverlay(scrollLeft < scrollWidth - clientWidth);
-      }
+    const container = scrollContainerRef.current;
+    if (!container) return undefined;
+
+    const update = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = container;
+      setShowLeftOverlay(scrollLeft > 4);
+      setShowRightOverlay(scrollLeft < scrollWidth - clientWidth - 4);
     };
 
-    const container = scrollContainerRef.current;
-    if (container) {
-      container.addEventListener('scroll', handleScroll);
-      handleScroll();
-    }
+    container.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
 
     return () => {
-      if (container) {
-        container.removeEventListener('scroll', handleScroll);
-      }
+      container.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
     };
   }, []);
 
   const slideVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.5 }
-    }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
+  const fadeBase = 'absolute top-0 h-full w-8 lg:w-16 pointer-events-none to-transparent';
+
   return (
-    <motion.div 
-      className="max-w-[1200px] mx-auto relative pb-4"
+    <motion.div
+      className="max-w-[1200px] mx-auto relative pb-2 lg:pb-4"
       initial="hidden"
       animate="visible"
       variants={slideVariants}
     >
       <div
         ref={scrollContainerRef}
-        className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 relative"
+        className="flex gap-3 lg:gap-4 overflow-x-auto snap-x snap-mandatory scroll-px-3 lg:scroll-px-4 px-3 lg:px-4 py-3
+          [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        <div className="flex space-x-4 w-max p-4">
-          {slides.map((slide, index) => (
-            <motion.div
-              key={index}
-              className={`${slide.width || 'w-64'} h-64 flex-shrink-0 rounded-lg flex items-center justify-center cursor-pointer transition-shadow`}
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              {slide.content}
-            </motion.div>
-          ))}
-        </div>
+        {slides.map((slide, index) => (
+          <motion.div
+            key={index}
+            className={`${isMobile ? 'w-[85vw]' : (slide.width || 'w-64')} h-64 shrink-0 snap-start rounded-lg flex items-center justify-center`}
+            whileHover={isMobile ? undefined : { scale: 1.02 }}
+            transition={{ type: 'spring', stiffness: 300 }}
+          >
+            {slide.content}
+          </motion.div>
+        ))}
       </div>
-      
+
       {showLeftOverlay && (
-        <div className="absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-white to-transparent pointer-events-none" />
+        <div className={`${fadeBase} left-0 bg-gradient-to-r from-surface-background100-light dark:from-surface-background100-dark`} />
       )}
       {showRightOverlay && (
-        <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+        <div className={`${fadeBase} right-0 bg-gradient-to-l from-surface-background100-light dark:from-surface-background100-dark`} />
       )}
     </motion.div>
   );

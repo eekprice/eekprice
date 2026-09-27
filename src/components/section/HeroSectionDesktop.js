@@ -1,19 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ReactComponent as Melg } from '../../assets/melg.svg';
-import Nav from '../Nav';
 import PersonalityScene from '../atoms/PersonalityAtom';
-import { ReactComponent as ArrowSvg } from '../../assets/Arrow.svg';
 import { ReactComponent as HeartSvg } from '../../assets/Heart.svg';
 import { ReactComponent as StarSvg } from '../../assets/Star.svg';
 import { ReactComponent as StarsSvg } from '../../assets/Stars.svg';
 import { useEasterEgg } from '../../hooks/useEasterEgg';
 import TypingEffect from '../TypingEffect';
+import { MAILTO, RESUME_HREF } from '../../data/links';
 
 function HeroSection() {
   const heroRef = useRef(null);
   const [hasAnimated, setHasAnimated] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
   const [starsSettled, setStarsSettled] = useState(false);
   const [showQuickLinks, setShowQuickLinks] = useState(false);
   const { handleSecretClick, EasterEggModal } = useEasterEgg();
@@ -22,20 +20,20 @@ function HeroSection() {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !hasAnimated) {
-          setIsVisible(true);
           setHasAnimated(true);
         }
       },
       { threshold: 0.1 }
     );
 
-    if (heroRef.current) {
-      observer.observe(heroRef.current);
+    const node = heroRef.current;
+    if (node) {
+      observer.observe(node);
     }
 
     return () => {
-      if (heroRef.current) {
-        observer.unobserve(heroRef.current);
+      if (node) {
+        observer.unobserve(node);
       }
     };
   }, [hasAnimated]);
@@ -99,7 +97,7 @@ function HeroSection() {
             </motion.div>
         )}
 
-        <motion.div className="flex flex-col space-y-4 w-full items-left" variants={itemVariants}>
+        <motion.div className="flex flex-col space-y-4 w-full items-start" variants={itemVariants}>
           <div className="flex flex-row items-center justify-between w-full space-x-4 rounded-lg relative text-left">
             <motion.h1 
               className="pt-8 text-3xl font-merriweather font-light z-10 text-surface-foreground100-light dark:text-surface-foreground100-dark" 
@@ -133,8 +131,12 @@ function HeroSection() {
               </motion.div>
             </div>
           </div>
+          {/*
+            TODO(Erica): pick the hero headline. "A Product Design Manager" is a placeholder.
+            Candidates are listed in HeroSectionMobile.js and Canon/voice.md.
+          */}
           <motion.h2 
-            className="text-5xl font-merriweather font-normal text-text-primary text-surface-foreground100-light dark:text-surface-foreground100-dark relative"
+            className="text-5xl font-merriweather font-normal text-surface-foreground100-light dark:text-surface-foreground100-dark relative"
             variants={itemVariants}
             custom={0}
           >
@@ -194,20 +196,20 @@ function HeroSection() {
             </motion.div>
           </motion.h2>
           <motion.div
-            className="flex flex-row items-center gap-2 text-sm font-int font-normal text-surface-foreground200-light dark:text-surface-foreground200-dark"
+            className="flex flex-row items-center gap-2 text-sm font-inter font-normal text-surface-foreground200-light dark:text-surface-foreground200-dark"
             initial={{ opacity: 0, y: -16 }}
             animate={showQuickLinks ? { opacity: 1, y: 0 } : { opacity: 0, y: -16 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
             <a
-              href="mailto:hello@ericaprice.com"
+              href={MAILTO}
               className="underline underline-offset-2 hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark"
             >
               Email
             </a>
             <span aria-hidden="true">•</span>
             <a
-              href="/resume.pdf"
+              href={RESUME_HREF}
               target="_blank"
               rel="noopener noreferrer"
               className="underline underline-offset-2 hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark"
@@ -230,7 +232,7 @@ function HeroSection() {
           >
             <PersonalityScene />
             <motion.div 
-              className="absolute bottom-0 -right-10 z-8"
+              className="absolute bottom-0 -right-10 z-10"
               initial={{ scale: 0, opacity: 0 }}
               animate={hasAnimated ? { 
                 scale: [0, 1.2, 0.9, 1.1, 1],

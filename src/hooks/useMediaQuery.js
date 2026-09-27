@@ -1,19 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useMediaQuery } from 'react-responsive';
 
-function useMediaQuery(query) {
-  const [matches, setMatches] = useState(false);
+// One breakpoint for the whole site. Anything 1023px and under is "mobile":
+// it gets the mobile hero and the compact nav. Tailwind `lg:` (1024px) is the
+// matching CSS side, so layout classes should use `lg:`, not `md:`.
+export const MOBILE_MAX = 1023;
 
-  useEffect(() => {
-    const media = window.matchMedia(query);
-    if (media.matches !== matches) {
-      setMatches(media.matches);
-    }
-    const listener = () => setMatches(media.matches);
-    media.addListener(listener);
-    return () => media.removeListener(listener);
-  }, [matches, query]);
-
-  return matches;
-}
-
-export default useMediaQuery; 
+export const useIsMobile = () => useMediaQuery({ maxWidth: MOBILE_MAX });

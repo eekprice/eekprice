@@ -1,130 +1,67 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Button from './components/Button'; 
-import SideProjectsButton from './components/SideProjectsButton';
-import { headers } from './styles/typography';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
+import { motion } from 'framer-motion';
 import Nav from './components/Nav';
 import { ReactComponent as HeroDoodle } from './assets/doodle.svg';
-import { ReactComponent as Melg } from './assets/melg.svg';
-import { ReactComponent as Mesm } from './assets/mesm.svg';
+import { ReactComponent as ArrowSvg } from './assets/Arrow.svg';
 import SectionContainer from './components/SectionContainer';
 import Sticky from './components/Sticky';
-import YouTubePreview from './components/YouTubePreview';
 import CaseStudyHero from './components/caseStudyHero';
 import { caseStudies } from './data/caseStudiesData';
-import PersonalityScene from './components/atoms/PersonalityAtom.js';
-import ADHDScene from './components/ADHDScene';
-import HeroSection from './components/section/HeroSectionDesktop.js';
 import HeroSectionMobile from './components/section/HeroSectionMobile.js';
-import AboutMeSection from './components/atoms/AtomAboutMeContent.js';
-import './styles/fonts.css';
-import { useMediaQuery } from 'react-responsive';
-import { motion } from 'framer-motion';
-import { ReactComponent as ArrowSvg } from './assets/Arrow.svg';
 import TypingEffect from './components/TypingEffect';
 import EmergencyStop from './components/EmergencyStop';
+import { useIsMobile } from './hooks/useMediaQuery';
+
+// The desktop hero is its own chunk so phones never download it.
+const HeroSection = lazy(() => import('./components/section/HeroSectionDesktop.js'));
+
+// Breakpoint contract: 1023px and under is the phone layout (Tailwind `lg`).
+// Use `lg:` for layout classes so CSS and useIsMobile() agree.
 
 function App() {
-  const [isSmall, setIsSmall] = useState(false);
-  const [showNav, setShowNav] = useState(false);
+  const isMobile = useIsMobile();
+
   const heroRef = useRef(null);
+  const caseStudiesSectionRef = useRef(null);
+  const hasTriggeredTyping = useRef(false);
+
   const [isHeroVisible, setIsHeroVisible] = useState(true);
-  const [textStyle, setTextStyle] = useState({ opacity: 1 }); // Simplified style for "I'm Erica"
-  const [imageStyle, setImageStyle] = useState({ opacity: 1 });
-  const [subTextStyle, setSubTextStyle] = useState({ opacity: 1 });
-  const [showContent, setShowContent] = useState(false);
-  const [animationStage, setAnimationStage] = useState(0); // Stage 0: Initial state, text is not shown
-  const [aboutMeAnimationStage, setAboutMeAnimationStage] = useState(0);
-  const [greyBoxAnimationStage, setGreyBoxAnimationStage] = useState(0);
-  const [doodleOpacity, setDoodleOpacity] = useState(1); // New state for HeroDoodle opacity
-  const [showHeroSection, setShowHeroSection] = useState(false); // New state to control HeroSection visibility
-  const [loadingComplete, setLoadingComplete] = useState(false); // New state to track loading completion
-  const [minLoadingTimePassed, setMinLoadingTimePassed] = useState(false); // New state for minimum loading time
-  const caseStudiesSectionRef = useRef(null); // Add this ref
-  const [startTyping, setStartTyping] = useState(false); // Add this state
-  const hasTriggeredTyping = useRef(false); // Add this to track if animation has played
+  const [showNav, setShowNav] = useState(false);
+  const [doodleOpacity, setDoodleOpacity] = useState(1);
+  const [loadingComplete, setLoadingComplete] = useState(false);
+  const [minLoadingTimePassed, setMinLoadingTimePassed] = useState(false);
+  const [showHeroSection, setShowHeroSection] = useState(false);
+  const [startTyping, setStartTyping] = useState(false);
 
-  // Define media queries
-  const isDesktop = useMediaQuery({ minWidth: 1024 });
-  const isMobile = useMediaQuery({ maxWidth: 1023 });
-
+  // Track whether the hero is on screen so the nav can show the avatar.
   useEffect(() => {
+    const node = heroRef.current;
+    if (!node) return undefined;
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsHeroVisible(entry.isIntersecting);
-        if (entry.isIntersecting) {
-          // Set styles for "I'm Erica" without animation
-          setTextStyle({ opacity: 1 });
-          setSubTextStyle({ opacity: 1 });
-          setImageStyle({ opacity: 1 });
-        } else {
-          // Reset styles when not visible
-          setTextStyle({ opacity: 0 });
-          setSubTextStyle({ opacity: 0 });
-          setImageStyle({ opacity: 0 });
-        }
-      },
+      ([entry]) => setIsHeroVisible(entry.isIntersecting),
       { threshold: 0.1 }
     );
-
-    if (heroRef.current) {
-      observer.observe(heroRef.current);
-    }
-
-    return () => {
-      if (heroRef.current) {
-        observer.unobserve(heroRef.current);
-      }
-    };
+    observer.observe(node);
+    return () => observer.disconnect();
   }, []);
 
+  // Loading choreography. Phones get a much shorter version.
   useEffect(() => {
+    const t = isMobile
+      ? { doodle: 400, minimum: 500, nav: 1200 }
+      : { doodle: 1000, minimum: 1500, nav: 2000 };
+
     const timers = [
-      setTimeout(() => setAnimationStage(1), 200), // Stage 1: Fly in from top
-      setTimeout(() => setAnimationStage(2), 1000), // Stage 2: Move to final position
+      setTimeout(() => {
+        setDoodleOpacity(0.1);
+        setLoadingComplete(true);
+      }, t.doodle),
+      setTimeout(() => setMinLoadingTimePassed(true), t.minimum),
+      setTimeout(() => setShowNav(true), t.nav),
     ];
 
-    return () => timers.forEach(timer => clearTimeout(timer));
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowNav(true);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setAboutMeAnimationStage(1);
-    }, 1000); // Adjust the delay as needed
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setGreyBoxAnimationStage(1);
-    }, 500); // Adjust the delay as needed
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    const timer1 = setTimeout(() => {
-      setDoodleOpacity(0.1);
-      setLoadingComplete(true);
-    }, 1000);
-
-    const timer2 = setTimeout(() => {
-      setMinLoadingTimePassed(true);
-    }, 1500);
-
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-    };
-  }, []);
+    return () => timers.forEach(clearTimeout);
+  }, [isMobile]);
 
   useEffect(() => {
     if (loadingComplete && minLoadingTimePassed) {
@@ -132,95 +69,75 @@ function App() {
     }
   }, [loadingComplete, minLoadingTimePassed]);
 
+  // Type the "Case Studies" heading once it scrolls into view.
   useEffect(() => {
-    if (!showHeroSection) return; // Only run when showHeroSection is true
+    if (!showHeroSection) return undefined;
+    const node = caseStudiesSectionRef.current;
+    if (!node) return undefined;
 
-    console.log('Setting up observer');
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        console.log('Intersection:', entry.isIntersecting);
-        console.log('Has triggered:', hasTriggeredTyping.current);
-
-        if (entry.isIntersecting && !hasTriggeredTyping.current) {
-          console.log('Starting typing animation');
-          setStartTyping(true);
-          hasTriggeredTyping.current = true;
-          observer.disconnect();
-        }
-      },
-      { 
-        threshold: 0,
-        rootMargin: '0px'
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !hasTriggeredTyping.current) {
+        setStartTyping(true);
+        hasTriggeredTyping.current = true;
+        observer.disconnect();
       }
-    );
+    });
 
-    // Small delay to ensure DOM is ready
-    setTimeout(() => {
-      if (caseStudiesSectionRef.current) {
-        console.log('Observer attached to:', caseStudiesSectionRef.current);
-        observer.observe(caseStudiesSectionRef.current);
-      } else {
-        console.log('No ref element found');
-      }
-    }, 100);
-
+    observer.observe(node);
     return () => observer.disconnect();
-  }, [showHeroSection]); // Add showHeroSection as dependency
+  }, [showHeroSection]);
 
-  const handleReadFullStudy = () => {
-    alert('Read full study clicked!');
-  };
+  const publishedStudies = caseStudies.filter((study) => study.published);
 
   return (
     <div className="App bg-backdrop-background-light dark:bg-backdrop-background-dark dotted-background overflow-x-hidden">
-      <header className="p-4 flex justify-end items-center gap-4 fixed top-0 right-0 z-50">
+      {/* Desktop-only gag. On touch there's no hover warning and one tap blocks the page. */}
+      <header className="hidden lg:flex p-4 justify-end items-center gap-4 fixed top-0 right-0 z-50">
         <EmergencyStop />
       </header>
+
       <div ref={heroRef} className="w-full min-h-[500px] flex items-start justify-center relative">
         <HeroDoodle
-          className="absolute text-surface-foreground100-light dark:text-surface-foreground100-dark mx-auto my-auto"
+          className="absolute left-1/2 -translate-x-1/2 w-[720px] max-w-none text-surface-foreground100-light dark:text-surface-foreground100-dark"
+          aria-hidden="true"
           style={{
             opacity: doodleOpacity,
             transition: 'opacity 0.5s ease-in-out',
           }}
         />
         {showHeroSection && (
-          <>
-            {isDesktop && <HeroSection />}
-            {isMobile && <HeroSectionMobile />}
-          </>
+          isMobile ? (
+            <HeroSectionMobile />
+          ) : (
+            <Suspense fallback={null}>
+              <HeroSection />
+            </Suspense>
+          )
         )}
       </div>
 
-      {/* Conditionally render the rest of the content */}
       {showHeroSection && (
         <>
-          {/* Case Studies Section */}
-          <div className="relative max-w-[1000px] mx-auto px-2 md:px-4 py-8">
-            <div 
+          {/* Case Studies */}
+          <div id="case-studies" className="relative max-w-[1000px] mx-auto px-3 lg:px-4 py-8 scroll-mt-24">
+            <div
               ref={caseStudiesSectionRef}
               className="flex items-center mb-8 relative"
               style={{ minHeight: '50px' }}
             >
               <motion.div
-                className="hidden md:block absolute -left-16 top-1/2 -translate-y-1/2"
+                className="hidden lg:block absolute -left-16 top-1/2 -translate-y-1/2"
                 initial={{ scale: 1, opacity: 1 }}
-                animate={{ 
-                  scale: 1,
-                  opacity: 1,
-                  x: 0,
-                  rotate: 0
-                }}
+                animate={{ scale: 1, opacity: 1, x: 0, rotate: 0 }}
                 whileHover={{ scale: 1.1, rotate: 10 }}
               >
                 <ArrowSvg className="w-12 h-12 text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current" />
               </motion.div>
-              <h2 className="text-3xl font-merriweather font-light text-surface-foreground100-light dark:text-surface-foreground100-dark pl-4">
+              <h2 className="text-2xl lg:text-3xl font-merriweather font-light text-surface-foreground100-light dark:text-surface-foreground100-dark pl-0 lg:pl-4">
                 {startTyping ? (
-                  <TypingEffect 
+                  <TypingEffect
                     key="typing-effect"
-                    text="Case Studies" 
+                    text="Case Studies"
                     maxBlinksAfterTyping={2}
                   />
                 ) : (
@@ -229,41 +146,37 @@ function App() {
               </h2>
             </div>
             <div className="space-y-8">
-              {caseStudies.map((study, index) => (
+              {publishedStudies.map((study) => (
                 <CaseStudyHero
-                  key={index}
+                  key={study.title}
                   title={study.title}
-                  slides={study.slides}
-                  onReadFullStudy={handleReadFullStudy}
-                  delay={index * 1000}
+                  slides={study.slides.filter((slide) => !slide.placeholder)}
+                  href={study.href}
                 />
               ))}
             </div>
           </div>
 
-          {/* Add margin between sections */}
           <div className="my-12"></div>
 
-          {/* My Projects section */}
-          <div className="p-4 flex flex-col md:flex-row max-w-[1000px] mx-auto">
-            <div className="hidden md:block border-2 border-blue-500 p-4" style={{ width: '60%' }}></div>
-            <SectionContainer title="My Projects">
+          {/* My Projects */}
+          <div className="p-4 flex max-w-[1000px] mx-auto">
+            <SectionContainer id="projects" title="My Projects">
+              {/* TODO(Erica): real side projects */}
               <Sticky text="Project 1" />
               <Sticky text="Project 2" />
               <Sticky text="Project 3" />
             </SectionContainer>
           </div>
 
-          {/* Add margin between sections */}
           <div className="my-12"></div>
 
-          {/* New bottom spacer */}
-          <div className="h-64"></div>
+          {/* Bottom spacer so the last content clears the floating nav */}
+          <div className="h-48 lg:h-64"></div>
 
-          {/* Haze layer behind the floating nav: blurs/fades page content near the
-              bottom so text around the bar stays legible */}
+          {/* Haze behind the floating nav so text near the bottom stays legible */}
           <div
-            className={`fixed bottom-0 left-0 right-0 h-40 z-40 pointer-events-none backdrop-blur-sm bg-white/60 dark:bg-slate-900/60 transition-opacity duration-500 ${
+            className={`fixed bottom-0 left-0 right-0 h-28 lg:h-40 z-40 pointer-events-none backdrop-blur-sm bg-backdrop-background-light/60 dark:bg-backdrop-background-dark/60 transition-opacity duration-500 ${
               showNav ? 'opacity-100' : 'opacity-0'
             }`}
             style={{
@@ -272,9 +185,9 @@ function App() {
             }}
           />
 
-          {/* Floating Nav with slide-in animation */}
+          {/* Floating nav. Bottom padding respects the iPhone home indicator. */}
           <div
-            className={`fixed bottom-0 left-1/2 z-50 transform -translate-x-1/2 pb-8 transition-transform duration-500 ${
+            className={`fixed bottom-0 left-1/2 z-50 transform -translate-x-1/2 pb-[max(1rem,env(safe-area-inset-bottom))] lg:pb-8 transition-transform duration-500 ${
               showNav ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
             }`}
           >

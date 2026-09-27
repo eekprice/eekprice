@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ReactComponent as Mesm } from '../../assets/mesm.svg';
 import PersonalityScene from '../atoms/PersonalityAtom';
 import { ReactComponent as HeartSvg } from '../../assets/Heart.svg';
@@ -7,220 +7,150 @@ import { ReactComponent as StarSvg } from '../../assets/Star.svg';
 import { ReactComponent as StarsSvg } from '../../assets/Stars.svg';
 import { useEasterEgg } from '../../hooks/useEasterEgg';
 import TypingEffect from '../TypingEffect';
+import { MAILTO, RESUME_HREF } from '../../data/links';
+
+// Phone hero: a centered column. Avatar, name, headline, chips, links, then
+// the about box. Everything is on screen within about 1.5s of mount.
+
+const ease = [0.22, 1, 0.36, 1];
+
+const container = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { delayChildren: 0.05, staggerChildren: 0.1 } },
+};
+const item = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease } },
+};
+const chipRow = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06 } },
+};
+const chip = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 400, damping: 24 } },
+};
+const box = {
+  hidden: { opacity: 0, scale: 0.96 },
+  visible: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 160, damping: 18 } },
+};
+const pop = (delay) => ({
+  hidden: { scale: 0, opacity: 0 },
+  visible: {
+    scale: [0, 1.15, 1],
+    opacity: 1,
+    rotate: [0, 8, 0],
+    transition: { delay, duration: 0.4, ease: 'easeOut' },
+  },
+});
+
+const chipClass = `text-xs px-1.5 py-0.5 whitespace-nowrap rounded-lg shadow-sm
+  bg-surface-background200-light dark:bg-surface-background200-dark
+  border border-surface-outline-light dark:border-surface-outline-dark
+  text-surface-foreground100-light dark:text-surface-foreground100-dark`;
+
+const linkClass = 'underline underline-offset-2 hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark';
 
 function HeroSectionMobile() {
   const { handleSecretClick, EasterEggModal } = useEasterEgg();
   const heroRef = useRef(null);
   const [hasAnimated, setHasAnimated] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [starsSettled, setStarsSettled] = useState(false);
-  const [showQuickLinks, setShowQuickLinks] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
+    const node = heroRef.current;
+    if (!node) return undefined;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
-          setIsVisible(true);
+        if (entry.isIntersecting) {
           setHasAnimated(true);
+          observer.disconnect();
         }
       },
       { threshold: 0.1 }
     );
-
-    if (heroRef.current) {
-      observer.observe(heroRef.current);
-    }
-
-    return () => {
-      if (heroRef.current) {
-        observer.unobserve(heroRef.current);
-      }
-    };
-  }, [hasAnimated]);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.5,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: (custom) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: custom === 2 ? 2 : custom * 0.5,
-      },
-    }),
-  };
-
-  const slideInFromTop = {
-    hidden: { opacity: 0, y: -50 },
-    visible: { opacity: 1, y: 0 },
-  };
-
-  const melgVariants = {
-    hidden: { opacity: 0, x: -100 },
-    visible: { opacity: 1, x: 0 },
-  };
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <motion.div
       ref={heroRef}
-      className="w-full flex flex-col items-center justify-center relative  p-2"
+      className="w-full max-w-md mx-auto flex flex-col items-center px-4 pt-6 pb-4 text-center"
       initial="hidden"
-      animate={hasAnimated ? "visible" : "hidden"}
-      variants={containerVariants}
+      animate={hasAnimated ? 'visible' : 'hidden'}
+      variants={container}
     >
-      <motion.div className="flex flex-row items-center space-y-4" variants={itemVariants}>
-        {hasAnimated && (
-            <motion.div
-              className="border-black p-2 flex-shrink-0"
-              initial="hidden"
-              animate="visible"
-              variants={melgVariants}
-              transition={{ type: "spring", stiffness: 100, delay: 2 }}
-            >
-              <Mesm
-                className="w-16 h-16 rounded-full cursor-pointer"
-                onClick={handleSecretClick}
-              />
-            </motion.div>
-        )}
-
-        <motion.div className="flex flex-col space-y-2 flex-1 min-w-0 items-start" variants={itemVariants}>
-          <div className="flex flex-row flex-wrap items-center justify-between w-full gap-2 rounded-lg relative text-left">
-            <motion.h1 
-              className="flex-shrink-0 text-xl font-merriweather font-light z-10 text-surface-foreground100-light dark:text-surface-foreground100-dark" 
-              variants={slideInFromTop}
-              custom={0}
-            >
-              <TypingEffect text=" I'm Erica" maxBlinksAfterTyping={1} />
-            </motion.h1>
-            <div className="flex flex-row flex-wrap items-center justify-end min-w-0 gap-1">
-              <motion.div
-                className="text-xs whitespace-nowrap bg-surface-background200-light dark:bg-surface-background200-dark border border-surface-outline-light dark:border-surface-outline-dark text-surface-foreground100-light dark:text-surface-foreground100-dark rounded-lg shadow-sm px-1"
-                variants={itemVariants}
-                custom={5}
-              >
-                Optimistic
-              </motion.div>
-              <motion.div
-                className="text-xs whitespace-nowrap bg-surface-background200-light dark:bg-surface-background200-dark border border-surface-outline-light dark:border-surface-outline-dark text-surface-foreground100-light dark:text-surface-foreground100-dark rounded-lg shadow-sm px-1"
-                variants={itemVariants}
-                custom={6}
-              >
-                Animated
-              </motion.div>
-              <motion.div
-                className="text-xs whitespace-nowrap bg-surface-background200-light dark:bg-surface-background200-dark border border-surface-outline-light dark:border-surface-outline-dark text-surface-foreground100-light dark:text-surface-foreground100-dark rounded-lg shadow-sm px-1"
-                variants={itemVariants}
-                custom={7}
-              >
-                Strategic
-              </motion.div>
-            </div>
-          </div>
-          <motion.h2 
-            className="self-start text-2xl font-merriweather font-normal text-text-primary text-surface-foreground100-light dark:text-surface-foreground100-dark" 
-            variants={itemVariants}
-            custom={0}
-          >
-            <TypingEffect
-              text="A Product Design Manager"
-              delay={1000}
-              maxBlinksAfterTyping={6}
-              onComplete={() => setShowQuickLinks(true)}
-            />
-          </motion.h2>
-          <motion.div
-            className="self-start flex flex-row items-center gap-2 text-sm font-int font-normal text-surface-foreground200-light dark:text-surface-foreground200-dark"
-            initial={{ opacity: 0, y: -16 }}
-            animate={showQuickLinks ? { opacity: 1, y: 0 } : { opacity: 0, y: -16 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <a
-              href="mailto:hello@ericaprice.com"
-              className="underline underline-offset-2 hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark"
-            >
-              Email
-            </a>
-            <span aria-hidden="true">•</span>
-            <a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline underline-offset-2 hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark"
-            >
-              Resume
-            </a>
-          </motion.div>
-        </motion.div>
+      <motion.div variants={item}>
+        <Mesm
+          className="w-20 h-20 rounded-full cursor-pointer"
+          onClick={handleSecretClick}
+          role="img"
+          aria-label="Erica Price"
+        />
       </motion.div>
+
+      <motion.h1
+        variants={item}
+        className="mt-3 text-2xl font-merriweather font-light text-surface-foreground100-light dark:text-surface-foreground100-dark"
+      >
+        <TypingEffect text="I'm Erica" maxBlinksAfterTyping={1} instant={!!reduceMotion} />
+      </motion.h1>
+
+      {/*
+        TODO(Erica): pick the hero headline. "A Product Design Manager" is a placeholder.
+        Candidates from Canon/voice.md (first sentence as the headline, the rest as a line under it):
+        1. Founding Designer: "I've been the first designer at two AI startups." / "I do the research, build the design system, and figure out the product without a team around me."
+        2. Principal UX: "About ten years on enterprise and consumer products." / "I led UX for the KFC and Taco Bell POS and I've started design practices, accessibility programs, and design systems from nothing."
+        3. Program / Delivery Lead: "I take over programs that lost visibility and get them moving again." / "I figure out who's doing what, reorganize the team, and keep the loud stuff off the critical path."
+        4. Freelance: "I do contract and part-time work on three kinds of problems." / "Getting design started at an early company, leading UX on a complicated product, and unsticking a program that stalled."
+        Note: Canon/positioning.md steers away from manager titles for all three paths.
+      */}
+      <motion.h2
+        variants={item}
+        className="mt-1 text-xl font-merriweather font-normal leading-snug break-words text-surface-foreground100-light dark:text-surface-foreground100-dark"
+      >
+        <TypingEffect text="A Product Design Manager" instant />
+      </motion.h2>
+
+      <motion.ul variants={chipRow} className="mt-3 flex flex-wrap justify-center gap-1.5 list-none p-0 m-0" aria-label="A few words about Erica">
+        {['Optimistic', 'Animated', 'Strategic'].map((label) => (
+          <motion.li key={label} variants={chip} className={chipClass}>
+            {label}
+          </motion.li>
+        ))}
+      </motion.ul>
 
       <motion.div
-        initial={{ scale: 0 }}
-        animate={hasAnimated ? { scale: 1 } : { scale: 0 }}
-        transition={{
-          type: 'spring',
-          stiffness: 100,
-          damping: 10,
-          delay: 3,
-        }}
-        className="flex items-center justify-center w-full h-full mt-4 relative px-4"
-        style={{ transformOrigin: 'top left' }}
-        custom={8}
+        variants={item}
+        className="mt-3 flex flex-row items-center gap-2 text-sm font-inter font-normal text-surface-foreground200-light dark:text-surface-foreground200-dark"
       >
-        <div className="relative">
-          <motion.div
-            className="absolute -left-8 top-6 z-10"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={hasAnimated ? (starsSettled ? { scale: 1, opacity: 1, rotate: 0 } : {
-              scale: [0, 1.2, 0.9, 1.1, 1],
-              opacity: 1,
-              rotate: [0, -10, 5, -7, 0]
-            }) : { scale: 0, opacity: 0 }}
-            transition={{ delay: 4.0, duration: 0.5, type: "spring", stiffness: 300 }}
-            whileHover={{ scale: 1.1, rotate: -10 }}
-          >
-            <StarSvg className="w-10 h-10" />
-          </motion.div>
-          <PersonalityScene />
-          <motion.div
-            className="absolute -top-3 -right-3 z-20 cursor-pointer"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={hasAnimated ? (starsSettled ? { scale: 1, opacity: 1, rotate: 0 } : {
-              scale: [0, 1.2, 0.9, 1.1, 1],
-              opacity: 1,
-              rotate: [0, 10, -5, 7, 0]
-            }) : { scale: 0, opacity: 0 }}
-            transition={{ delay: 4.1, duration: 0.5, type: "spring", stiffness: 300 }}
-            whileHover={{ scale: 1.1, rotate: 10 }}
-            onAnimationComplete={() => { if (hasAnimated) setStarsSettled(true); }}
-            onClick={handleSecretClick}
-          >
-            <StarsSvg className="w-10 h-10 text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current" />
-          </motion.div>
-        </div>
+        <a href={MAILTO} className={linkClass}>Email</a>
+        <span aria-hidden="true">•</span>
+        <a href={RESUME_HREF} target="_blank" rel="noopener noreferrer" className={linkClass}>Resume</a>
+      </motion.div>
+
+      <motion.div variants={box} className="relative w-full mt-6" style={{ transformOrigin: 'top center' }}>
+        <motion.div variants={pop(0.55)} className="absolute -left-3 -top-4 z-10" aria-hidden="true">
+          <StarSvg className="w-8 h-8" />
+        </motion.div>
+
+        <PersonalityScene revealDelay={reduceMotion ? 0 : 700} />
+
         <motion.div
-          className="absolute right-4 bottom-0 z-10"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={hasAnimated ? {
-            scale: [0, 1.2, 0.9, 1.1, 1],
-            opacity: 1,
-            rotate: [0, 10, -5, 7, 0]
-          } : { scale: 0, opacity: 0 }}
-          transition={{ delay: 4.2, duration: 0.5, type: "spring", stiffness: 300 }}
-          whileHover={{ scale: 1.1, rotate: 10 }}
+          variants={pop(0.62)}
+          className="absolute -right-3 -top-4 z-20 cursor-pointer"
+          onClick={handleSecretClick}
+          aria-hidden="true"
         >
-          <HeartSvg className="w-10 h-10" />
+          <StarsSvg className="w-8 h-8 text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current" />
+        </motion.div>
+
+        <motion.div variants={pop(0.7)} className="absolute -right-2 -bottom-4 z-10" aria-hidden="true">
+          <HeartSvg className="w-8 h-8" />
         </motion.div>
       </motion.div>
+
       {EasterEggModal}
     </motion.div>
   );
