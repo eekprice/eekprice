@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import CaseStudyPreview from './CaseStudySlides';
 
 const ChevronIcon = (props) => (
@@ -22,15 +23,15 @@ const CaseStudyContainer = ({ title, slides, href }) => {
           </p>
         </div>
         {href && (
-          <a
-            href={href}
+          <Link
+            to={href}
             className="mt-2 lg:mt-0 inline-flex w-full lg:w-auto items-center justify-between lg:justify-start gap-1
               text-sm font-inter font-medium underline-offset-2 hover:underline
               text-primary-foreground-light dark:text-primary-foreground-dark"
           >
             Read full study
             <ChevronIcon className="w-4 h-4" />
-          </a>
+          </Link>
         )}
       </div>
       <CaseStudyPreview slides={slides} />

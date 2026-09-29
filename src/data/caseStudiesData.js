@@ -18,6 +18,7 @@ export const caseStudies = [
   {
     title: "Conversational ordering in the POS",
     published: true,
+    href: '/case-study/yum-pos',
     slides: [
       {
         content: (
@@ -125,11 +126,11 @@ export const caseStudies = [
       { content: "Slide 2 Content", placeholder: true },
       { content: "Slide 2 Content", placeholder: true },
     ],
-    // TODO(Erica): add href once the full case study page exists
   },
   {
     title: "Simplifying Menu Schemas",
-    published: false, // TODO(Erica): real slides. See CaseStudy/menu-management.md once written.
+    published: false, // TODO(Erica): real slides for the home card. The full page at /case-study/menu-management is ready.
+    href: '/case-study/menu-management',
     slides: [
       { content: "Slide 1 Content", placeholder: true },
       { content: "Slide 2 Content", placeholder: true },

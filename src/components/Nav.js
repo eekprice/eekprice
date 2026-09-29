@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import SideProjectsButton from './SideProjectsButton';
 import AtomContact from './atoms/atomContact';
@@ -60,6 +61,15 @@ const goToProjects = () => {
 function Nav({ showProfileInNav = false }) {
   const { isDark, toggle } = useTheme();
   const isMobile = useIsMobile();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const onHome = pathname === '/';
+
+  // On the home page the avatar scrolls to the top. Anywhere else it goes home.
+  const avatarAction = onHome ? scrollToTop : () => navigate('/');
+  const avatarLabel = onHome ? 'Back to top' : 'Home';
+
+  const projectsAction = onHome ? goToProjects : () => navigate('/#projects');
 
   return (
     <div className="relative z-50 px-2 lg:px-8">
@@ -77,12 +87,12 @@ function Nav({ showProfileInNav = false }) {
               key="nav-profile"
               role="button"
               tabIndex={0}
-              aria-label="Back to top"
-              onClick={scrollToTop}
+              aria-label={avatarLabel}
+              onClick={avatarAction}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  scrollToTop();
+                  avatarAction();
                 }
               }}
               className="relative flex flex-col items-center flex-shrink-0 mr-1 lg:mr-2 overflow-visible cursor-pointer"
@@ -124,7 +134,7 @@ function Nav({ showProfileInNav = false }) {
             <SideProjectsButton />
           </li>
           <li className="inline-flex lg:hidden m-0 p-0">
-            <NavItem icon={GridIcon} label="Projects" onClick={goToProjects} />
+            <NavItem icon={GridIcon} label="Projects" onClick={projectsAction} />
           </li>
           <li className="inline-flex m-0 p-0">
             <AtomContact />
