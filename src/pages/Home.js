@@ -133,7 +133,7 @@ function Home() {
 
             <p className="mt-5 text-center">
               <Link
-                to="/case-study/helix-booking"
+                to="/work"
                 className="text-sm font-merriweather underline underline-offset-2
                   text-surface-foreground100-light dark:text-surface-foreground100-dark"
               >

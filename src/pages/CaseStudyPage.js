@@ -86,13 +86,13 @@ function CaseStudyPage() {
 
         <header className="relative max-w-[760px] mx-auto px-4 lg:px-0 pt-8 lg:pt-14 pb-6">
           <Link
-            to="/#case-studies"
+            to="/work"
             className="inline-flex items-center gap-1 text-sm font-inter underline underline-offset-2
               text-surface-foreground200-light dark:text-surface-foreground200-dark
               hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark"
           >
             <ChevronLeft className="w-4 h-4" />
-            All case studies
+            Past Work
           </Link>
 
           <motion.div
