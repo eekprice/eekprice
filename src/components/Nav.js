@@ -128,8 +128,11 @@ function Nav({ showProfileInNav = false }) {
                   <Mesm className="w-10 h-10 lg:w-12 lg:h-12" />
                 </motion.div>
               </motion.div>
-              <span className="hidden sm:block absolute text-sm font-inter font-normal whitespace-nowrap text-surface-foreground200-light dark:text-surface-foreground200-dark translate-y-[60px]">
-                Erica Price
+              <span
+                aria-hidden="true"
+                className="hidden sm:block absolute top-full mt-3.5 lg:mt-3 text-sm font-inter font-normal whitespace-nowrap text-surface-foreground200-light dark:text-surface-foreground200-dark"
+              >
+                {onHome ? 'Top' : 'Home'}
               </span>
             </motion.div>
           )}
