@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { SCISUMMARY_URL } from '../../data/links';
+import { ARISO_URL, SCISUMMARY_URL } from '../../data/links';
 
 // Copy is Erica's, from the Figma hero (Tailwind Portfolio, node 158:1376),
 // with em dashes and exclamation points swapped for periods and commas per
@@ -22,8 +22,7 @@ function AboutMeSection({ itemVariants }) {
           I'm Erica: bubbly, energetic, and always curious. I thrive on variety and excitement, which is why I'm never bored.
           By day, I'm a product consultant leading an AWS data migration and shaping AI product strategy for a global aerospace company.
           By night, I'm the Founding Experience Designer at{' '}
-          {/* TODO(Erica): Ariso URL */}
-          <span className={link}>Ariso</span>, <Link href={SCISUMMARY_URL}>SciSummary</Link>, and Helix.
+          <Link href={ARISO_URL}>Ariso</Link>, <Link href={SCISUMMARY_URL}>SciSummary</Link>, and Helix.
         </p>
         <p className={`${p} mt-4`}>
           I've worn many hats in my career. I'm a{' '}

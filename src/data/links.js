@@ -8,3 +8,4 @@ export const MAILTO = `mailto:${EMAIL}`;
 export const RESUME_HREF = '/resume.pdf';
 
 export const SCISUMMARY_URL = 'https://scisummary.com/';
+export const ARISO_URL = 'https://ariso.ai/';
