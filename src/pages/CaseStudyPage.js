@@ -135,8 +135,8 @@ function CaseStudyPage() {
         </header>
       </div>
 
-      {/* High-level view first: the masonry wall, then the write-up. */}
-      {study.overview && <Overview tiles={study.overview} />}
+      {/* High-level view first: the overview cards, then the write-up. */}
+      {study.overview && <Overview overview={study.overview} />}
 
       <main className={`max-w-[760px] mx-auto px-4 lg:px-0 pb-12 ${study.overview ? 'pt-8' : ''}`}>
         <Reveal>
