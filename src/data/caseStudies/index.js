@@ -10,6 +10,8 @@
 //   note     { text }                             sticky note aside
 //   list     { items: [string] }
 //   steps    { items: [{ title, text }] }
+//
+// `overview` (optional) is the masonry wall at the top. See components/caseStudy/Overview.js.
 
 const img = (name) => `/images/case-studies/${name}.webp`;
 
@@ -25,6 +27,31 @@ export const caseStudies = [
       team: 'Me, two designers, a UI designer for branding, developers, product managers, restaurant ops',
       tags: ['POS', 'In-store research', 'Design system', 'White label'],
     },
+    // The masonry wall at the top of the page. Order here is reading order
+    // down each column. TODO(Erica): match this to the Figma (Portfolio 2024,
+    // node 1:11520) once it can be read; this cut uses what was already in the repo.
+    overview: [
+      {
+        type: 'quote',
+        text: "My biggest complaint is how rigid my team members have to be in the drive thru. Ordering is a conversation and the POS isn't flexible to accommodate them.",
+        who: 'Angela, KFC Manager',
+      },
+      { type: 'image', src: img('kfc-pos-store-visit-photos'), alt: 'Store visits at KFC and Taco Bell', label: 'Store visits' },
+      { type: 'stat', value: '35+', label: 'studies conducted' },
+      { type: 'image', src: '/images/pos-legacy-poster.webp', alt: 'The legacy POS in the drive thru', label: 'The old POS' },
+      { type: 'stat', value: '200+', label: 'participants' },
+      { type: 'image', src: img('kfc-pos-modifier-panel-wireframe'), alt: 'Modifier panel wireframe', label: 'Wireframes' },
+      { type: 'note', text: "The problem was flow, not buttons. Customers don't order in a fixed sequence." },
+      { type: 'image', src: '/images/kfc-pos-concept.webp', alt: 'KFC POS concept', label: 'Concept' },
+      { type: 'stat', value: '60+', label: 'hours in store, 9 stores, 4 states' },
+      { type: 'image', src: img('kfc-pos-final-ui-with-team-quotes'), alt: 'Final Taco Bell and KFC screens with team member feedback', label: 'Final UI' },
+      {
+        type: 'quote',
+        text: 'Make it a combo happens frequently, this has it right here.',
+        who: 'Irais, Taco Bell Service Champion',
+      },
+      { type: 'image', src: img('kfc-pos-figma-wireframe-board'), alt: 'The Figma board for the POS flows', label: 'Every flow, every state' },
+    ],
     summary:
       "I led UX for the point of sale that KFC and Taco Bell team members use to take orders. The order modification flow was rigid and customers don't order in a rigid way. I redesigned it so a team member can follow the customer's conversation instead of fighting the screen, and the patterns had to work as a white label for the other Yum brands.",
     sections: [

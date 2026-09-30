@@ -7,6 +7,7 @@ import { ReactComponent as StarSvg } from '../assets/Star.svg';
 import { ReactComponent as StarsSvg } from '../assets/Stars.svg';
 import { getCaseStudy, nextCaseStudy } from '../data/caseStudies';
 import { Block, OutlinedBlock, Reveal, bodyClass } from '../components/caseStudy/Blocks';
+import Overview from '../components/caseStudy/Overview';
 import FloatingNav from '../components/FloatingNav';
 
 const chipClass = `text-xs px-1.5 py-0.5 whitespace-nowrap rounded-lg shadow-sm font-inter
@@ -134,18 +135,23 @@ function CaseStudyPage() {
         </header>
       </div>
 
-      <main className="max-w-[760px] mx-auto px-4 lg:px-0 pb-12">
+      {/* High-level view first: the masonry wall, then the write-up. */}
+      {study.overview && <Overview tiles={study.overview} />}
+
+      <main className={`max-w-[760px] mx-auto px-4 lg:px-0 pb-12 ${study.overview ? 'pt-8' : ''}`}>
         <Reveal>
           <p className={`${bodyClass} text-lg lg:text-xl`}>{study.summary}</p>
         </Reveal>
 
-        <Reveal>
-          <img
-            src={study.hero.src}
-            alt={study.hero.alt}
-            className="mt-8 w-full h-auto rounded-lg border border-surface-outline-light dark:border-surface-outline-dark shadow-lg"
-          />
-        </Reveal>
+        {!study.overview && (
+          <Reveal>
+            <img
+              src={study.hero.src}
+              alt={study.hero.alt}
+              className="mt-8 w-full h-auto rounded-lg border border-surface-outline-light dark:border-surface-outline-dark shadow-lg"
+            />
+          </Reveal>
+        )}
 
         {study.sections.map((section) => (
           <section key={section.heading} className="mt-14">

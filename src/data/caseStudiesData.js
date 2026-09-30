@@ -129,9 +129,55 @@ const studies = [
         ),
         width: 'w-[800px]'
       },
-      { content: "Slide 2 Content", placeholder: true },
-      { content: "Slide 2 Content", placeholder: true },
-      { content: "Slide 2 Content", placeholder: true },
+      {
+        content: (
+          <img
+            src="/images/case-studies/kfc-pos-store-visit-photos.webp"
+            alt="Store visits at KFC and Taco Bell"
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover rounded-lg border-2 border-surface-outline-light dark:border-surface-outline-dark"
+          />
+        ),
+        width: 'w-[400px]'
+      },
+      {
+        content: (
+          <div className={cardClass}>
+            <h3 className="text-xl font-bold">What I changed</h3>
+            <ul className="text-sm text-left list-disc pl-5 space-y-2">
+              <li>Select the item first, then show only what belongs to it.</li>
+              <li>Common upgrades like "make it a combo" sit right on the item.</li>
+              <li>Prices show on the modifiers.</li>
+            </ul>
+          </div>
+        ),
+        width: 'w-72'
+      },
+      {
+        content: (
+          <img
+            src="/images/case-studies/kfc-pos-final-ui-with-team-quotes.webp"
+            alt="Final Taco Bell and KFC screens with team member feedback"
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-contain rounded-lg border-2 border-surface-outline-light dark:border-surface-outline-dark"
+          />
+        ),
+        width: 'w-[400px]'
+      },
+      {
+        content: (
+          <div className={cardClass}>
+            <h3 className="text-xl font-bold">Team members</h3>
+            <p className="text-sm text-left border-l-4 border-surface-outline-light dark:border-surface-outline-dark pl-4 italic">
+              "I like seeing the prices. Customers always ask for the cheapest option."
+            </p>
+            <p className="text-sm text-left">Maria - KFC Team Member</p>
+          </div>
+        ),
+        width: 'w-64'
+      },
     ],
   },
   {
