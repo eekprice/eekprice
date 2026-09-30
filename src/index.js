@@ -6,11 +6,10 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-// Apply the saved theme before React paints so there's no light flash on reload.
+// Light is the default. Dark only applies if the visitor picked it with the
+// theme button on an earlier visit. The OS setting is deliberately ignored.
 try {
-  const stored = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  document.documentElement.classList.toggle('dark', stored ? stored === 'dark' : prefersDark);
+  document.documentElement.classList.toggle('dark', localStorage.getItem('theme') === 'dark');
 } catch {
   // storage blocked; stay light
 }
