@@ -7,6 +7,8 @@ import { ReactComponent as KfcWires } from '../assets/StudyPOS/wiresKfc.svg';
 // `placeholder: true` on a slide hides that slide the same way.
 // `href` is the link to the full study. Leave it off until the page exists;
 // the card only shows "Read full study" when href is set.
+// `stickers` are emoji scattered around the card. `className` is the spot
+// (Tailwind position classes, relative to the card), `rotate` is the tilt.
 
 const cardClass = `flex flex-col justify-between h-full p-4
   bg-surface-background200-light dark:bg-surface-background200-dark
@@ -17,6 +19,10 @@ const cardClass = `flex flex-col justify-between h-full p-4
 const studies = [
   {
     title: "Speeding up the drive thru",
+    stickers: [
+      { emoji: '🍗', className: 'right-4 top-2 lg:right-[27%] lg:top-3', rotate: -16 },
+      { emoji: '🌮', className: 'left-[9%] -bottom-3 lg:left-[44%] lg:-bottom-4', rotate: 12 },
+    ],
     order: 2,
     published: true,
     href: '/case-study/yum-pos',
@@ -130,6 +136,10 @@ const studies = [
   },
   {
     title: "Simplifying menu schemas",
+    stickers: [
+      { emoji: '🍕', className: 'left-[22%] bottom-3 lg:left-[31%] lg:bottom-5', rotate: 14 },
+      { emoji: '👍', className: 'right-[9%] bottom-7 lg:right-[14%] lg:bottom-9', rotate: -9 },
+    ],
     order: 1,
     published: true, // TODO(Erica): slides for this home card. The full page is ready.
     href: '/case-study/menu-management',

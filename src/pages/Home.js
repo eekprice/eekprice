@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ReactComponent as HeroDoodle } from '../assets/doodle.svg';
 import CaseStudyHero from '../components/caseStudyHero';
 import FloatingNav from '../components/FloatingNav';
-import SectionHeading, { EmojiSticker } from '../components/SectionHeading';
+import SectionHeading from '../components/SectionHeading';
 import KindConnections from '../components/KindConnections';
 import StillHere from '../components/StillHere';
 import { caseStudies } from '../data/caseStudiesData';
@@ -107,24 +107,14 @@ function Home() {
         <>
           {/* Product design case studies */}
           <section id="case-studies" className="relative max-w-[800px] mx-auto px-4 pt-10 pb-6 scroll-mt-24">
-            <SectionHeading
-              stickers={
-                <>
-                  <EmojiSticker className="left-[18%] -top-5 hidden sm:block" rotate={-18}>🍗</EmojiSticker>
-                  <EmojiSticker className="left-1/2 -translate-x-1/2 -top-8" rotate={8}>🍕</EmojiSticker>
-                  <EmojiSticker className="right-[18%] -top-4 hidden sm:block" rotate={14}>🌮</EmojiSticker>
-                </>
-              }
-            >
-              {sectionTitles.caseStudies}
-            </SectionHeading>
+            <SectionHeading>{sectionTitles.caseStudies}</SectionHeading>
 
             <div className="relative space-y-6">
-              <EmojiSticker className="-left-7 top-[46%] hidden lg:block z-10" rotate={-8}>👍</EmojiSticker>
               {publishedStudies.map((study) => (
                 <CaseStudyHero
                   key={study.title}
                   title={study.title}
+                  stickers={study.stickers}
                   slides={study.slides.filter((slide) => !slide.placeholder)}
                   href={study.href}
                 />
