@@ -8,6 +8,7 @@ import { ReactComponent as StarsSvg } from '../../assets/Stars.svg';
 import { useEasterEgg } from '../../hooks/useEasterEgg';
 import TypingEffect from '../TypingEffect';
 import { MAILTO, RESUME_HREF } from '../../data/links';
+import { hero } from '../../data/home';
 
 // Phone hero: a centered column. Avatar, name, headline, chips, links, then
 // the about box. Everything is on screen within about 1.5s of mount.
@@ -21,14 +22,6 @@ const container = {
 const item = {
   hidden: { opacity: 0, y: 12 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease } },
-};
-const chipRow = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.06 } },
-};
-const chip = {
-  hidden: { opacity: 0, scale: 0.9 },
-  visible: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 400, damping: 24 } },
 };
 const box = {
   hidden: { opacity: 0, scale: 0.96 },
@@ -44,10 +37,6 @@ const pop = (delay) => ({
   },
 });
 
-const chipClass = `text-xs px-1.5 py-0.5 whitespace-nowrap rounded-lg shadow-sm
-  bg-surface-background200-light dark:bg-surface-background200-dark
-  border border-surface-outline-light dark:border-surface-outline-dark
-  text-surface-foreground100-light dark:text-surface-foreground100-dark`;
 
 const linkClass = 'underline underline-offset-2 hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark';
 
@@ -94,32 +83,22 @@ function HeroSectionMobile() {
         variants={item}
         className="mt-3 text-2xl font-merriweather font-light text-surface-foreground100-light dark:text-surface-foreground100-dark"
       >
-        <TypingEffect text="I'm Erica" maxBlinksAfterTyping={1} instant={!!reduceMotion} />
+        <TypingEffect text={hero.greeting} maxBlinksAfterTyping={1} instant={!!reduceMotion} />
       </motion.h1>
 
-      {/*
-        TODO(Erica): pick the hero headline. "A Product Design Manager" is a placeholder.
-        Candidates from Canon/voice.md (first sentence as the headline, the rest as a line under it):
-        1. Founding Designer: "I've been the first designer at two AI startups." / "I do the research, build the design system, and figure out the product without a team around me."
-        2. Principal UX: "About ten years on enterprise and consumer products." / "I led UX for the KFC and Taco Bell POS and I've started design practices, accessibility programs, and design systems from nothing."
-        3. Program / Delivery Lead: "I take over programs that lost visibility and get them moving again." / "I figure out who's doing what, reorganize the team, and keep the loud stuff off the critical path."
-        4. Freelance: "I do contract and part-time work on three kinds of problems." / "Getting design started at an early company, leading UX on a complicated product, and unsticking a program that stalled."
-        Note: Canon/positioning.md steers away from manager titles for all three paths.
-      */}
       <motion.h2
         variants={item}
         className="mt-1 text-xl font-merriweather font-normal leading-snug break-words text-surface-foreground100-light dark:text-surface-foreground100-dark"
       >
-        <TypingEffect text="A Product Design Manager" instant />
+        <TypingEffect text={hero.title} instant />
       </motion.h2>
 
-      <motion.ul variants={chipRow} className="mt-3 flex flex-wrap justify-center gap-1.5 list-none p-0 m-0" aria-label="A few words about Erica">
-        {['Optimistic', 'Animated', 'Strategic'].map((label) => (
-          <motion.li key={label} variants={chip} className={chipClass}>
-            {label}
-          </motion.li>
-        ))}
-      </motion.ul>
+      <motion.p
+        variants={item}
+        className="mt-1 text-base font-merriweather font-light text-surface-foreground200-light dark:text-surface-foreground200-dark"
+      >
+        {hero.subline}
+      </motion.p>
 
       <motion.div
         variants={item}

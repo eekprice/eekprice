@@ -8,33 +8,52 @@ const ChevronIcon = (props) => (
   </svg>
 );
 
-// Title on top, slide count under it. "Read full study" only renders when
-// there's somewhere to go, so there's never a dead button.
-const CaseStudyContainer = ({ title, slides, href }) => {
+// A work card: title top-left, optional slide strip, optional link.
+// With no slides and no link it shows a quiet "coming soon" line so an
+// unwritten card doesn't look broken.
+const CaseStudyContainer = ({ title, slides = [], href }) => {
+  const hasSlides = slides.length > 0;
+
   return (
-    <div className="max-w-[1200px] mx-auto p-3 lg:p-4">
-      <div className="flex flex-col gap-1 lg:flex-row lg:items-end lg:justify-between mb-3 lg:mb-4">
+    <div className="p-3 lg:p-4">
+      <div className="flex flex-col gap-1 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <h3 className="font-merriweather text-xl lg:text-2xl font-normal text-surface-foreground100-light dark:text-surface-foreground100-dark">
+          <h3 className="font-merriweather text-lg lg:text-xl font-normal text-surface-foreground100-light dark:text-surface-foreground100-dark">
             {title}
           </h3>
-          <p className="text-sm font-inter text-surface-foreground400-light dark:text-surface-foreground400-dark">
-            {slides.length} slides
-          </p>
+          {hasSlides && (
+            <p className="text-sm font-inter text-surface-foreground400-light dark:text-surface-foreground400-dark">
+              {slides.length} slides
+            </p>
+          )}
         </div>
         {href && (
           <Link
             to={href}
-            className="mt-2 lg:mt-0 inline-flex w-full lg:w-auto items-center justify-between lg:justify-start gap-1
-              text-sm font-inter font-medium underline-offset-2 hover:underline
-              text-primary-foreground-light dark:text-primary-foreground-dark"
+            className="mt-1 lg:mt-0 inline-flex items-center gap-1 shrink-0
+              text-sm font-inter font-medium underline underline-offset-2
+              text-surface-foreground200-light dark:text-surface-foreground200-dark
+              hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark"
           >
             Read full study
             <ChevronIcon className="w-4 h-4" />
           </Link>
         )}
       </div>
-      <CaseStudyPreview slides={slides} />
+
+      {hasSlides ? (
+        <div className="mt-3">
+          <CaseStudyPreview slides={slides} />
+        </div>
+      ) : (
+        <div className="min-h-[88px] lg:min-h-[120px] flex items-end">
+          {!href && (
+            <p className="text-sm font-inter text-surface-foreground400-light dark:text-surface-foreground400-dark">
+              Coming soon.
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 };

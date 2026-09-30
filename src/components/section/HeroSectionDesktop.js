@@ -8,6 +8,7 @@ import { ReactComponent as StarsSvg } from '../../assets/Stars.svg';
 import { useEasterEgg } from '../../hooks/useEasterEgg';
 import TypingEffect from '../TypingEffect';
 import { MAILTO, RESUME_HREF } from '../../data/links';
+import { hero } from '../../data/home';
 
 function HeroSection() {
   const heroRef = useRef(null);
@@ -104,44 +105,16 @@ function HeroSection() {
               variants={slideInFromTop}
               custom={0}
             >
-              <TypingEffect text=" I'm Erica" maxBlinksAfterTyping={1} />
+              <TypingEffect text={` ${hero.greeting}`} maxBlinksAfterTyping={1} />
             </motion.h1>
-
-            <div className="flex flex-row space-x-2">
-              <motion.div 
-                className="text-sm inline-block bg-surface-background200-light dark:bg-surface-background200-dark border border-surface-outline-light dark:border-surface-outline-dark text-surface-foreground100-light dark:text-surface-foreground100-dark rounded-lg shadow-sm px-1"
-                variants={itemVariants}
-                custom={5}
-              >
-                Optimistic
-              </motion.div>
-              <motion.div 
-                className="text-sm inline-block bg-surface-background200-light dark:bg-surface-background200-dark border border-surface-outline-light dark:border-surface-outline-dark text-surface-foreground100-light dark:text-surface-foreground100-dark rounded-lg shadow-sm px-1"
-                variants={itemVariants}
-                custom={6}
-              >
-                Animated
-              </motion.div>
-              <motion.div 
-                className="text-sm inline-block bg-surface-background200-light dark:bg-surface-background200-dark border border-surface-outline-light dark:border-surface-outline-dark text-surface-foreground100-light dark:text-surface-foreground100-dark rounded-lg shadow-sm px-1"
-                variants={itemVariants}
-                custom={7}
-              >
-                Strategic
-              </motion.div>
-            </div>
           </div>
-          {/*
-            TODO(Erica): pick the hero headline. "A Product Design Manager" is a placeholder.
-            Candidates are listed in HeroSectionMobile.js and Canon/voice.md.
-          */}
           <motion.h2 
             className="text-5xl font-merriweather font-normal text-surface-foreground100-light dark:text-surface-foreground100-dark relative"
             variants={itemVariants}
             custom={0}
           >
             <TypingEffect
-              text="A Product Design Manager"
+              text={hero.title}
               delay={1000}
               maxBlinksAfterTyping={6}
               onComplete={() => setShowQuickLinks(true)}
@@ -195,6 +168,14 @@ function HeroSection() {
               <StarsSvg className="w-16 h-16 text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current" />
             </motion.div>
           </motion.h2>
+          <motion.p
+            className="text-2xl font-merriweather font-light text-surface-foreground200-light dark:text-surface-foreground200-dark"
+            initial={{ opacity: 0, y: -12 }}
+            animate={showQuickLinks ? { opacity: 1, y: 0 } : { opacity: 0, y: -12 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {hero.subline}
+          </motion.p>
           <motion.div
             className="flex flex-row items-center gap-2 text-sm font-inter font-normal text-surface-foreground200-light dark:text-surface-foreground200-dark"
             initial={{ opacity: 0, y: -16 }}

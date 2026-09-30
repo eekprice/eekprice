@@ -16,7 +16,7 @@ const img = (name) => `/images/case-studies/${name}.webp`;
 export const caseStudies = [
   {
     slug: 'yum-pos',
-    title: 'Conversational ordering in the POS',
+    title: 'Speeding up the drive thru',
     tagline: 'KFC and Taco Bell. One flexible flow that follows how customers actually order.',
     hero: { src: img('kfc-pos-final-ui-with-team-quotes'), alt: 'Final Taco Bell and KFC POS screens with team member feedback' },
     meta: {

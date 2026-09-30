@@ -1,16 +1,14 @@
 import React from 'react';
 import CaseStudyContainer from './atomCaseStudy/CaseStudyTitle';
 
+// Plain white card with a hairline border, per the Figma sections.
 const CaseStudyHero = ({ title, slides, href }) => {
   return (
-    <div className="max-w-[1200px] mx-auto
-      border border-surface-outline-light dark:border-surface-outline-dark
+    <div className="border border-surface-outline-light dark:border-surface-outline-dark
       bg-surface-background100-light dark:bg-surface-background100-dark
-      rounded-lg shadow-lg"
+      rounded-md shadow-sm text-surface-foreground100-light dark:text-surface-foreground100-dark"
     >
-      <div className="mt-3 lg:mt-4 text-surface-foreground100-light dark:text-surface-foreground100-dark">
-        <CaseStudyContainer title={title} slides={slides} href={href} />
-      </div>
+      <CaseStudyContainer title={title} slides={slides} href={href} />
     </div>
   );
 };

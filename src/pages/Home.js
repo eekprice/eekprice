@@ -1,26 +1,26 @@
 import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
-import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { ReactComponent as HeroDoodle } from '../assets/doodle.svg';
-import { ReactComponent as ArrowSvg } from '../assets/Arrow.svg';
-import SectionContainer from '../components/SectionContainer';
-import Sticky from '../components/Sticky';
 import CaseStudyHero from '../components/caseStudyHero';
 import FloatingNav from '../components/FloatingNav';
+import SectionHeading, { EmojiSticker } from '../components/SectionHeading';
+import KindConnections from '../components/KindConnections';
+import StillHere from '../components/StillHere';
 import { caseStudies } from '../data/caseStudiesData';
+import { deliveryCards, sectionTitles } from '../data/home';
 import HeroSectionMobile from '../components/section/HeroSectionMobile.js';
-import TypingEffect from '../components/TypingEffect';
 import EmergencyStop from '../components/EmergencyStop';
 import { useIsMobile } from '../hooks/useMediaQuery';
 
 // The desktop hero is its own chunk so phones never download it.
 const HeroSection = lazy(() => import('../components/section/HeroSectionDesktop.js'));
 
+// Layout follows the Figma frame "iPad mini 8.3 - 1": hero, two work sections
+// with line-flanked headings and stickers, kind connections, sign-off.
+
 function Home() {
   const isMobile = useIsMobile();
-
   const heroRef = useRef(null);
-  const caseStudiesSectionRef = useRef(null);
-  const hasTriggeredTyping = useRef(false);
 
   const [isHeroVisible, setIsHeroVisible] = useState(true);
   const [showNav, setShowNav] = useState(false);
@@ -28,7 +28,6 @@ function Home() {
   const [loadingComplete, setLoadingComplete] = useState(false);
   const [minLoadingTimePassed, setMinLoadingTimePassed] = useState(false);
   const [showHeroSection, setShowHeroSection] = useState(false);
-  const [startTyping, setStartTyping] = useState(false);
 
   // Track whether the hero is on screen so the nav can show the avatar.
   useEffect(() => {
@@ -65,24 +64,6 @@ function Home() {
       setShowHeroSection(true);
     }
   }, [loadingComplete, minLoadingTimePassed]);
-
-  // Type the "Case Studies" heading once it scrolls into view.
-  useEffect(() => {
-    if (!showHeroSection) return undefined;
-    const node = caseStudiesSectionRef.current;
-    if (!node) return undefined;
-
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !hasTriggeredTyping.current) {
-        setStartTyping(true);
-        hasTriggeredTyping.current = true;
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [showHeroSection]);
 
   // Jump to a section when arriving with a hash (e.g. back from a case study).
   useEffect(() => {
@@ -124,34 +105,22 @@ function Home() {
 
       {showHeroSection && (
         <>
-          {/* Case Studies */}
-          <div id="case-studies" className="relative max-w-[1000px] mx-auto px-3 lg:px-4 py-8 scroll-mt-24">
-            <div
-              ref={caseStudiesSectionRef}
-              className="flex items-center mb-8 relative"
-              style={{ minHeight: '50px' }}
+          {/* Product design case studies */}
+          <section id="case-studies" className="relative max-w-[800px] mx-auto px-4 pt-10 pb-6 scroll-mt-24">
+            <SectionHeading
+              stickers={
+                <>
+                  <EmojiSticker className="left-[18%] -top-5 hidden sm:block" rotate={-18}>🍗</EmojiSticker>
+                  <EmojiSticker className="left-1/2 -translate-x-1/2 -top-8" rotate={8}>🍕</EmojiSticker>
+                  <EmojiSticker className="right-[18%] -top-4 hidden sm:block" rotate={14}>🌮</EmojiSticker>
+                </>
+              }
             >
-              <motion.div
-                className="hidden lg:block absolute -left-16 top-1/2 -translate-y-1/2"
-                initial={{ scale: 1, opacity: 1 }}
-                animate={{ scale: 1, opacity: 1, x: 0, rotate: 0 }}
-                whileHover={{ scale: 1.1, rotate: 10 }}
-              >
-                <ArrowSvg className="w-12 h-12 text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current" />
-              </motion.div>
-              <h2 className="text-2xl lg:text-3xl font-merriweather font-light text-surface-foreground100-light dark:text-surface-foreground100-dark pl-0 lg:pl-4">
-                {startTyping ? (
-                  <TypingEffect
-                    key="typing-effect"
-                    text="Case Studies"
-                    maxBlinksAfterTyping={2}
-                  />
-                ) : (
-                  <span className="opacity-0">Case Studies</span>
-                )}
-              </h2>
-            </div>
-            <div className="space-y-8">
+              {sectionTitles.caseStudies}
+            </SectionHeading>
+
+            <div className="relative space-y-6">
+              <EmojiSticker className="-left-7 top-[46%] hidden lg:block z-10" rotate={-8}>👍</EmojiSticker>
               {publishedStudies.map((study) => (
                 <CaseStudyHero
                   key={study.title}
@@ -161,24 +130,43 @@ function Home() {
                 />
               ))}
             </div>
-          </div>
 
-          <div className="my-12"></div>
+            <p className="mt-5 text-center">
+              <Link
+                to="/case-study/helix-booking"
+                className="text-sm font-merriweather underline underline-offset-2
+                  text-surface-foreground100-light dark:text-surface-foreground100-dark"
+              >
+                Past Work
+              </Link>
+            </p>
+          </section>
 
-          {/* My Projects */}
-          <div className="p-4 flex max-w-[1000px] mx-auto">
-            <SectionContainer id="projects" title="My Projects">
-              {/* TODO(Erica): real side projects */}
-              <Sticky text="Project 1" />
-              <Sticky text="Project 2" />
-              <Sticky text="Project 3" />
-            </SectionContainer>
-          </div>
+          {/* Program and delivery */}
+          <section id="delivery" className="relative max-w-[800px] mx-auto px-4 pt-10 pb-6 scroll-mt-24">
+            <SectionHeading>{sectionTitles.delivery}</SectionHeading>
+            <div className="relative space-y-6">
+              <span
+                aria-hidden="true"
+                className="absolute -right-8 top-[38%] hidden lg:block z-10 select-none font-inter font-extrabold text-2xl text-purple-500 drop-shadow-md"
+                style={{ transform: 'rotate(-6deg)' }}
+              >
+                +1
+              </span>
+              {deliveryCards.map((card) => (
+                <CaseStudyHero key={card.title} title={card.title} slides={[]} href={card.href} />
+              ))}
+            </div>
+          </section>
 
-          <div className="my-12"></div>
+          <div className="h-8 lg:h-12" />
+
+          <KindConnections />
+
+          <StillHere />
 
           {/* Bottom spacer so the last content clears the floating nav */}
-          <div className="h-48 lg:h-64"></div>
+          <div className="h-48 lg:h-56"></div>
 
           <FloatingNav show={showNav} showProfileInNav={!isHeroVisible} />
         </>

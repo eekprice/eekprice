@@ -54,8 +54,8 @@ const ThemeIcon = ({ className = '', ...props }) => (
 
 const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
-const goToProjects = () => {
-  document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+const goToWork = () => {
+  document.getElementById('case-studies')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
 function Nav({ showProfileInNav = false }) {
@@ -69,7 +69,7 @@ function Nav({ showProfileInNav = false }) {
   const avatarAction = onHome ? scrollToTop : () => navigate('/');
   const avatarLabel = onHome ? 'Back to top' : 'Home';
 
-  const projectsAction = onHome ? goToProjects : () => navigate('/#projects');
+  const workAction = onHome ? goToWork : () => navigate('/#case-studies');
 
   return (
     <div className="relative z-50 px-2 lg:px-8">
@@ -134,7 +134,7 @@ function Nav({ showProfileInNav = false }) {
             <SideProjectsButton />
           </li>
           <li className="inline-flex lg:hidden m-0 p-0">
-            <NavItem icon={GridIcon} label="Projects" onClick={projectsAction} />
+            <NavItem icon={GridIcon} label="Work" onClick={workAction} />
           </li>
           <li className="inline-flex m-0 p-0">
             <AtomContact />

@@ -14,9 +14,10 @@ const cardClass = `flex flex-col justify-between h-full p-4
   border-2 border-surface-outline-light dark:border-surface-outline-dark
   rounded-lg`;
 
-export const caseStudies = [
+const studies = [
   {
-    title: "Conversational ordering in the POS",
+    title: "Speeding up the drive thru",
+    order: 2,
     published: true,
     href: '/case-study/yum-pos',
     slides: [
@@ -128,8 +129,9 @@ export const caseStudies = [
     ],
   },
   {
-    title: "Simplifying Menu Schemas",
-    published: false, // TODO(Erica): real slides for the home card. The full page at /case-study/menu-management is ready.
+    title: "Simplifying menu schemas",
+    order: 1,
+    published: true, // TODO(Erica): slides for this home card. The full page is ready.
     href: '/case-study/menu-management',
     slides: [
       { content: "Slide 1 Content", placeholder: true },
@@ -167,3 +169,6 @@ export const caseStudies = [
     ],
   },
 ];
+
+// Home page order follows the Figma: menu schemas first, then the drive thru.
+export const caseStudies = [...studies].sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
