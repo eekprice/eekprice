@@ -4,14 +4,16 @@ import { AnimatePresence, motion } from 'framer-motion';
 import SideProjectsButton from './SideProjectsButton';
 import AtomContact from './atoms/atomContact';
 import AtomResume from './atoms/atomResume';
+import Stickies from './atoms/atomStickies.js';
 import NavItem, { navLabelClass, navFocusClass } from './atoms/NavItem';
 import { ReactComponent as Mesm } from '../assets/mesm.svg';
 import { useTheme } from '../hooks/useTheme';
 
 // Floating bottom nav, laid out like a FigJam toolbar: a white bar with
 // groups split by thin dividers.
-//   [avatar] | [sticky pile + Side Projects] | [About, Contact, Resume, Theme]
-// The sticky pile pokes up out of the bar and is the way in to the work.
+//   [avatar] | [sticky note + Side Projects] | [About, Contact, Resume, Theme]
+// The sticky note is Erica's original (atoms/atomStickies.js), untouched.
+// On phones that group is hidden and a Work icon joins the icon group.
 // Text labels sit under the bar from `sm` up.
 
 const PersonIcon = (props) => (
@@ -59,34 +61,16 @@ const Divider = () => (
   />
 );
 
-// Three sticky notes poking up out of the bar, clipped at its bottom edge.
-// They lift on hover. This is the Work button.
-function StickyPile({ onClick, active }) {
-  const note = 'absolute w-10 h-20 rounded-sm shadow transition-transform duration-300 ease-out';
-  const lift = active ? '-translate-y-1.5' : '';
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label="Work"
-      aria-current={active ? 'page' : undefined}
-      className={`group relative shrink-0 w-14 h-10 lg:h-11 appearance-none bg-transparent border-0 p-0 cursor-pointer ${navFocusClass}`}
-    >
-      <span
-        aria-hidden="true"
-        className="absolute inset-x-0 -bottom-2 lg:-bottom-[10px] h-[84px] overflow-hidden pointer-events-none"
-      >
-        <span className={`${note} left-0.5 top-5 bg-green-300 -rotate-[9deg] group-hover:-translate-y-1 ${lift}`} />
-        <span className={`${note} left-2 top-[18px] bg-blue-300 -rotate-[3deg] group-hover:-translate-y-1.5 ${lift}`} />
-        <span
-          className={`${note} left-3.5 top-4 shadow-md rotate-[4deg] group-hover:-translate-y-2.5 ${lift}
-            bg-highlight-backgroundSticky-light dark:bg-highlight-backgroundSticky-dark`}
-        />
-      </span>
-      <span className={`${navLabelClass} left-1/2 -translate-x-1/2`} aria-hidden="true">Work</span>
-    </button>
-  );
-}
+const GridIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.75}
+      d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+    />
+  </svg>
+);
 
 const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -168,15 +152,36 @@ function Nav({ showProfileInNav = false }) {
           )}
         </AnimatePresence>
 
-        {/* Shared container: the playful bits */}
-        <div className="flex flex-row items-center gap-2 lg:gap-3">
-          <StickyPile onClick={workAction} active={inWork} />
+        {/* Shared container: Erica's sticky note and Side Projects. Desktop only,
+            the sticky is 160px tall and doesn't fit a phone bar. */}
+        <div className="hidden lg:flex flex-row items-center gap-3">
+          <div
+            className="relative ml-2"
+            role="button"
+            tabIndex={0}
+            aria-label="Work"
+            onClick={workAction}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                workAction();
+              }
+            }}
+          >
+            <Stickies text="Case Study" />
+          </div>
           <SideProjectsButton />
         </div>
 
-        <Divider />
+        <span className="hidden lg:inline-flex">
+          <Divider />
+        </span>
+
 
         <ul className="flex flex-row items-center gap-1 sm:gap-4 lg:gap-5 m-0 p-0 list-none">
+          <li className="inline-flex lg:hidden m-0 p-0">
+            <NavItem icon={GridIcon} label="Work" onClick={workAction} active={inWork} />
+          </li>
           <li className="inline-flex m-0 p-0">
             <NavItem
               icon={PersonIcon}
