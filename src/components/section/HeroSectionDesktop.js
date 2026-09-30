@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ReactComponent as Melg } from '../../assets/melg.svg';
 import PersonalityScene from '../atoms/PersonalityAtom';
@@ -197,6 +198,13 @@ function HeroSection() {
             >
               Resume
             </a>
+            <span aria-hidden="true">•</span>
+            <Link
+              to="/about"
+              className="underline underline-offset-2 hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark"
+            >
+              About me
+            </Link>
           </motion.div>
           <motion.div
             initial={{ scale: 0 }}

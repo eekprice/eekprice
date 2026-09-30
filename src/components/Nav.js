@@ -25,6 +25,17 @@ const GridIcon = (props) => (
   </svg>
 );
 
+const PersonIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+    />
+  </svg>
+);
+
 const ThemeIcon = ({ className = '', ...props }) => (
   <svg
     viewBox="0 0 24 24"
@@ -137,6 +148,14 @@ function Nav({ showProfileInNav = false }) {
             <NavItem icon={GridIcon} label="Work" onClick={workAction} />
           </li>
           <li className="inline-flex m-0 p-0">
+            <NavItem
+              icon={PersonIcon}
+              label="About"
+              onClick={() => navigate('/about')}
+              pressed={pathname === '/about' ? true : undefined}
+            />
+          </li>
+          <li className="inline-flex m-0 p-0">
             <AtomContact />
           </li>
           <li className="inline-flex m-0 p-0">
@@ -151,7 +170,6 @@ function Nav({ showProfileInNav = false }) {
               pressed={isDark}
             />
           </li>
-          {/* Fifth slot reserved for the "Ask" assistant later */}
         </ul>
       </motion.nav>
     </div>

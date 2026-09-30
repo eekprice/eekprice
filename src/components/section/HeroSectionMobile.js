@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ReactComponent as Mesm } from '../../assets/mesm.svg';
 import PersonalityScene from '../atoms/PersonalityAtom';
@@ -107,6 +108,8 @@ function HeroSectionMobile() {
         <a href={MAILTO} className={linkClass}>Email</a>
         <span aria-hidden="true">•</span>
         <a href={RESUME_HREF} target="_blank" rel="noopener noreferrer" className={linkClass}>Resume</a>
+        <span aria-hidden="true">•</span>
+        <Link to="/about" className={linkClass}>About me</Link>
       </motion.div>
 
       <motion.div variants={box} className="relative w-full mt-6" style={{ transformOrigin: 'top center' }}>

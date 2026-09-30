@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import CaseStudyPage from './pages/CaseStudyPage';
 import WorkPage from './pages/WorkPage';
+import AboutPage from './pages/AboutPage';
 
 // Breakpoint contract: 1023px and under is the phone layout (Tailwind `lg`).
 // Use `lg:` for layout classes so CSS and useIsMobile() agree.
@@ -23,6 +24,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/work" element={<WorkPage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/case-study/:slug" element={<CaseStudyPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
