@@ -2,46 +2,57 @@ import React from 'react';
 import ControlledGif from '../atoms/ControlledGif';
 import { Reveal } from './Blocks';
 
-// The high-level view at the top of a case study, laid out like Erica's Figma
-// (Portfolio 2024, node 1:11519): soft grey cards in two rows.
-//   Row 1: Problem card stacked on a photo | The solution (wide)
-//   Row 2: Benefits | one big number | Main activities
-// Content comes from the `overview` object in data/caseStudies.
+// The six summary cards for a case study, from Erica's Figma (Portfolio 2024,
+// nodes 17:10775 and 1:11519). They're used two ways:
+//   - as slides in the home page strip (data/caseStudiesData.js)
+//   - as a two-row grid at the top of the case study page (default export)
+// Every card fills whatever box it's put in. Content comes from the
+// `overview` object in data/caseStudies.
 
-const card = `rounded-xl overflow-hidden
+const card = `relative h-full w-full rounded-lg overflow-hidden text-left
   bg-surface-background200-light dark:bg-surface-background200-dark
   text-surface-foreground100-light dark:text-surface-foreground100-dark`;
 
-const titleClass = 'font-inter font-normal text-xl lg:text-2xl';
-const bodyText = 'font-inter text-sm lg:text-base leading-relaxed';
+const pad = 'p-6 lg:p-8';
+const titleClass = 'font-inter font-medium text-2xl leading-normal tracking-tight';
+const bodyText = 'font-inter font-medium text-sm lg:text-base leading-normal';
 
-const bubble = `absolute z-10 max-w-[46%] rounded-md px-2.5 py-2 shadow-lg font-inter
-  bg-surface-background100-light dark:bg-surface-background100-dark
-  border border-surface-outline-light dark:border-surface-outline-dark`;
-
-const StopwatchIcon = (props) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" {...props}>
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={1.75}
-      d="M10 2h4M12 14l3-3M18.5 7.5L20 6M12 22a8 8 0 100-16 8 8 0 000 16z"
-    />
-  </svg>
+const TimerIcon = () => (
+  <span className="relative inline-block w-8 h-8 shrink-0" aria-hidden="true">
+    <svg viewBox="0 0 32 32" className="w-8 h-8" fill="currentColor">
+      <path d="M20 1.33333H12V4H20V1.33333ZM14.6667 18.6667H17.3333V10.6667H14.6667V18.6667ZM25.3733 9.85333L27.2667 7.96C26.6933 7.28 26.0667 6.64 25.3867 6.08L23.4933 7.97333C21.4267 6.32 18.8267 5.33333 16 5.33333C9.37333 5.33333 4 10.7067 4 17.3333C4 23.96 9.36 29.3333 16 29.3333C22.64 29.3333 28 23.96 28 17.3333C28 14.5067 27.0133 11.9067 25.3733 9.85333ZM16 26.6667C10.84 26.6667 6.66667 22.4933 6.66667 17.3333C6.66667 12.1733 10.84 8 16 8C21.16 8 25.3333 12.1733 25.3333 17.3333C25.3333 22.4933 21.16 26.6667 16 26.6667Z" />
+    </svg>
+    {/* little "trending up" badge on the corner of the timer */}
+    <svg
+      viewBox="0 0 11.7546 11.6747"
+      className="absolute -right-0.5 top-[18px] w-3 h-3 -scale-y-100"
+      fill="none"
+    >
+      <rect
+        x="0.47" y="0.47" width="10.81" height="10.73" rx="5.37"
+        className="fill-surface-background200-light dark:fill-surface-background200-dark stroke-primary-foreground-light dark:stroke-primary-foreground-dark"
+        strokeWidth="0.94"
+      />
+      <path
+        d="M7.25541 8.18767V7.49861H8.15119L6.35963 5.72427L4.98151 7.1024L2.43198 4.53564L2.91432 4.0533L4.98151 6.12048L6.35963 4.74236L8.63353 7.01626V6.12048H9.32259V8.18767H7.25541Z"
+        fill="currentColor"
+      />
+    </svg>
+  </span>
 );
 
-function Problem({ problem }) {
+export function ProblemCard({ problem, showAvatar = false }) {
   return (
-    <div className={`${card} p-5 lg:p-6`}>
-      <h2 className={titleClass}>{problem.title}</h2>
-      <p className={`${bodyText} mt-4`}>"{problem.quote}"</p>
-      <div className="mt-3 flex items-center justify-between gap-3">
+    <div className={`${card} ${pad}`}>
+      <h3 className={titleClass}>{problem.title}</h3>
+      <p className={`${bodyText} mt-4`}>“{problem.quote}”</p>
+      <div className="mt-5 flex items-center justify-between gap-3">
         <p className={bodyText}>{problem.who}</p>
-        {problem.avatar && (
+        {showAvatar && problem.avatar && (
           <img
             src={problem.avatar}
             alt=""
-            className="w-10 h-10 rounded-full object-cover border-2 border-primary-foreground-light dark:border-primary-foreground-dark"
+            className="w-12 h-12 rounded-full object-cover border-2 border-primary-foreground-light dark:border-primary-foreground-dark"
           />
         )}
       </div>
@@ -49,23 +60,47 @@ function Problem({ problem }) {
   );
 }
 
-function Solution({ solution }) {
+export function PhotoCard({ photo }) {
   return (
-    <div className={`${card} relative flex flex-col h-full min-h-[300px] lg:min-h-[360px]`}>
-      <h2 className={`${titleClass} px-5 pt-5 lg:px-6 lg:pt-6`}>{solution.title}</h2>
-      <div className="relative flex-1 mt-6 lg:mt-8 ml-8 lg:ml-10">
-        <img
-          src={solution.image.src}
-          alt={solution.image.alt}
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 w-[125%] max-w-none h-full object-cover object-left-top"
-        />
-      </div>
+    <div className={card}>
+      <ControlledGif src={photo.src} poster={photo.poster} alt={photo.alt} className="w-full h-full object-cover" />
+      {photo.emoji && (
+        <span aria-hidden="true" className="absolute left-4 bottom-5 text-2xl leading-none select-none">
+          {photo.emoji}
+        </span>
+      )}
+    </div>
+  );
+}
+
+const bubble = `absolute z-10 w-[44%] max-w-[160px] m-0 p-2 rounded-md backdrop-blur-md font-inter font-medium
+  bg-white/85 dark:bg-surface-background100-dark/85
+  border border-surface-outline-light dark:border-surface-outline-dark`;
+
+// Where each quote bubble floats over the screens.
+const BUBBLE_SPOT = [
+  'hidden sm:block left-[28%] top-[8%]',
+  'right-[6%] top-[9%]',
+  'right-[2.5%] bottom-[4%]',
+];
+
+export function SolutionCard({ solution }) {
+  return (
+    <div className={`${card} ${pad} min-h-[332px]`}>
+      <h3 className={titleClass}>{solution.title}</h3>
+      <img
+        src={solution.image.src}
+        alt={solution.image.alt}
+        loading="lazy"
+        decoding="async"
+        className="absolute left-6 lg:left-8 top-[84px] w-[514px] max-w-none h-auto"
+      />
       {solution.quotes.map((q, i) => (
-        <figure key={q.who} className={`${bubble} ${i === 0 ? 'right-[18%] top-[12%]' : 'left-3 lg:left-5 bottom-[10%]'} m-0`}>
-          <blockquote className="m-0 text-[11px] lg:text-xs leading-snug">{q.text}</blockquote>
-          <figcaption className="mt-1 text-[10px] text-surface-foreground400-light dark:text-surface-foreground400-dark">
+        <figure key={q.who} className={`${bubble} ${BUBBLE_SPOT[i % BUBBLE_SPOT.length]}`}>
+          <blockquote className="m-0 text-[10px] leading-[15px] text-surface-foreground100-light dark:text-surface-foreground100-dark">
+            {q.text}
+          </blockquote>
+          <figcaption className="text-[8px] leading-[17px] tracking-wide text-surface-foreground400-light dark:text-surface-foreground400-dark">
             {q.who}
           </figcaption>
         </figure>
@@ -74,44 +109,53 @@ function Solution({ solution }) {
   );
 }
 
-function Benefits({ benefits }) {
+export function BenefitsCard({ benefits }) {
   return (
-    <div className={`${card} p-5 lg:p-6 h-full`}>
-      <h2 className={titleClass}>{benefits.title}</h2>
+    <div className={`${card} ${pad} pb-28 lg:pb-28`}>
+      <h3 className={titleClass}>{benefits.title}</h3>
       {benefits.items.map((item) => (
-        <p key={item.label} className={`${bodyText} mt-4`}>
-          <strong className="font-semibold">{item.label}:</strong> {item.text}
+        <p key={item.label} className={`${bodyText} mt-4 first-of-type:mt-4 relative z-10`}>
+          <strong className="font-bold">{item.label}:</strong> {item.text}
         </p>
       ))}
+      {benefits.image && (
+        <img
+          src={benefits.image.src}
+          alt={benefits.image.alt}
+          loading="lazy"
+          decoding="async"
+          className="absolute left-[33%] -bottom-[105px] w-[246px] max-w-none h-auto"
+        />
+      )}
     </div>
   );
 }
 
-function Metric({ metric }) {
+export function MetricCard({ metric }) {
   return (
-    <div className={`${card} p-5 lg:p-6 h-full flex flex-col`}>
-      <h2 className={`${titleClass} flex items-center gap-2`}>
-        <StopwatchIcon className="w-6 h-6 shrink-0" />
+    <div className={`${card} ${pad} flex flex-col justify-between gap-4`}>
+      <h3 className={`${titleClass} flex items-start gap-2`}>
+        <TimerIcon />
         {metric.title}
-      </h2>
-      <div className="flex-1 flex flex-col items-center justify-center py-6">
-        <p className="font-inter font-semibold leading-none text-7xl lg:text-8xl tracking-tight">
+      </h3>
+      <div className="text-center">
+        <p className="relative inline-block font-inter font-medium text-[112px] lg:text-[128px] leading-none tracking-[-8px] pr-2">
           {metric.value}
-          <span className="align-top text-xl lg:text-2xl font-normal ml-1">{metric.unit}</span>
+          <span className="absolute left-full top-3 text-2xl tracking-normal font-medium">{metric.unit}</span>
         </p>
-        <p className={`${bodyText} mt-2`}>{metric.label}</p>
+        <p className={`${bodyText} mt-1`}>{metric.label}</p>
       </div>
-      <p className="font-inter text-xs lg:text-sm leading-relaxed">{metric.note}</p>
+      <p className="font-inter font-medium text-xs leading-normal">{metric.note}</p>
     </div>
   );
 }
 
-function Activities({ activities }) {
+export function ActivitiesCard({ activities }) {
   return (
-    <div className={`${card} h-full flex flex-col`}>
-      <div className="p-5 lg:p-6">
-        <h2 className={titleClass}>{activities.title}</h2>
-        <ul className={`${bodyText} mt-4 list-disc pl-5 space-y-1`}>
+    <div className={`${card} flex flex-col`}>
+      <div className={`${pad} pb-4 lg:pb-4`}>
+        <h3 className={titleClass}>{activities.title}</h3>
+        <ul className={`${bodyText} mt-4 list-disc pl-6 m-0`}>
           {activities.items.map((item) => (
             <li key={item}>{item}</li>
           ))}
@@ -122,12 +166,42 @@ function Activities({ activities }) {
         alt={activities.image.alt}
         loading="lazy"
         decoding="async"
-        className="w-full flex-1 min-h-[140px] max-h-[220px] object-cover object-top"
+        className="mt-auto ml-3 w-[323px] max-w-none h-auto"
       />
     </div>
   );
 }
 
+// Erica's original Research slide: a row of big numbers.
+export function ResearchCard({ research }) {
+  return (
+    <div className={`${card} ${pad} flex flex-col`}>
+      <h3 className={titleClass}>{research.title}</h3>
+      <dl className="flex-1 m-0 mt-4 grid grid-cols-2 lg:grid-cols-5 gap-x-4 gap-y-5 content-center">
+        {research.stats.map((stat) => (
+          <div key={stat.label} className="flex flex-col-reverse text-center">
+            <dt className={bodyText}>{stat.label}</dt>
+            <dd className="m-0 font-inter font-medium text-4xl lg:text-5xl leading-none tracking-tight">{stat.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  );
+}
+
+// A titled card that holds any picture or illustration (the wireframes slide).
+export function ArtCard({ title, children }) {
+  return (
+    <div className={`${card} ${pad} flex flex-col`}>
+      <h3 className={titleClass}>{title}</h3>
+      <div className="relative flex-1 min-h-0 mt-4">{children}</div>
+    </div>
+  );
+}
+
+// The grid at the top of the case study page.
+//   Row 1: Problem stacked on the photo | The solution (wide)
+//   Row 2: Benefits | the big number | Main activities
 function Overview({ overview }) {
   const { problem, photo, solution, benefits, metric, activities } = overview;
 
@@ -136,25 +210,24 @@ function Overview({ overview }) {
       <Reveal>
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-3 lg:gap-4">
           <div className="flex flex-col gap-3 lg:gap-4">
-            <Problem problem={problem} />
-            <div className={`${card} flex-1 min-h-[200px]`}>
-              <ControlledGif
-                src={photo.src}
-                poster={photo.poster}
-                alt={photo.alt}
-                className="w-full h-full object-cover"
-              />
+            <div>
+              <ProblemCard problem={problem} showAvatar />
+            </div>
+            <div className="flex-1 min-h-[220px]">
+              <PhotoCard photo={photo} />
             </div>
           </div>
-          <Solution solution={solution} />
+          <SolutionCard solution={solution} />
         </div>
       </Reveal>
 
       <Reveal>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-4">
-          <Benefits benefits={benefits} />
-          <Metric metric={metric} />
-          <Activities activities={activities} />
+          <BenefitsCard benefits={benefits} />
+          <div className="min-h-[332px]">
+            <MetricCard metric={metric} />
+          </div>
+          <ActivitiesCard activities={activities} />
         </div>
       </Reveal>
     </section>

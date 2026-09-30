@@ -27,10 +27,9 @@ export const caseStudies = [
       team: 'Me, two designers, a UI designer for branding, developers, product managers, restaurant ops',
       tags: ['POS', 'In-store research', 'Design system', 'White label'],
     },
-    // The cards at the top of the page. Copy and layout are from Erica's Figma
-    // (Portfolio 2024, node 1:11519), with two typos fixed.
-    // TODO(Erica): the Figma has a KFC bucket photo in the Benefits card and
-    // slide dots on The solution. Neither asset is in the repo yet.
+    // The six summary cards. Copy, layout, and images are from Erica's Figma
+    // (Portfolio 2024, nodes 17:10775 and 1:11519), with two typos fixed.
+    // The same cards are the slides on the home page.
     overview: {
       problem: {
         title: 'Problem',
@@ -42,13 +41,15 @@ export const caseStudies = [
         src: '/images/pos-legacy.webp',
         poster: '/images/pos-legacy-poster.webp',
         alt: 'A team member using the legacy POS in the drive thru',
+        emoji: '😬',
       },
       solution: {
         title: 'The solution',
         image: { src: '/images/kfc-pos-concept.webp', alt: 'The new KFC and Taco Bell order screens' },
         quotes: [
           { text: 'Make it a combo happens frequently, this has it right here.', who: 'Irais - TB Service Champion' },
-          { text: '"I like seeing the prices - customers always ask for the cheapest option."', who: 'Maria - KFC Team Member' },
+          { text: '“I like seeing the prices - customers always ask for the cheapest option.”', who: 'Maria - KFC Team Member' },
+          { text: '"Very easy, way better than deleting and adding [the swap from Crunchy Taco to Supreme]."', who: 'Anthony - TB Service Champion' },
         ],
       },
       benefits: {
@@ -63,6 +64,17 @@ export const caseStudies = [
             text: 'More customers can be served in the same time, leading to increased sales.',
           },
         ],
+        image: { src: img('kfc-bucket'), alt: 'A bucket of Kentucky Fried Chicken' },
+      },
+      research: {
+        title: 'Research',
+        stats: [
+          { value: '35+', label: 'Studies conducted' },
+          { value: '200+', label: 'Participants' },
+          { value: '4', label: 'States visited' },
+          { value: '9', label: 'Store visits' },
+          { value: '60+', label: 'Hours in store' },
+        ],
       },
       metric: {
         title: 'Faster Order Time',
@@ -74,7 +86,7 @@ export const caseStudies = [
       activities: {
         title: 'Main activities',
         items: ['White Labeling', 'Usability Testing', 'Workshops'],
-        image: { src: img('kfc-pos-figma-wireframe-board'), alt: 'The Figma board for the POS flows' },
+        image: { src: img('kfc-pos-activities-board'), alt: 'Workshop sketches and wireframes with notes on the Figma board' },
       },
     },
     summary:

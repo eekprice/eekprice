@@ -4,7 +4,7 @@ import { useIsMobile } from '../../hooks/useMediaQuery';
 
 // Horizontal strip of slides. On phones every slide is 85vw wide and snaps,
 // so the next one peeks in from the right as a hint to swipe.
-const CaseStudySlides = ({ slides }) => {
+const CaseStudySlides = ({ slides, heightClass = 'h-64' }) => {
   const scrollContainerRef = useRef(null);
   const isMobile = useIsMobile();
   const [showLeftOverlay, setShowLeftOverlay] = useState(false);
@@ -52,7 +52,7 @@ const CaseStudySlides = ({ slides }) => {
         {slides.map((slide, index) => (
           <motion.div
             key={index}
-            className={`${isMobile ? 'w-[85vw]' : (slide.width || 'w-64')} h-64 shrink-0 snap-start rounded-lg flex items-center justify-center`}
+            className={`${isMobile ? 'w-[85vw]' : (slide.width || 'w-64')} ${heightClass} shrink-0 snap-start rounded-lg flex items-center justify-center`}
             whileHover={isMobile ? undefined : { scale: 1.02 }}
             transition={{ type: 'spring', stiffness: 300 }}
           >

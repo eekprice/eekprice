@@ -116,6 +116,7 @@ function Home() {
                   title={study.title}
                   stickers={study.stickers}
                   slides={study.slides.filter((slide) => !slide.placeholder)}
+                  slideHeight={study.slideHeight}
                   href={study.href}
                 />
               ))}

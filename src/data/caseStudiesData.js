@@ -1,7 +1,17 @@
-import employeeImg from '../assets/StudyPOS/employee.png';
-import ControlledGif from '../components/atoms/ControlledGif';
-import { ReactComponent as ReactionOhNo } from '../assets/OhDear.svg';
+import {
+  ProblemCard,
+  PhotoCard,
+  SolutionCard,
+  BenefitsCard,
+  MetricCard,
+  ActivitiesCard,
+  ResearchCard,
+  ArtCard,
+} from '../components/caseStudy/Overview';
+import { getCaseStudy } from './caseStudies';
 import { ReactComponent as KfcWires } from '../assets/StudyPOS/wiresKfc.svg';
+
+const pos = getCaseStudy('yum-pos').overview;
 
 // `published: false` keeps a study out of the page without deleting it.
 // `placeholder: true` on a slide hides that slide the same way.
@@ -26,158 +36,26 @@ const studies = [
     order: 2,
     published: true,
     href: '/case-study/yum-pos',
+    // Six cards from the Figma slide row (Portfolio 2024, node 17:10775), plus
+    // Erica's original Research and Wireframes slides in the same card style.
+    // Same components and content as the top of the case study page.
+    slideHeight: 'h-[332px]',
     slides: [
+      { content: <ProblemCard problem={pos.problem} />, width: 'w-60' },
+      { content: <PhotoCard photo={pos.photo} />, width: 'w-60' },
+      { content: <ResearchCard research={pos.research} />, width: 'w-[700px]' },
       {
         content: (
-          <div className={cardClass}>
-            <div className="flex flex-col space-y-2 w-full">
-              <div className="flex flex-row justify-between items-end">
-                <h3 className="text-xl font-bold">Problem</h3>
-                <div className="w-16">
-                  <img
-                    src={employeeImg}
-                    alt="KFC drive thru employee"
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                </div>
-              </div>
-
-              <p className="text-sm text-left border-l-4 border-surface-outline-light dark:border-surface-outline-dark pl-4 italic">
-                "My biggest complaint is how rigid my team members have to be in the drive thru. Ordering is a conversation and the POS isn't flexible to accommodate them "
-              </p>
-              <p className="text-sm text-left">Angela - KFC Manager</p>
-            </div>
-          </div>
+          <ArtCard title="Wireframes">
+            <KfcWires className="absolute inset-0 w-full h-full" role="img" aria-label="Wireframes for the KFC order flow" />
+          </ArtCard>
         ),
-        width: 'w-64'
+        width: 'w-[440px]',
       },
-      {
-        content: (
-          <div className="relative w-full h-full">
-            <div className="h-full w-full">
-              <ControlledGif
-                src="/images/pos-legacy.webp"
-                poster="/images/pos-legacy-poster.webp"
-                alt="Legacy POS in the drive thru"
-                className="w-full h-full object-cover rounded-lg"
-              />
-            </div>
-            <div className="absolute -top-2 -right-2 w-16 rounded-lg
-             bg-surface-background200-light dark:bg-surface-background200-dark
-             border-2 border-surface-outline-light dark:border-surface-outline-dark">
-              <ReactionOhNo className="w-full h-auto text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current" />
-            </div>
-          </div>
-        ),
-        width: 'w-[400px]'
-      },
-
-      {
-        content: (
-          <div className="relative w-full h-full">
-            <div className="h-full w-full">
-              <KfcWires
-                className="w-full h-full rounded-lg"
-              />
-            </div>
-
-          </div>
-        ),
-        width: 'w-[400px]'
-      },
-      {
-        content: (
-          <div className="flex items-end justify-center h-full w-full">
-            <img
-              src="/images/kfc-pos-concept.webp"
-              alt="KFC POS concept"
-              loading="lazy"
-              decoding="async"
-              className="max-w-full h-auto object-contain"
-            />
-          </div>
-        ),
-        width: 'w-[400px]'
-      },
-      {
-        content: (
-          <div className={cardClass}>
-            <h3 className="text-xl font-bold mb-4 lg:mb-6">Research</h3>
-            <div className="grid grid-cols-3 lg:grid-cols-5 gap-2 lg:gap-4">
-              <div className="flex flex-col items-center">
-                <span className="text-xl lg:text-2xl font-bold">35+</span>
-                <span className="text-sm text-center">Studies conducted</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <span className="text-xl lg:text-2xl font-bold">200+</span>
-                <span className="text-sm text-center"># of Participants</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <span className="text-xl lg:text-2xl font-bold">4</span>
-                <span className="text-sm text-center">States Visited</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <span className="text-xl lg:text-2xl font-bold">9</span>
-                <span className="text-sm text-center">Stores Visits</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <span className="text-xl lg:text-2xl font-bold">60+</span>
-                <span className="text-sm text-center">Hours in Store</span>
-              </div>
-            </div>
-          </div>
-        ),
-        width: 'w-[800px]'
-      },
-      {
-        content: (
-          <img
-            src="/images/case-studies/kfc-pos-store-visit-photos.webp"
-            alt="Store visits at KFC and Taco Bell"
-            loading="lazy"
-            decoding="async"
-            className="w-full h-full object-cover rounded-lg border-2 border-surface-outline-light dark:border-surface-outline-dark"
-          />
-        ),
-        width: 'w-[400px]'
-      },
-      {
-        content: (
-          <div className={cardClass}>
-            <h3 className="text-xl font-bold">What I changed</h3>
-            <ul className="text-sm text-left list-disc pl-5 space-y-2">
-              <li>Select the item first, then show only what belongs to it.</li>
-              <li>Common upgrades like "make it a combo" sit right on the item.</li>
-              <li>Prices show on the modifiers.</li>
-            </ul>
-          </div>
-        ),
-        width: 'w-72'
-      },
-      {
-        content: (
-          <img
-            src="/images/case-studies/kfc-pos-final-ui-with-team-quotes.webp"
-            alt="Final Taco Bell and KFC screens with team member feedback"
-            loading="lazy"
-            decoding="async"
-            className="w-full h-full object-contain rounded-lg border-2 border-surface-outline-light dark:border-surface-outline-dark"
-          />
-        ),
-        width: 'w-[400px]'
-      },
-      {
-        content: (
-          <div className={cardClass}>
-            <h3 className="text-xl font-bold">Team members</h3>
-            <p className="text-sm text-left border-l-4 border-surface-outline-light dark:border-surface-outline-dark pl-4 italic">
-              "I like seeing the prices. Customers always ask for the cheapest option."
-            </p>
-            <p className="text-sm text-left">Maria - KFC Team Member</p>
-          </div>
-        ),
-        width: 'w-64'
-      },
+      { content: <SolutionCard solution={pos.solution} />, width: 'w-[628px]' },
+      { content: <BenefitsCard benefits={pos.benefits} />, width: 'w-[373px]' },
+      { content: <MetricCard metric={pos.metric} />, width: 'w-[373px]' },
+      { content: <ActivitiesCard activities={pos.activities} />, width: 'w-[373px]' },
     ],
   },
   {

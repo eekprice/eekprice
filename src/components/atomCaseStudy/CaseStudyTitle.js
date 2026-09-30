@@ -11,7 +11,7 @@ const ChevronIcon = (props) => (
 // A work card: title top-left, optional slide strip, optional link.
 // With no slides and no link it shows a quiet "coming soon" line so an
 // unwritten card doesn't look broken.
-const CaseStudyContainer = ({ title, slides = [], href }) => {
+const CaseStudyContainer = ({ title, slides = [], href, slideHeight }) => {
   const hasSlides = slides.length > 0;
 
   return (
@@ -43,7 +43,7 @@ const CaseStudyContainer = ({ title, slides = [], href }) => {
 
       {hasSlides ? (
         <div className="mt-3">
-          <CaseStudyPreview slides={slides} />
+          <CaseStudyPreview slides={slides} heightClass={slideHeight} />
         </div>
       ) : (
         <div className="min-h-[88px] lg:min-h-[120px] flex items-end">
