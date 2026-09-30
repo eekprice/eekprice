@@ -1,39 +1,44 @@
 import React from 'react';
 
-// One shell for every item in the floating nav so they line up at any width.
-// 44px tap target on phones, 48px on desktop. The text label only shows from
+// One shell for every icon in the floating nav, in the style of a FigJam
+// toolbar: no outline, a soft fill on hover, a solid fill when active.
+// 40px tap target on phones, 44px on desktop. The text label only shows from
 // `sm` up; the aria-label carries it for screen readers everywhere.
 //
 // Renders an <a> when `href` is given, otherwise a <button>.
+//   active  - visual "you are here" state (solid fill)
+//   pressed - aria-pressed for toggles like the theme button
 
 const shellClass = 'group relative flex flex-col items-center cursor-pointer';
 
-const boxClass = `w-11 h-11 lg:w-12 lg:h-12 rounded-lg
-  border border-surface-outline-light dark:border-surface-outline-dark
+const boxClass = `w-10 h-10 lg:w-11 lg:h-11 rounded-lg
   flex items-center justify-center
-  transition-colors duration-300
-  group-hover:bg-surface-background200-light dark:group-hover:bg-surface-background200-dark
-  group-hover:rotate-3`;
+  transition-colors duration-200`;
 
-const activeBoxClass = 'bg-surface-background200-light dark:bg-surface-background200-dark';
+const idleBoxClass = `text-surface-foreground100-light dark:text-surface-foreground100-dark
+  group-hover:bg-surface-background200-light dark:group-hover:bg-surface-background200-dark`;
 
-const iconClass = 'w-6 h-6 lg:w-8 lg:h-8 text-surface-foreground100-light dark:text-surface-foreground400-dark';
+const activeBoxClass = `bg-primary-foreground-light text-white
+  dark:bg-primary-foreground-dark dark:text-teal-900`;
 
-const labelClass = `hidden sm:block absolute top-full mt-3 text-sm font-inter font-normal whitespace-nowrap
+const iconClass = 'w-6 h-6';
+
+// Shared with the sticky pile in Nav.js so every label sits on one baseline.
+export const navLabelClass = `hidden sm:block absolute top-full mt-3 text-sm font-inter font-normal whitespace-nowrap
   text-surface-foreground200-light dark:text-surface-foreground200-dark
   group-hover:text-surface-foreground100-light dark:group-hover:text-surface-foreground100-dark`;
 
-const focusClass = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-outline-light dark:focus-visible:ring-primary-outline-dark rounded-lg';
+export const navFocusClass = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-outline-light dark:focus-visible:ring-primary-outline-dark rounded-lg';
 
-// `label` is the accessible name. `shortLabel` is what shows under the icon on
-// desktop when the accessible name is too long to fit (e.g. "Theme").
-function NavItem({ icon: Icon, label, shortLabel, href, onClick, external = false, pressed, className = '' }) {
+// `label` is the accessible name. `shortLabel` is what shows under the icon
+// when the accessible name is too long to fit (e.g. "Theme").
+function NavItem({ icon: Icon, label, shortLabel, href, onClick, external = false, active = false, pressed, className = '' }) {
   const inner = (
     <>
-      <div className={`${boxClass} ${pressed ? activeBoxClass : ''}`}>
+      <span className={`${boxClass} ${active ? activeBoxClass : idleBoxClass}`}>
         <Icon className={iconClass} aria-hidden="true" />
-      </div>
-      <span className={labelClass} aria-hidden="true">{shortLabel || label}</span>
+      </span>
+      <span className={navLabelClass} aria-hidden="true">{shortLabel || label}</span>
     </>
   );
 
@@ -42,7 +47,7 @@ function NavItem({ icon: Icon, label, shortLabel, href, onClick, external = fals
       <a
         href={href}
         aria-label={label}
-        className={`${shellClass} ${focusClass} ${className}`}
+        className={`${shellClass} ${navFocusClass} ${className}`}
         {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
       >
         {inner}
@@ -56,7 +61,8 @@ function NavItem({ icon: Icon, label, shortLabel, href, onClick, external = fals
       onClick={onClick}
       aria-label={label}
       aria-pressed={pressed}
-      className={`${shellClass} ${focusClass} appearance-none bg-transparent border-0 p-0 ${className}`}
+      aria-current={active ? 'page' : undefined}
+      className={`${shellClass} ${navFocusClass} appearance-none bg-transparent border-0 p-0 ${className}`}
     >
       {inner}
     </button>
