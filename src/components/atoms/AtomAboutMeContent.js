@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { SCISUMMARY_URL } from '../../data/links';
 
 // Copy is Erica's, from the Figma hero (Tailwind Portfolio, node 158:1376),
 // with em dashes and exclamation points swapped for periods and commas per
@@ -22,15 +23,15 @@ function AboutMeSection({ itemVariants }) {
           By day, I'm a product consultant leading an AWS data migration and shaping AI product strategy for a global aerospace company.
           By night, I'm the Founding Experience Designer at{' '}
           {/* TODO(Erica): Ariso URL */}
-          <span className={link}>Ariso</span>, SciSummary, and Helix.
+          <span className={link}>Ariso</span>, <Link href={SCISUMMARY_URL}>SciSummary</Link>, and Helix.
         </p>
         <p className={`${p} mt-4`}>
           I've worn many hats in my career. I'm a{' '}
           <Link href="https://openaccess.cms-conferences.org/publications/book/978-1-964867-19-9/article/978-1-964867-19-9_22">published author in the AHFE journal</Link>,
           retired <Link href="https://www.memorisely.com/">teacher at Memorisely</Link>,
           the{' '}
-          {/* TODO(Erica): SciSummary URL. Canon/about.md says "founding designer", the Figma says "co-founder". */}
-          <span className={link}>co-founder of SciSummary</span>{' '}
+          {/* TODO(Erica): Canon/about.md says "founding designer", the Figma says "co-founder". */}
+          <Link href={SCISUMMARY_URL}>co-founder of SciSummary</Link>{' '}
           and Helix Booking, a conference speaker, and{' '}
           <Link href="https://podcasts.apple.com/us/podcast/the-forward-slash-podcast/id1744372906?i=1000679262388">guest on the Forward Slash podcast</Link>,
           where I shared insights on UX and design leadership. Before diving into the world of UX, I brought characters to life as a performer at Disney, a role that probably explains my Energizer Bunny energy.
