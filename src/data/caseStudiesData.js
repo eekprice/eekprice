@@ -41,7 +41,7 @@ const studies = [
     // Same components and content as the top of the case study page.
     slideHeight: 'h-[332px]',
     slides: [
-      { content: <ProblemCard problem={pos.problem} />, width: 'w-60' },
+      { content: <ProblemCard problem={pos.problem} />, width: 'w-80' },
       { content: <PhotoCard photo={pos.photo} />, width: 'w-60' },
       { content: <ResearchCard research={pos.research} />, width: 'w-[700px]' },
       {

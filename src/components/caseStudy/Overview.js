@@ -41,21 +41,22 @@ const TimerIcon = () => (
   </span>
 );
 
-export function ProblemCard({ problem, showAvatar = false }) {
+export function ProblemCard({ problem }) {
   return (
     <div className={`${card} ${pad}`}>
-      <h3 className={titleClass}>{problem.title}</h3>
-      <p className={`${bodyText} mt-4`}>“{problem.quote}”</p>
-      <div className="mt-5 flex items-center justify-between gap-3">
-        <p className={bodyText}>{problem.who}</p>
-        {showAvatar && problem.avatar && (
+      {/* Title on the left, the person's photo top right. */}
+      <div className="flex items-start justify-between gap-3">
+        <h3 className={titleClass}>{problem.title}</h3>
+        {problem.avatar && (
           <img
             src={problem.avatar}
             alt=""
-            className="w-12 h-12 rounded-full object-cover border-2 border-primary-foreground-light dark:border-primary-foreground-dark"
+            className="-mt-2 -mr-2 w-16 h-16 shrink-0 rounded-full object-cover border-2 border-primary-foreground-light dark:border-primary-foreground-dark"
           />
         )}
       </div>
+      <p className={`${bodyText} mt-3`}>“{problem.quote}”</p>
+      <p className={`${bodyText} mt-5`}>{problem.who}</p>
     </div>
   );
 }
@@ -211,7 +212,7 @@ function Overview({ overview }) {
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-3 lg:gap-4">
           <div className="flex flex-col gap-3 lg:gap-4">
             <div>
-              <ProblemCard problem={problem} showAvatar />
+              <ProblemCard problem={problem} />
             </div>
             <div className="flex-1 min-h-[220px]">
               <PhotoCard photo={photo} />
