@@ -16,7 +16,7 @@ function FloatingNav({ show = true, showProfileInNav = false }) {
         }}
       />
       <div
-        className={`fixed bottom-0 left-1/2 z-50 transform -translate-x-1/2 pb-[max(1rem,env(safe-area-inset-bottom))] lg:pb-8 transition-transform duration-500 ${
+        className={`fixed bottom-0 left-1/2 z-50 transform -translate-x-1/2 pb-[max(1rem,env(safe-area-inset-bottom))] sm:pb-10 transition-transform duration-500 ${
           show ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
         }`}
       >

@@ -19,7 +19,7 @@ const activeBoxClass = 'bg-surface-background200-light dark:bg-surface-backgroun
 
 const iconClass = 'w-6 h-6 lg:w-8 lg:h-8 text-surface-foreground100-light dark:text-surface-foreground400-dark';
 
-const labelClass = `hidden sm:block absolute top-full mt-1 text-sm font-inter font-normal whitespace-nowrap
+const labelClass = `hidden sm:block absolute top-full mt-3 text-sm font-inter font-normal whitespace-nowrap
   text-surface-foreground200-light dark:text-surface-foreground200-dark
   group-hover:text-surface-foreground100-light dark:group-hover:text-surface-foreground100-dark`;
 

@@ -140,7 +140,7 @@ function Nav({ showProfileInNav = false }) {
           <Stickies text="Case Study" />
         </div>
 
-        <ul className="flex flex-row items-center gap-1.5 sm:gap-3 lg:gap-4 px-1 lg:px-3">
+        <ul className="flex flex-row items-center gap-1.5 sm:gap-5 px-1 lg:px-3">
           <li className="hidden lg:inline-flex m-0 p-0">
             <SideProjectsButton />
           </li>
