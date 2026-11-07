@@ -28,12 +28,20 @@ function useFinePointer() {
   return fine;
 }
 
-function labelFor(progress) {
-  let label = cursorLabels[0].text;
+// Pick a line for this scroll depth, never the one shown last time.
+function pickLine(progress, previous) {
+  let group = cursorLabels[0];
   for (const step of cursorLabels) {
-    if (progress >= step.at) label = step.text;
+    if (progress >= step.at) group = step;
   }
-  return label;
+  const options = group.lines.filter((line) => line !== previous);
+  const pool = options.length ? options : group.lines;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function scrollDepth() {
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  return max > 0 ? window.scrollY / max : 0;
 }
 
 function CursorTag() {
@@ -42,7 +50,7 @@ function CursorTag() {
   const y = useMotionValue(-100);
   const [showTag, setShowTag] = useState(false);
   const [overLink, setOverLink] = useState(false);
-  const [label, setLabel] = useState(cursorLabels[0].text);
+  const [label, setLabel] = useState('');
 
   useEffect(() => {
     if (!fine) return undefined;
@@ -61,20 +69,14 @@ function CursorTag() {
       setOverLink(!!e.target.closest?.('a, button, [role="button"], summary'));
       hide();
       pauseTimer = setTimeout(() => {
+        setLabel((prev) => pickLine(scrollDepth(), prev));
         setShowTag(true);
         lingerTimer = setTimeout(() => setShowTag(false), LINGER_MS);
       }, PAUSE_MS);
     };
     const onLeave = hide;
-    const onScroll = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      setLabel(labelFor(max > 0 ? window.scrollY / max : 0));
-    };
-
     window.addEventListener('mousemove', onMove, { passive: true });
     document.documentElement.addEventListener('mouseleave', onLeave);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
 
     return () => {
       document.documentElement.classList.remove('custom-cursor');
@@ -82,7 +84,6 @@ function CursorTag() {
       clearTimeout(lingerTimer);
       window.removeEventListener('mousemove', onMove);
       document.documentElement.removeEventListener('mouseleave', onLeave);
-      window.removeEventListener('scroll', onScroll);
     };
   }, [fine, x, y]);
 
