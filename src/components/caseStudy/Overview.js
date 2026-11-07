@@ -140,9 +140,9 @@ export function MetricCard({ metric }) {
         {metric.title}
       </h3>
       <div className="text-center">
-        <p className="relative inline-block font-inter font-medium text-[112px] lg:text-[128px] leading-none tracking-[-8px] pr-2">
+        <p className="relative inline-block font-inter font-medium text-7xl lg:text-8xl leading-none tracking-[-5px] pr-2">
           {metric.value}
-          <span className="absolute left-full top-3 text-2xl tracking-normal font-medium">{metric.unit}</span>
+          <span className="absolute left-full top-2 text-xl tracking-normal font-medium">{metric.unit}</span>
         </p>
         <p className={`${bodyText} mt-1`}>{metric.label}</p>
       </div>
