@@ -14,7 +14,7 @@ import { useTheme } from '../hooks/useTheme';
 //   [avatar] | [sticky note + Side Projects] | [About, Contact, Resume, Theme]
 // The sticky note is Erica's original (atoms/atomStickies.js), untouched.
 // On phones that group is hidden and a Work icon joins the icon group.
-// Text labels sit under the bar from `sm` up.
+// Text labels sit under each icon, inside the bar, from `sm` up.
 
 const PersonIcon = (props) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
@@ -57,7 +57,7 @@ const ThemeIcon = ({ className = '', ...props }) => (
 const Divider = () => (
   <span
     aria-hidden="true"
-    className="shrink-0 w-px h-7 mx-1.5 lg:mx-2.5 bg-surface-outline-light dark:bg-surface-outline-dark"
+    className="shrink-0 w-px h-7 sm:h-9 mx-1.5 lg:mx-2.5 bg-surface-outline-light dark:bg-surface-outline-dark"
   />
 );
 
@@ -102,7 +102,7 @@ function Nav({ showProfileInNav = false }) {
           text-surface-foreground100-light dark:text-surface-foreground100-dark
           border border-surface-outline-light dark:border-surface-outline-dark
           shadow-lg
-          inline-flex w-max flex-row items-center rounded-2xl px-2 lg:px-3 h-14 lg:h-16"
+          inline-flex w-max flex-row items-center rounded-2xl px-2 lg:px-3 h-14 sm:h-[4.5rem] lg:h-20"
       >
         <AnimatePresence>
           {showProfileInNav && (
@@ -128,7 +128,7 @@ function Nav({ showProfileInNav = false }) {
                 className={`group relative flex flex-col items-center flex-shrink-0 overflow-visible cursor-pointer rounded-full ${navFocusClass}`}
               >
                 <motion.div
-                  className="w-10 h-10 lg:w-11 lg:h-11 rounded-full border-2 border-[#003347] dark:border-slate-200 overflow-hidden bg-surface-background200-light dark:bg-surface-background200-dark"
+                  className="w-10 h-10 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-full border-2 border-[#003347] dark:border-slate-200 overflow-hidden bg-surface-background200-light dark:bg-surface-background200-dark"
                   initial={{ scale: 0 }}
                   animate={{ scale: [0, 1.2, 1] }}
                   exit={{ scale: 0 }}
@@ -140,7 +140,7 @@ function Nav({ showProfileInNav = false }) {
                     exit={{ opacity: 0 }}
                     transition={{ delay: 0.32, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                   >
-                    <Mesm className="w-10 h-10 lg:w-11 lg:h-11" />
+                    <Mesm className="w-full h-full" />
                   </motion.div>
                 </motion.div>
                 <span aria-hidden="true" className={navLabelClass}>

@@ -2,8 +2,9 @@ import React from 'react';
 
 // One shell for every icon in the floating nav, in the style of a FigJam
 // toolbar: no outline, a soft fill on hover, a solid fill when active.
-// 40px tap target on phones, 44px on desktop. The text label only shows from
-// `sm` up; the aria-label carries it for screen readers everywhere.
+// 40px tap target on phones, 44px on desktop. The text label sits under the
+// icon inside the bar from `sm` up; the aria-label carries it for screen
+// readers everywhere.
 //
 // Renders an <a> when `href` is given, otherwise a <button>.
 //   active  - visual "you are here" state (solid fill)
@@ -11,7 +12,7 @@ import React from 'react';
 
 const shellClass = 'group relative flex flex-col items-center cursor-pointer';
 
-const boxClass = `w-10 h-10 lg:w-11 lg:h-11 rounded-lg
+const boxClass = `w-10 h-10 sm:w-12 sm:h-9 lg:h-10 rounded-lg
   flex items-center justify-center
   transition-colors duration-200`;
 
@@ -24,7 +25,7 @@ const activeBoxClass = `bg-primary-foreground-light text-white
 const iconClass = 'w-6 h-6';
 
 // Shared with the sticky pile in Nav.js so every label sits on one baseline.
-export const navLabelClass = `hidden sm:block absolute top-full mt-3 text-sm font-inter font-normal whitespace-nowrap
+export const navLabelClass = `hidden sm:block mt-0.5 text-xs font-inter font-normal whitespace-nowrap leading-tight
   text-surface-foreground200-light dark:text-surface-foreground200-dark
   group-hover:text-surface-foreground100-light dark:group-hover:text-surface-foreground100-dark`;
 

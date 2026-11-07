@@ -94,6 +94,13 @@ module.exports = {
             light: colors.slate[800],
             dark: colors.slate[600],
           },
+          // Secondary text on a sticky (names of roles, "from" lines, links).
+          // Warm brown instead of grey so it sits well on the yellow.
+          // amber-900 on yellow-200 is 7.8:1, amber-950 on yellow-400 is 9:1 or so.
+          foregroundStickyMuted: {
+            light: colors.amber[900],
+            dark: colors.amber[950],
+          },
           outline: {
             light: colors.yellow[300],
             dark: colors.yellow[700],

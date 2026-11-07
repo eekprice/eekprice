@@ -39,7 +39,7 @@ function ConnectionNote({ note }) {
           bg-highlight-backgroundSticky-light dark:bg-highlight-backgroundSticky-dark
           text-highlight-foregroundSticky-light dark:text-highlight-foregroundSticky-dark font-inter"
       >
-        <p className="text-xs text-slate-500 dark:text-slate-700">{note.from}</p>
+        <p className="text-xs text-highlight-foregroundStickyMuted-light dark:text-highlight-foregroundStickyMuted-dark">{note.from}</p>
         <blockquote className="mt-3 text-sm leading-relaxed">
           <p>{note.text}</p>
           {note.more && open && <p className="mt-3">{note.more}</p>}
@@ -50,8 +50,8 @@ function ConnectionNote({ note }) {
             type="button"
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
-            className="mt-3 inline-flex items-center gap-1 text-xs text-slate-600 dark:text-slate-700 underline-offset-2 hover:underline
-              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 rounded"
+            className="mt-3 inline-flex items-center gap-1 text-xs text-highlight-foregroundStickyMuted-light dark:text-highlight-foregroundStickyMuted-dark underline-offset-2 hover:underline
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-900 rounded"
           >
             {open ? `Show less from ${firstName}` : `Read more of what ${firstName} has to say`}
             <ChevronRight className={`w-3.5 h-3.5 transition-transform ${open ? '-rotate-90' : ''}`} />
@@ -60,8 +60,8 @@ function ConnectionNote({ note }) {
 
         <figcaption className="mt-4 flex items-end justify-between gap-3">
           <span>
-            <span className="block text-lg leading-tight text-slate-700">{note.name}</span>
-            <span className="block text-xs text-slate-500 dark:text-slate-700">{note.role}</span>
+            <span className="block text-lg leading-tight text-highlight-foregroundSticky-light dark:text-highlight-foregroundSticky-dark">{note.name}</span>
+            <span className="block text-xs text-highlight-foregroundStickyMuted-light dark:text-highlight-foregroundStickyMuted-dark">{note.role}</span>
           </span>
           <Avatar photo={note.photo} name={note.name} />
         </figcaption>
