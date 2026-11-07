@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import CaseStudyPage from './pages/CaseStudyPage';
 import WorkPage from './pages/WorkPage';
 import AboutPage from './pages/AboutPage';
+import CursorTag from './components/CursorTag';
 
 // Breakpoint contract: 1023px and under is the phone layout (Tailwind `lg`).
 // Use `lg:` for layout classes so CSS and useIsMobile() agree.
@@ -21,6 +22,7 @@ function App() {
   return (
     <div className="App min-h-screen bg-backdrop-background-light dark:bg-backdrop-background-dark dotted-background overflow-x-hidden">
       <ScrollToTop />
+      <CursorTag />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/work" element={<WorkPage />} />

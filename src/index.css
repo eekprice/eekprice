@@ -2,3 +2,10 @@
 body {
   font-family: theme('fontFamily.inter');
 }
+
+/* The custom cursor (components/CursorTag.js) replaces the pointer on
+   desktop. The class is only added when the device has a fine pointer. */
+.custom-cursor,
+.custom-cursor * {
+  cursor: none !important;
+}
