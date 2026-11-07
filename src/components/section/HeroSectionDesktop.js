@@ -78,31 +78,32 @@ function HeroSection() {
   return (
     <motion.div
       ref={heroRef}
-      className="w-full flex flex-row items-center justify-center relative mt-[10%] p-8"
+      className="w-full max-w-[880px] mx-auto flex flex-row items-start justify-center relative mt-16 px-8 pt-8"
       initial="hidden"
       animate={hasAnimated ? "visible" : "hidden"}
       variants={containerVariants}
     >
-      <motion.div className="flex flex-row items-start space-x-8" variants={itemVariants}>
+      <motion.div className="flex flex-row items-start gap-8 w-full" variants={itemVariants}>
         {hasAnimated && (
             <motion.div
-              className="border-black p-2 flex-shrink-0"
+              className="flex-shrink-0 w-52 pt-6"
               initial="hidden"
               animate="visible"
               variants={melgVariants}
               transition={{ type: "spring", stiffness: 100, delay: 2 }}
             >
-              <Melg 
-                className="-mt-10 -mb-10 -ml-16 cursor-pointer"
+              {/* The SVG is 304x350; scale it to the column so the photo lines up with the text. */}
+              <Melg
+                className="w-full h-auto -ml-6 cursor-pointer"
                 onClick={revealEasterEgg}
               />
             </motion.div>
         )}
 
-        <motion.div className="flex flex-col space-y-4 w-full items-start" variants={itemVariants}>
+        <motion.div className="flex flex-col space-y-4 flex-1 min-w-0 items-start" variants={itemVariants}>
           <div className="flex flex-row items-center justify-between w-full space-x-4 rounded-lg relative text-left">
             <motion.h1 
-              className="pt-8 text-3xl font-merriweather font-light z-10 text-surface-foreground100-light dark:text-surface-foreground100-dark" 
+              className="text-3xl font-merriweather font-light z-10 text-surface-foreground100-light dark:text-surface-foreground100-dark" 
               variants={slideInFromTop}
               custom={0}
             >
