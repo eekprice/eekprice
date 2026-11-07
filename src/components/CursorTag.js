@@ -6,9 +6,9 @@ import { cursorLabels } from '../data/home';
 // pointer, with a small tag beside it. Desktop only, since there's no pointer
 // to follow on a phone.
 //
-// The tag is not persistent. It only appears once the mouse has been still
-// for a moment, and it goes away again as soon as the mouse moves or after
-// a few seconds, so it never trails across text being read.
+// The tag is not persistent. It shows once per page load: the first time the
+// mouse rests near the bottom of the page. It goes away as soon as the mouse
+// moves or after a few seconds, and then it's done for that visit.
 //
 // The arrow is pinned to the real mouse position (no lag, or clicks feel off).
 
@@ -60,6 +60,7 @@ function CursorTag() {
     let pauseTimer;
     let lingerTimer;
     let lastLine = '';
+    let said = false; // once per page load
     const hide = () => {
       clearTimeout(pauseTimer);
       clearTimeout(lingerTimer);
@@ -71,10 +72,12 @@ function CursorTag() {
       setOverLink(!!e.target.closest?.('a, button, [role="button"], summary'));
       hide();
       pauseTimer = setTimeout(() => {
+        if (said) return;
         const line = pickLine(scrollDepth(), lastLine);
         lastLine = line;
         setLabel(line);
         if (!line) return; // nothing to say at this depth
+        said = true;
         setShowTag(true);
         lingerTimer = setTimeout(() => setShowTag(false), LINGER_MS);
       }, PAUSE_MS);

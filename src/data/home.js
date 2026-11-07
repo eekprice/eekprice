@@ -78,18 +78,11 @@ export const closer = {
     'Only 30% of viewers make it this far. I appreciate the scroll. Shoot me a LinkedIn request or send me an email if you want to connect. I would love to know what brought you this far down.',
 };
 
-// The little tag next to the cursor on desktop, like a Figma cursor. It only
-// shows when the mouse pauses. Each pause picks one line at random from the
-// group for the visitor's scroll depth (`at` is 0 to 1), so it's never the
-// same twice in a row. Only the top and the bottom have lines; the middle of
-// the page stays clear so it isn't distracting.
+// The little tag next to the cursor on desktop, like a Figma cursor. It shows
+// once per visit: the first time the mouse pauses near the bottom of the page.
+// One line is picked at random. `at` is scroll depth from 0 to 1.
 export const cursorLabels = [
-  {
-    at: 0,
-    lines: ['caught you reading', 'hi. no pressure', 'you paused. was it the kerning'],
-  },
-  // Nothing from a fifth of the way down until near the end.
-  { at: 0.2, lines: [] },
+  { at: 0, lines: [] },
   {
     at: 0.85,
     lines: [
