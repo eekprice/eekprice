@@ -83,10 +83,11 @@ function HeroSection() {
       animate={hasAnimated ? "visible" : "hidden"}
       variants={containerVariants}
     >
-      <motion.div className="flex flex-row items-start gap-8 w-full" variants={itemVariants}>
+      {/* Same width as the about box below so the two edges line up. */}
+      <motion.div className="flex flex-row items-center gap-6 w-full max-w-[760px]" variants={itemVariants}>
         {hasAnimated && (
             <motion.div
-              className="flex-shrink-0 w-52 pt-6"
+              className="flex-shrink-0 w-48"
               initial="hidden"
               animate="visible"
               variants={melgVariants}
@@ -94,7 +95,7 @@ function HeroSection() {
             >
               {/* The SVG is 304x350; scale it to the column so the photo lines up with the text. */}
               <Melg
-                className="w-full h-auto -ml-6 cursor-pointer"
+                className="w-full h-auto cursor-pointer"
                 onClick={revealEasterEgg}
               />
             </motion.div>
@@ -111,7 +112,7 @@ function HeroSection() {
             </motion.h1>
           </div>
           <motion.h2 
-            className="text-5xl font-merriweather font-normal text-surface-foreground100-light dark:text-surface-foreground100-dark relative"
+            className="text-4xl font-merriweather font-normal text-surface-foreground100-light dark:text-surface-foreground100-dark relative"
             variants={itemVariants}
             custom={0}
           >
@@ -122,28 +123,6 @@ function HeroSection() {
               onComplete={() => setShowQuickLinks(true)}
             />
             
-            <motion.div
-              className="absolute -left-10 top-32 -translate-y-1/2 z-10"
-              initial={{ scale: 0, opacity: 0 }}
-              animate={hasAnimated ? (starsSettled ? {
-                scale: 1,
-                opacity: 1,
-                rotate: 0
-              } : {
-                scale: [0, 1.2, 0.9, 1.1, 1],
-                opacity: 1,
-                rotate: [0, -10, 5, -7, 0]
-              }) : { scale: 0, opacity: 0 }}
-              transition={{
-                delay: 4.0,
-                duration: 0.5,
-                type: "spring",
-                stiffness: 300
-              }}
-              whileHover={{ scale: 1.1, rotate: -10 }}
-            >
-              <StarSvg className="w-16 h-16" />
-            </motion.div>
 
             <motion.div
               className="absolute -right-20 top-1/2 -translate-y-1/2 cursor-pointer"
@@ -224,6 +203,29 @@ function HeroSection() {
           style={{ transformOrigin: 'top center' }}
           custom={8}
         >
+          {/* Yellow star on the box's top left corner */}
+            <motion.div
+            className="absolute -left-8 -top-8 z-20"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={hasAnimated ? (starsSettled ? {
+              scale: 1,
+              opacity: 1,
+              rotate: 0
+            } : {
+              scale: [0, 1.2, 0.9, 1.1, 1],
+              opacity: 1,
+              rotate: [0, -10, 5, -7, 0]
+            }) : { scale: 0, opacity: 0 }}
+            transition={{
+              delay: 4.0,
+              duration: 0.5,
+              type: "spring",
+              stiffness: 300
+            }}
+            whileHover={{ scale: 1.1, rotate: -10 }}
+          >
+            <StarSvg className="w-16 h-16" />
+          </motion.div>
           <PersonalityScene />
           <motion.div 
             className="absolute bottom-0 -right-10 z-10"
