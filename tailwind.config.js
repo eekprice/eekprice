@@ -54,8 +54,10 @@ module.exports = {
             light: colors.slate[900],
             dark: colors.slate[200],
           },
+          // Muted text: captions, labels, "8 slides". slate-400 on white was
+          // 2.6:1 and failed AA; slate-600 is 7.6:1. Dark stays 5.7:1.
           foreground400: {
-            light: colors.slate[400],
+            light: colors.slate[600],
             dark: colors.slate[400],
           },
           outline: {
