@@ -69,7 +69,7 @@ export const caseStudies = [
       research: {
         title: 'Research',
         stats: [
-          { value: '35+', label: 'Studies conducted' },
+          { value: '35+', label: 'Studies' },
           { value: '200+', label: 'Participants' },
           { value: '4', label: 'States visited' },
           { value: '9', label: 'Store visits' },
