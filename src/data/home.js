@@ -78,12 +78,12 @@ export const closer = {
     'Only 30% of viewers make it this far. I appreciate the scroll. Shoot me a LinkedIn request or send me an email if you want to connect. I would love to know what brought you this far down.',
 };
 
-// The little name tag that follows the mouse on desktop, like a Figma
-// cursor. The label changes as the visitor gets further down the page.
-// `at` is how far down the page (0 to 1) each label kicks in.
+// The little tag next to the cursor on desktop, like a Figma cursor. It only
+// shows when the mouse pauses, and the line depends on how far down the page
+// the visitor is. `at` is scroll depth from 0 to 1.
 export const cursorLabels = [
-  { at: 0, text: 'you' },
-  { at: 0.25, text: 'you, looking closely' },
-  { at: 0.5, text: 'you, thorough' },
-  { at: 0.85, text: 'you, read the whole thing' },
+  { at: 0, text: 'hi. take your time' },
+  { at: 0.25, text: 'ooh, a careful reader' },
+  { at: 0.5, text: 'halfway there and still going' },
+  { at: 0.85, text: 'you read the whole thing. respect' },
 ];
