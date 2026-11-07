@@ -5,7 +5,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 // Merriweather body, outlined "selected" boxes, sticky notes, quote callouts.
 
 export const bodyClass =
-  'font-merriweather text-base lg:text-lg leading-relaxed lg:leading-loose text-surface-foreground300-light dark:text-surface-foreground300-dark';
+  'font-merriweather text-[15px] lg:text-base leading-relaxed text-surface-foreground300-light dark:text-surface-foreground300-dark';
 
 const rise = {
   hidden: { opacity: 0, y: 16 },
@@ -130,10 +130,10 @@ export function Quote({ text, who }) {
         >
           <PersonIcon className="w-5 h-5" />
         </span>
-        <p className="font-inter text-base lg:text-lg leading-snug text-surface-foreground100-light dark:text-surface-foreground100-dark">
+        <p className="font-inter text-sm lg:text-base leading-relaxed text-surface-foreground100-light dark:text-surface-foreground100-dark">
           &ldquo;{text}&rdquo;
         </p>
-        <footer className="mt-3 text-sm font-inter text-surface-foreground400-light dark:text-surface-foreground400-dark">
+        <footer className="mt-2 text-xs font-inter text-surface-foreground400-light dark:text-surface-foreground400-dark">
           {who}
         </footer>
       </blockquote>
@@ -159,7 +159,7 @@ export function Note({ text }) {
         className="max-w-md rounded-md px-5 py-4 shadow-md
           bg-highlight-backgroundSticky-light dark:bg-highlight-backgroundSticky-dark
           text-highlight-foregroundSticky-light dark:text-highlight-foregroundSticky-dark
-          font-inter text-sm lg:text-base leading-relaxed"
+          font-inter text-sm leading-relaxed"
         style={{ transform: 'rotate(-1.5deg)' }}
       >
         {text}

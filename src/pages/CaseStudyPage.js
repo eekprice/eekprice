@@ -140,7 +140,7 @@ function CaseStudyPage() {
 
       <main className={`max-w-[760px] mx-auto px-4 lg:px-0 pb-12 ${study.overview ? 'pt-8' : ''}`}>
         <Reveal>
-          <p className={`${bodyClass} text-lg lg:text-xl`}>{study.summary}</p>
+          <p className={`${bodyClass} text-base lg:text-lg`}>{study.summary}</p>
         </Reveal>
 
         {!study.overview && (
