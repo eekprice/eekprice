@@ -102,7 +102,7 @@ function Nav({ showProfileInNav = false }) {
           text-surface-foreground100-light dark:text-surface-foreground100-dark
           border border-surface-outline-light dark:border-surface-outline-dark
           shadow-lg
-          inline-flex w-max flex-row items-center rounded-2xl px-2 lg:px-3 h-14 sm:h-[4.5rem] lg:h-20"
+          inline-flex w-max flex-row items-center rounded-2xl px-2 lg:px-3 h-14 sm:h-16 lg:h-[4.25rem]"
       >
         <AnimatePresence>
           {showProfileInNav && (

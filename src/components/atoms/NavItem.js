@@ -12,7 +12,7 @@ import React from 'react';
 
 const shellClass = 'group relative flex flex-col items-center cursor-pointer';
 
-const boxClass = `w-10 h-10 sm:w-12 sm:h-9 lg:h-10 rounded-lg
+const boxClass = `w-10 h-10 sm:w-11 sm:h-8 lg:h-9 rounded-lg
   flex items-center justify-center
   transition-colors duration-200`;
 
@@ -25,7 +25,7 @@ const activeBoxClass = `bg-primary-foreground-light text-white
 const iconClass = 'w-6 h-6';
 
 // Shared with the sticky pile in Nav.js so every label sits on one baseline.
-export const navLabelClass = `hidden sm:block mt-0.5 text-xs font-inter font-normal whitespace-nowrap leading-tight
+export const navLabelClass = `hidden sm:block text-xs font-inter font-normal whitespace-nowrap leading-tight
   text-surface-foreground200-light dark:text-surface-foreground200-dark
   group-hover:text-surface-foreground100-light dark:group-hover:text-surface-foreground100-dark`;
 
