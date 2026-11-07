@@ -117,8 +117,9 @@ const EmergencyStop = () => {
         <span className="text-3xl drop-shadow-none" role="img" aria-label="pineapple">🍍</span>
       </motion.button>
       
-      {/* Tooltip */}
-      <div className="absolute top-14 left-1/2 transform -translate-x-1/2 
+      {/* Tooltip. The pineapple sits at the right edge of the screen, so the
+          bubble hangs to the left of it instead of centering under it. */}
+      <div className="absolute top-14 right-0
                     opacity-0 group-hover:opacity-100 
                     transition-opacity duration-300
                     whitespace-nowrap bg-black text-white 
@@ -126,7 +127,7 @@ const EmergencyStop = () => {
                     pointer-events-none">
         Hover all you want, just don't click. 👀
         {/* Triangle pointer */}
-        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full
+        <div className="absolute top-0 right-3 -translate-y-full
                       border-8 border-transparent border-b-black"></div>
       </div>
     </div>
