@@ -181,7 +181,7 @@ export function ResearchCard({ research }) {
       <dl className="flex-1 m-0 mt-4 grid grid-cols-2 lg:grid-cols-5 gap-x-4 gap-y-5 content-center">
         {research.stats.map((stat) => (
           <div key={stat.label} className="flex flex-col-reverse text-center">
-            <dt className={bodyText}>{stat.label}</dt>
+            <dt className={`${bodyText} whitespace-nowrap`}>{stat.label}</dt>
             <dd className="m-0 font-inter font-medium text-4xl lg:text-5xl leading-none tracking-tight">{stat.value}</dd>
           </div>
         ))}
