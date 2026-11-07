@@ -87,10 +87,10 @@ function HeroSection() {
       variants={containerVariants}
     >
       {/* Same width as the about box below so the two edges line up. */}
-      <motion.div className="flex flex-row items-center gap-6 w-full max-w-[760px]" variants={itemVariants}>
+      <motion.div className="flex flex-row items-center gap-6 w-full max-w-[680px]" variants={itemVariants}>
         {hasAnimated && (
             <motion.div
-              className="flex-shrink-0 w-48"
+              className="flex-shrink-0 w-44"
               initial="hidden"
               animate="visible"
               variants={melgVariants}
@@ -115,7 +115,7 @@ function HeroSection() {
             </motion.h1>
           </div>
           <motion.h2 
-            className="text-4xl font-merriweather font-normal text-surface-foreground100-light dark:text-surface-foreground100-dark relative"
+            className="text-[2.125rem] leading-tight font-merriweather font-normal text-surface-foreground100-light dark:text-surface-foreground100-dark relative"
             variants={itemVariants}
             custom={0}
           >
