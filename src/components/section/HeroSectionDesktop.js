@@ -78,7 +78,7 @@ function HeroSection() {
   return (
     <motion.div
       ref={heroRef}
-      className="w-full max-w-[880px] mx-auto flex flex-row items-start justify-center relative mt-16 px-8 pt-8"
+      className="w-full max-w-[880px] mx-auto flex flex-col items-center relative mt-16 px-8 pt-8"
       initial="hidden"
       animate={hasAnimated ? "visible" : "hidden"}
       variants={containerVariants}
@@ -207,41 +207,43 @@ function HeroSection() {
               About me
             </Link>
           </motion.div>
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={hasAnimated ? { scale: 1 } : { scale: 0 }}
-            transition={{
-              type: 'spring',
-              stiffness: 100,
-              damping: 10,
-              delay: 3,
-            }}
-            className="flex items-start justify-start w-full h-full relative"
-            style={{ transformOrigin: 'top left' }}
-            custom={8}
-          >
-            <PersonalityScene />
-            <motion.div 
-              className="absolute bottom-0 -right-10 z-10"
-              initial={{ scale: 0, opacity: 0 }}
-              animate={hasAnimated ? { 
-                scale: [0, 1.2, 0.9, 1.1, 1],
-                opacity: 1,
-                rotate: [0, 10, -5, 7, 0]
-              } : { scale: 0, opacity: 0 }}
-              transition={{ 
-                delay: 4.2,
-                duration: 0.5,
-                type: "spring",
-                stiffness: 300
-              }}
-              whileHover={{ scale: 1.1, rotate: 10 }}
-            >
-              <HeartSvg className="w-16 h-16" />
-            </motion.div>
-          </motion.div>
         </motion.div>
       </motion.div>
+
+      {/* The about box sits under the whole row, centered on the page. */}
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={hasAnimated ? { scale: 1 } : { scale: 0 }}
+          transition={{
+            type: 'spring',
+            stiffness: 100,
+            damping: 10,
+            delay: 3,
+          }}
+          className="flex items-start justify-center w-full relative -mt-6 z-10"
+          style={{ transformOrigin: 'top center' }}
+          custom={8}
+        >
+          <PersonalityScene />
+          <motion.div 
+            className="absolute bottom-0 -right-10 z-10"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={hasAnimated ? { 
+              scale: [0, 1.2, 0.9, 1.1, 1],
+              opacity: 1,
+              rotate: [0, 10, -5, 7, 0]
+            } : { scale: 0, opacity: 0 }}
+            transition={{ 
+              delay: 4.2,
+              duration: 0.5,
+              type: "spring",
+              stiffness: 300
+            }}
+            whileHover={{ scale: 1.1, rotate: 10 }}
+          >
+            <HeartSvg className="w-16 h-16" />
+          </motion.div>
+        </motion.div>
 
       {EasterEggModal}
     </motion.div>
