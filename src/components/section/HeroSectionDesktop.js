@@ -15,6 +15,9 @@ function HeroSection() {
   const heroRef = useRef(null);
   const [hasAnimated, setHasAnimated] = useState(false);
   const [starsSettled, setStarsSettled] = useState(false);
+  // Once the heart has popped in it stays put. Without this, any re-render
+  // (like opening the easter egg) replays the pop-in and hides it for 4s.
+  const [heartSettled, setHeartSettled] = useState(false);
   const [showQuickLinks, setShowQuickLinks] = useState(false);
   const { handleSecretClick, EasterEggModal } = useEasterEgg();
 
@@ -230,17 +233,22 @@ function HeroSection() {
           <motion.div 
             className="absolute bottom-0 -right-10 z-10"
             initial={{ scale: 0, opacity: 0 }}
-            animate={hasAnimated ? { 
+            animate={hasAnimated ? (heartSettled ? {
+              scale: 1,
+              opacity: 1,
+              rotate: 0
+            } : {
               scale: [0, 1.2, 0.9, 1.1, 1],
               opacity: 1,
               rotate: [0, 10, -5, 7, 0]
-            } : { scale: 0, opacity: 0 }}
-            transition={{ 
+            }) : { scale: 0, opacity: 0 }}
+            transition={heartSettled ? { duration: 0 } : {
               delay: 4.2,
               duration: 0.5,
               type: "spring",
               stiffness: 300
             }}
+            onAnimationComplete={() => { if (hasAnimated) setHeartSettled(true); }}
             whileHover={{ scale: 1.1, rotate: 10 }}
           >
             <HeartSvg className="w-16 h-16" />
