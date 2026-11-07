@@ -101,8 +101,7 @@ function CursorTag() {
       >
         <path
           d="M5.5 3.2 19 11.4l-6.1 1.3-3.5 5.3z"
-          className="fill-violet-500"
-          stroke="white"
+          className="fill-slate-900 dark:fill-slate-100 stroke-white dark:stroke-slate-900"
           strokeWidth="1.6"
           strokeLinejoin="round"
         />
@@ -111,7 +110,7 @@ function CursorTag() {
       {/* The tag, only while the mouse rests */}
       <motion.span
         className="absolute left-4 top-5 px-2 py-0.5 rounded-md whitespace-nowrap
-          bg-violet-500 text-white font-inter font-medium text-sm leading-snug shadow-md"
+          bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 font-inter font-medium text-sm leading-snug shadow-md"
         style={{ x, y }}
         initial={false}
         animate={{ opacity: showTag ? 1 : 0, scale: showTag ? 1 : 0.9 }}
