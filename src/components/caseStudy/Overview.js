@@ -14,8 +14,8 @@ const card = `relative h-full w-full rounded-lg overflow-hidden text-left
   text-surface-foreground100-light dark:text-surface-foreground100-dark`;
 
 const pad = 'p-6 lg:p-8';
-const titleClass = 'font-inter font-medium text-2xl leading-normal tracking-tight';
-const bodyText = 'font-inter font-medium text-sm lg:text-base leading-normal';
+const titleClass = 'font-inter font-medium text-xl leading-normal tracking-tight';
+const bodyText = 'font-inter font-normal text-sm leading-normal';
 
 const TimerIcon = () => (
   <span className="relative inline-block w-8 h-8 shrink-0" aria-hidden="true">
