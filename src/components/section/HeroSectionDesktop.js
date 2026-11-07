@@ -205,7 +205,7 @@ function HeroSection() {
         >
           {/* Yellow star on the box's top left corner */}
             <motion.div
-            className="absolute -left-8 -top-8 z-20"
+            className="absolute -left-5 -top-5 z-20"
             initial={{ scale: 0, opacity: 0 }}
             animate={hasAnimated ? (starsSettled ? {
               scale: 1,
@@ -224,7 +224,7 @@ function HeroSection() {
             }}
             whileHover={{ scale: 1.1, rotate: -10 }}
           >
-            <StarSvg className="w-16 h-16" />
+            <StarSvg className="w-10 h-10" />
           </motion.div>
           <PersonalityScene />
           <motion.div 
