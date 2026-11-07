@@ -34,6 +34,7 @@ function pickLine(progress, previous) {
   for (const step of cursorLabels) {
     if (progress >= step.at) group = step;
   }
+  if (!group.lines.length) return '';
   const options = group.lines.filter((line) => line !== previous);
   const pool = options.length ? options : group.lines;
   return pool[Math.floor(Math.random() * pool.length)];
@@ -58,6 +59,7 @@ function CursorTag() {
 
     let pauseTimer;
     let lingerTimer;
+    let lastLine = '';
     const hide = () => {
       clearTimeout(pauseTimer);
       clearTimeout(lingerTimer);
@@ -69,7 +71,10 @@ function CursorTag() {
       setOverLink(!!e.target.closest?.('a, button, [role="button"], summary'));
       hide();
       pauseTimer = setTimeout(() => {
-        setLabel((prev) => pickLine(scrollDepth(), prev));
+        const line = pickLine(scrollDepth(), lastLine);
+        lastLine = line;
+        setLabel(line);
+        if (!line) return; // nothing to say at this depth
         setShowTag(true);
         lingerTimer = setTimeout(() => setShowTag(false), LINGER_MS);
       }, PAUSE_MS);

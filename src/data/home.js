@@ -81,24 +81,15 @@ export const closer = {
 // The little tag next to the cursor on desktop, like a Figma cursor. It only
 // shows when the mouse pauses. Each pause picks one line at random from the
 // group for the visitor's scroll depth (`at` is 0 to 1), so it's never the
-// same twice in a row.
+// same twice in a row. Only the top and the bottom have lines; the middle of
+// the page stays clear so it isn't distracting.
 export const cursorLabels = [
   {
     at: 0,
     lines: ['caught you reading', 'hi. no pressure', 'you paused. was it the kerning'],
   },
-  {
-    at: 0.25,
-    lines: ['scrolling with intent, I like it', 'not a bot, confirmed', 'ooh, a careful reader'],
-  },
-  {
-    at: 0.5,
-    lines: [
-      'halfway. this is where most people check their phone',
-      'still here. is this a reference check',
-      'the snacks are at the bottom, keep going',
-    ],
-  },
+  // Nothing from a fifth of the way down until near the end.
+  { at: 0.2, lines: [] },
   {
     at: 0.85,
     lines: [
