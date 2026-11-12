@@ -38,6 +38,7 @@ export const caseStudies = [
         avatar: '/images/case-studies/kfc-employee.png',
       },
       photo: {
+        title: 'The old POS',
         src: '/images/pos-legacy.webp',
         poster: '/images/pos-legacy-poster.webp',
         alt: 'A team member using the legacy POS in the drive thru',

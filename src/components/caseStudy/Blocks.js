@@ -7,6 +7,12 @@ import { motion, useReducedMotion } from 'framer-motion';
 export const bodyClass =
   'font-merriweather text-[15px] lg:text-base leading-relaxed text-surface-foreground300-light dark:text-surface-foreground300-dark';
 
+// Small tag chip, used for case study tags and the activity list on slides.
+export const chipClass = `text-xs px-1.5 py-0.5 whitespace-nowrap rounded-lg shadow-sm font-inter
+  bg-surface-background200-light dark:bg-surface-background200-dark
+  border border-surface-outline-light dark:border-surface-outline-dark
+  text-surface-foreground100-light dark:text-surface-foreground100-dark`;
+
 const rise = {
   hidden: { opacity: 0, y: 16 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } },

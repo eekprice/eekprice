@@ -6,14 +6,9 @@ import { ReactComponent as ArrowSvg } from '../assets/Arrow.svg';
 import { ReactComponent as StarSvg } from '../assets/Star.svg';
 import { ReactComponent as StarsSvg } from '../assets/Stars.svg';
 import { getCaseStudy, nextCaseStudy } from '../data/caseStudies';
-import { Block, OutlinedBlock, Reveal, bodyClass } from '../components/caseStudy/Blocks';
+import { Block, OutlinedBlock, Reveal, bodyClass, chipClass } from '../components/caseStudy/Blocks';
 import Overview from '../components/caseStudy/Overview';
 import FloatingNav from '../components/FloatingNav';
-
-const chipClass = `text-xs px-1.5 py-0.5 whitespace-nowrap rounded-lg shadow-sm font-inter
-  bg-surface-background200-light dark:bg-surface-background200-dark
-  border border-surface-outline-light dark:border-surface-outline-dark
-  text-surface-foreground100-light dark:text-surface-foreground100-dark`;
 
 const ChevronLeft = (props) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" {...props}>

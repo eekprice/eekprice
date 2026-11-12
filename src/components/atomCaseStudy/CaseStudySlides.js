@@ -1,12 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useIsMobile } from '../../hooks/useMediaQuery';
+import { useIsMobile, useIsPhone } from '../../hooks/useMediaQuery';
 
 // Horizontal strip of slides. On phones every slide is 85vw wide and snaps,
-// so the next one peeks in from the right as a hint to swipe.
+// so the next one peeks in from the right as a hint to swipe. From 640px up
+// each slide keeps its own designed width, so nothing gets stretched on a
+// tablet or a narrow window.
 const CaseStudySlides = ({ slides, heightClass = 'h-64' }) => {
   const scrollContainerRef = useRef(null);
   const isMobile = useIsMobile();
+  const isPhone = useIsPhone();
   const [showLeftOverlay, setShowLeftOverlay] = useState(false);
   const [showRightOverlay, setShowRightOverlay] = useState(true);
 
@@ -52,7 +55,7 @@ const CaseStudySlides = ({ slides, heightClass = 'h-64' }) => {
         {slides.map((slide, index) => (
           <motion.div
             key={index}
-            className={`${isMobile ? 'w-[85vw]' : (slide.width || 'w-64')} ${heightClass} shrink-0 snap-start rounded-lg flex items-center justify-center`}
+            className={`${isPhone ? 'w-[85vw]' : `${slide.width || 'w-64'} max-w-full`} ${heightClass} shrink-0 snap-start rounded-xl`}
             whileHover={isMobile ? undefined : { scale: 1.02 }}
             transition={{ type: 'spring', stiffness: 300 }}
           >

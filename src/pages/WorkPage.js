@@ -4,16 +4,11 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { ReactComponent as HeroDoodle } from '../assets/doodle.svg';
 import { ReactComponent as StarSvg } from '../assets/Star.svg';
 import { caseStudies } from '../data/caseStudies';
-import { Reveal } from '../components/caseStudy/Blocks';
+import { Reveal, chipClass } from '../components/caseStudy/Blocks';
 import FloatingNav from '../components/FloatingNav';
 
 // Past Work: every case study in one place. Cards pull straight from
 // src/data/caseStudies, so a new study there shows up here on its own.
-
-const chipClass = `text-xs px-1.5 py-0.5 whitespace-nowrap rounded-lg shadow-sm font-inter
-  bg-surface-background200-light dark:bg-surface-background200-dark
-  border border-surface-outline-light dark:border-surface-outline-dark
-  text-surface-foreground100-light dark:text-surface-foreground100-dark`;
 
 const ChevronLeft = (props) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" {...props}>

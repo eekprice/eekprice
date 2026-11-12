@@ -13,6 +13,10 @@ import { ReactComponent as KfcWires } from '../assets/StudyPOS/wiresKfc.svg';
 
 const pos = getCaseStudy('yum-pos').overview;
 
+// Slide widths. WIDE is two STANDARD slides plus the 16px gap between them.
+const STANDARD = 'w-[264px]';
+const WIDE = 'w-[544px]';
+
 // `published: false` keeps a study out of the page without deleting it.
 // `placeholder: true` on a slide hides that slide the same way.
 // `href` is the link to the full study. Leave it off until the page exists;
@@ -36,26 +40,26 @@ const studies = [
     order: 2,
     published: true,
     href: '/case-study/yum-pos',
-    // Six cards from the Figma slide row (Portfolio 2024, node 17:10775), plus
-    // Erica's original Research and Wireframes slides in the same card style.
+    // Eight slides, numbered in story order. Two widths only so the strip
+    // reads as one set: STANDARD, and WIDE (two standards plus the gap).
     // Same components and content as the top of the case study page.
     slideHeight: 'h-[332px]',
     slides: [
-      { content: <ProblemCard problem={pos.problem} />, width: 'w-80' },
-      { content: <PhotoCard photo={pos.photo} />, width: 'w-60' },
-      { content: <ResearchCard research={pos.research} />, width: 'w-[700px]' },
+      { content: <ProblemCard problem={pos.problem} step={1} />, width: STANDARD },
+      { content: <PhotoCard photo={pos.photo} step={2} />, width: STANDARD },
+      { content: <ResearchCard research={pos.research} step={3} />, width: WIDE },
       {
         content: (
-          <ArtCard title="Wireframes">
+          <ArtCard title="Wireframes" step={4}>
             <KfcWires className="absolute inset-0 w-full h-full" role="img" aria-label="Wireframes for the KFC order flow" />
           </ArtCard>
         ),
-        width: 'w-[440px]',
+        width: WIDE,
       },
-      { content: <SolutionCard solution={pos.solution} />, width: 'w-[628px]' },
-      { content: <BenefitsCard benefits={pos.benefits} />, width: 'w-[373px]' },
-      { content: <MetricCard metric={pos.metric} />, width: 'w-[373px]' },
-      { content: <ActivitiesCard activities={pos.activities} />, width: 'w-[373px]' },
+      { content: <SolutionCard solution={pos.solution} step={5} />, width: WIDE },
+      { content: <BenefitsCard benefits={pos.benefits} step={6} />, width: STANDARD },
+      { content: <MetricCard metric={pos.metric} step={7} />, width: STANDARD },
+      { content: <ActivitiesCard activities={pos.activities} step={8} />, width: STANDARD },
     ],
   },
   {
