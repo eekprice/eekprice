@@ -4,9 +4,13 @@ import AboutMeContent from './AtomAboutMeContent';
 // The outlined "selected block" that holds the about text. The text fades in
 // `revealDelay` ms after the block scrolls into view. Desktop keeps the long
 // pause so it lands after the hero choreography; mobile passes something short.
-const PersonalityScene = ({ revealDelay = 4000 }) => {
+// The text is the last big piece of the hero to arrive, so `onRevealed` is how
+// the page knows the hero is done.
+const PersonalityScene = ({ revealDelay = 4000, onRevealed }) => {
   const textRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
+  const revealed = useRef(onRevealed);
+  revealed.current = onRevealed;
 
   useEffect(() => {
     const node = textRef.current;
@@ -16,7 +20,10 @@ const PersonalityScene = ({ revealDelay = 4000 }) => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !timer) {
-          timer = setTimeout(() => setIsVisible(true), revealDelay);
+          timer = setTimeout(() => {
+            setIsVisible(true);
+            revealed.current?.();
+          }, revealDelay);
           observer.disconnect();
         }
       },

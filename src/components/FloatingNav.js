@@ -2,8 +2,8 @@ import React from 'react';
 import Nav from './Nav';
 
 // The floating bottom nav plus the haze behind it. Used by every page.
-// `show` slides it in; `showProfileInNav` shows the avatar in the pill.
-function FloatingNav({ show = true, showProfileInNav = false }) {
+// `show` slides it in; `showHome` adds the Home item to the bar.
+function FloatingNav({ show = true, showHome = false }) {
   return (
     <>
       <div
@@ -20,7 +20,7 @@ function FloatingNav({ show = true, showProfileInNav = false }) {
           show ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
         }`}
       >
-        <Nav showProfileInNav={showProfileInNav} />
+        <Nav showHome={showHome} />
       </div>
     </>
   );

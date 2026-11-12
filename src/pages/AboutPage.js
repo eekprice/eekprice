@@ -11,8 +11,16 @@ import lake from '../assets/photos/p1.png';
 import kayak from '../assets/photos/p3.png';
 import couch from '../assets/photos/p4.png';
 import { Reveal } from '../components/caseStudy/Blocks';
+import { Circle, Stage, WireImage } from '../components/sketch/Sketch';
+import Stamp from '../components/sketch/Stamp';
 import FloatingNav from '../components/FloatingNav';
 import { intro, hobbies } from '../data/about';
+
+// From the design system: the page sits on the dot grid, the photos land like
+// paper, the stickers and emoji pop, one word in the title gets circled, and
+// photo slots with no picture yet are drawn as a wireframe.
+
+const ease = [0.22, 1, 0.36, 1];
 
 const ChevronLeft = (props) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" {...props}>
@@ -30,46 +38,82 @@ const collage = [
 
 function PhotoCollage() {
   const reduce = useReducedMotion();
+  const ink = 'text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current';
+
   return (
     <div className="relative w-[260px] sm:w-[300px] shrink-0 mx-auto lg:mx-0">
-      <p
-        className="font-merriweather text-2xl lg:text-3xl text-surface-foreground200-light dark:text-surface-foreground200-dark -ml-6 mb-1"
-        style={{ transform: 'rotate(-8deg)', transformOrigin: 'left bottom' }}
-        aria-hidden="true"
-      >
-        {intro.kicker}
-      </p>
-      <StarSvg className="absolute left-[42%] top-7 w-9 h-9 z-10" aria-hidden="true" />
-      <HeartSvg className="absolute left-[52%] top-12 w-9 h-9 z-10 drop-shadow-md" aria-hidden="true" />
+      {/* A marker word, so it is set in handwriting. */}
+      <div className="-ml-6 mb-1" aria-hidden="true">
+        <p className="sk-scribble" style={{ transformOrigin: 'left bottom' }}>
+          {intro.kicker}
+        </p>
+      </div>
+
+      <Stamp className="absolute left-[42%] top-7 w-9 h-9 z-10" delay={0.7}>
+        <StarSvg className="w-full h-full" />
+      </Stamp>
+      <Stamp className="absolute left-[52%] top-12 w-9 h-9 z-10" delay={0.8}>
+        <HeartSvg className="w-full h-full drop-shadow-md" />
+      </Stamp>
+
       <div className="grid grid-cols-2 gap-2">
         {collage.map((photo, i) => (
-          <motion.img
+          // Paper lands: each photo drops in from above, a bit large and
+          // turned, and settles with a spring. The outer element does the
+          // landing so the hover on the photo never waits for its delay.
+          <motion.div
             key={photo.src}
-            src={photo.src}
-            alt={photo.alt}
-            className="w-full h-auto drop-shadow-md"
-            style={{ rotate: photo.rotate }}
-            initial={reduce ? false : { opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.15 + i * 0.1 }}
-            whileHover={reduce ? undefined : { scale: 1.04, rotate: 0 }}
-          />
+            initial={reduce ? false : { opacity: 0, y: -28, rotate: -7, scale: 1.12 }}
+            animate={{ opacity: 1, y: 0, rotate: 0, scale: 1 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 18, delay: 0.15 + i * 0.08 }}
+          >
+            <motion.img
+              src={photo.src}
+              alt={photo.alt}
+              className="w-full h-auto drop-shadow-md hover:drop-shadow-xl transition-[filter] duration-300"
+              style={{ rotate: photo.rotate }}
+              whileHover={reduce ? undefined : { y: -8, rotate: photo.rotate + 2 }}
+              transition={{ duration: 0.3, ease }}
+            />
+          </motion.div>
         ))}
       </div>
-      <StarsSvg
-        className="absolute -left-8 -bottom-7 w-12 h-12 text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current"
-        aria-hidden="true"
-      />
+
+      <Stamp className="absolute -left-8 -bottom-7 w-12 h-12" delay={0.9}>
+        <StarsSvg className={`w-full h-full ${ink}`} />
+      </Stamp>
     </div>
   );
 }
 
-// 2x2 grid beside each hobby. Shows photos when there are any; the rest are
-// the purple tiles from the Figma, waiting for pictures.
+// The page title, with one word circled in red marker. Which word is set in
+// the copy file (`intro.circled`). Without it the title is plain.
+function Title({ delay }) {
+  const { heading, circled } = intro;
+  const at = circled ? heading.indexOf(circled) : -1;
+  if (at < 0) return heading;
+  return (
+    <>
+      {heading.slice(0, at)}
+      {/* The margin keeps the circle off the word before it. */}
+      <Circle delay={delay} className="ml-[0.25em]">
+        {circled}
+      </Circle>
+      {heading.slice(at + circled.length)}
+    </>
+  );
+}
+
+// 2x2 grid beside each hobby. Shows photos when there are any. A slot with no
+// picture yet is a wireframe: a pencil box with a cross, drawn the first time
+// the row is seen.
 function PhotoSlots({ photos = [], title }) {
   const slots = [0, 1, 2, 3];
   return (
-    <div className="hidden sm:grid grid-cols-2 gap-3 w-[200px] shrink-0 self-start" aria-hidden={photos.length === 0}>
+    <Stage
+      className="hidden sm:grid grid-cols-2 gap-5 w-[200px] shrink-0 self-start pt-2"
+      aria-hidden={photos.length === 0}
+    >
       {slots.map((i) =>
         photos[i] ? (
           <img
@@ -80,10 +124,10 @@ function PhotoSlots({ photos = [], title }) {
             className="w-full h-16 object-cover rounded-md"
           />
         ) : (
-          <span key={i} className="block w-full h-16 rounded-md bg-purple-200 dark:bg-purple-900/60" />
+          <WireImage key={i} className="w-full h-16" at={150 + i * 120} />
         )
       )}
-    </div>
+    </Stage>
   );
 }
 
@@ -91,13 +135,13 @@ function HobbyRow({ hobby }) {
   return (
     <Reveal>
       <article className="flex gap-4 sm:gap-6">
-        <span
-          aria-hidden="true"
+        <Stamp
+          inView
+          delay={0.25}
           className="shrink-0 w-12 text-3xl lg:text-4xl leading-none select-none drop-shadow-md pt-1"
-          style={{ transform: 'rotate(-6deg)' }}
         >
-          {hobby.emoji}
-        </span>
+          <span className="block -rotate-6">{hobby.emoji}</span>
+        </Stamp>
         <div className="flex-1 min-w-0">
           <h2 className="font-merriweather text-2xl lg:text-3xl font-normal text-surface-foreground200-light dark:text-surface-foreground100-dark">
             {hobby.title}
@@ -116,11 +160,11 @@ function AboutPage() {
   const reduce = useReducedMotion();
 
   return (
-    <>
+    <div className="sk-canvas min-h-screen">
       <div className="relative w-full overflow-hidden">
         <HeroDoodle
           className="absolute left-1/2 -translate-x-1/2 -top-24 w-[720px] max-w-none text-surface-foreground100-light dark:text-surface-foreground100-dark pointer-events-none"
-          style={{ opacity: 0.08 }}
+          style={{ opacity: 0.1 }}
           aria-hidden="true"
         />
 
@@ -142,16 +186,17 @@ function AboutPage() {
               className="relative max-w-md"
               initial={reduce ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+              transition={{ duration: 0.45, ease, delay: 0.2 }}
             >
-              <ArrowSvg
-                className="hidden lg:block absolute -left-12 -top-10 w-12 h-12 rotate-[60deg] text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current"
-                aria-hidden="true"
-              />
+              <Stamp className="hidden lg:block absolute -left-12 -top-10 w-12 h-12" delay={1}>
+                <ArrowSvg
+                  className="w-full h-full rotate-[60deg] text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current"
+                />
+              </Stamp>
               <h1 className="text-3xl lg:text-5xl font-merriweather font-light leading-tight text-surface-foreground200-light dark:text-surface-foreground100-dark">
-                {intro.heading}
+                <Title delay={reduce ? 0 : 750} />
               </h1>
-              <p className="mt-4 font-inter text-base lg:text-lg leading-relaxed text-surface-foreground300-light dark:text-surface-foreground300-dark">
+              <p className="mt-5 font-inter text-base lg:text-lg leading-relaxed text-surface-foreground300-light dark:text-surface-foreground300-dark">
                 {intro.text}
               </p>
             </motion.div>
@@ -168,8 +213,8 @@ function AboutPage() {
         <div className="h-40 lg:h-48" />
       </main>
 
-      <FloatingNav show showProfileInNav />
-    </>
+      <FloatingNav show showHome />
+    </div>
   );
 }
 

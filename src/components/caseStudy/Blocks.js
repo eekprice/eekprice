@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { land } from '../sketch/motion';
 
 // Building blocks for a case study page, styled like the rest of the site:
 // Merriweather body, outlined "selected" boxes, sticky notes, quote callouts.
@@ -158,19 +159,28 @@ export function QuoteGrid({ items }) {
 }
 
 // Yellow sticky note for an aside. Slight tilt, like the stickies elsewhere.
+// It is paper, so it lands: drops in from above and settles with a spring.
 export function Note({ text }) {
+  const reduce = useReducedMotion();
   return (
-    <Reveal className="my-2 flex justify-center lg:justify-start">
-      <div
-        className="max-w-md rounded-md px-5 py-4 shadow-md
-          bg-highlight-backgroundSticky-light dark:bg-highlight-backgroundSticky-dark
-          text-highlight-foregroundSticky-light dark:text-highlight-foregroundSticky-dark
-          font-inter text-sm leading-relaxed"
-        style={{ transform: 'rotate(-1.5deg)' }}
+    <div className="my-2 flex justify-center lg:justify-start">
+      <motion.div
+        variants={land()}
+        initial={reduce ? 'visible' : 'hidden'}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
       >
-        {text}
-      </div>
-    </Reveal>
+        <div
+          className="max-w-md rounded-md px-5 py-4 shadow-md
+            bg-highlight-backgroundSticky-light dark:bg-highlight-backgroundSticky-dark
+            text-highlight-foregroundSticky-light dark:text-highlight-foregroundSticky-dark
+            font-inter text-sm leading-relaxed"
+          style={{ transform: 'rotate(-1.5deg)' }}
+        >
+          {text}
+        </div>
+      </motion.div>
+    </div>
   );
 }
 

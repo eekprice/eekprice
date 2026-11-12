@@ -6,9 +6,30 @@ import { ReactComponent as HeartSvg } from '../../assets/Heart.svg';
 import { ReactComponent as StarSvg } from '../../assets/Star.svg';
 import { useEasterEgg } from '../../hooks/useEasterEgg';
 import TypingEffect from '../TypingEffect';
+import { Underline } from '../sketch/Sketch';
 import { hero } from '../../data/home';
 
-function HeroSection() {
+// When each piece of the hero starts, in seconds after the hero appears.
+// Change the opening's pace here. The title types at 50ms a letter, so it
+// lands about 1.3s after `title`. With these numbers the hero is done in
+// about 2.3 seconds (it used to take 4.7).
+const START = {
+  photo: 0.15, // slides in from the left
+  title: 0.25, // starts typing. The underline and subline follow the last letter.
+  box: 0.9, // the about box grows from its top edge
+  aboutText: 1.6, // the words in the box fade in
+  star: 1.7,
+  heart: 1.85,
+};
+
+// With `instant`, nothing waits its turn: every piece starts at once.
+const AT_ONCE = { photo: 0, title: 0, box: 0, aboutText: 0, star: 0, heart: 0 };
+
+// `onReady` fires when the about text has faded in, the last big piece to arrive.
+// `instant` skips the choreography, for a visitor who arrived on a link to a
+// section further down. The pieces still settle in, all together, with no typing.
+function HeroSection({ onReady, instant = false }) {
+  const at = instant ? AT_ONCE : START;
   const heroRef = useRef(null);
   const [hasAnimated, setHasAnimated] = useState(false);
   const [starsSettled, setStarsSettled] = useState(false);
@@ -45,7 +66,7 @@ function HeroSection() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.5,
+        staggerChildren: 0.15,
       },
     },
   };
@@ -92,7 +113,7 @@ function HeroSection() {
               initial="hidden"
               animate="visible"
               variants={melgVariants}
-              transition={{ type: "spring", stiffness: 100, delay: 2 }}
+              transition={{ type: "spring", stiffness: 100, delay: at.photo }}
             >
               {/* The SVG is 304x350 and the photo itself starts 88px in (the blob
                   and squiggle sit left of it). At w-40 that's 46px, so the
@@ -111,22 +132,26 @@ function HeroSection() {
             variants={slideInFromTop}
             custom={0}
           >
-            <TypingEffect text={hero.greeting} maxBlinksAfterTyping={1} />
+            <TypingEffect text={hero.greeting} maxBlinksAfterTyping={1} instant={instant} />
           </motion.h1>
           <motion.h2
             className="mt-1 text-[2.375rem] leading-tight font-merriweather font-normal text-surface-foreground100-light dark:text-surface-foreground100-dark"
             variants={itemVariants}
             custom={0}
           >
-            <TypingEffect
-              text={hero.title}
-              delay={1000}
-              maxBlinksAfterTyping={6}
-              onComplete={() => setShowSubline(true)}
-            />
+            {/* The marker underline draws once the last letter lands. */}
+            <Underline bold tone="teal" show={showSubline}>
+              <TypingEffect
+                text={hero.title}
+                delay={at.title * 1000}
+                instant={instant}
+                maxBlinksAfterTyping={6}
+                onComplete={() => setShowSubline(true)}
+              />
+            </Underline>
           </motion.h2>
           <motion.p
-            className="mt-2 text-lg font-inter font-normal text-surface-foreground200-light dark:text-surface-foreground200-dark"
+            className="mt-4 text-lg font-inter font-normal text-surface-foreground200-light dark:text-surface-foreground200-dark"
             initial={{ opacity: 0, y: -12 }}
             animate={showSubline ? { opacity: 1, y: 0 } : { opacity: 0, y: -12 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -145,7 +170,7 @@ function HeroSection() {
             type: 'spring',
             stiffness: 100,
             damping: 10,
-            delay: 3,
+            delay: at.box,
           }}
           className="flex items-start justify-center w-full max-w-[680px] relative -mt-2 z-10"
           style={{ transformOrigin: 'top center' }}
@@ -165,7 +190,7 @@ function HeroSection() {
               rotate: [0, -10, 5, -7, 0]
             }) : { scale: 0, opacity: 0 }}
             transition={{
-              delay: 4.0,
+              delay: at.star,
               duration: 0.5,
               type: "spring",
               stiffness: 300
@@ -175,7 +200,7 @@ function HeroSection() {
           >
             <StarSvg className="w-10 h-10" />
           </motion.div>
-          <PersonalityScene />
+          <PersonalityScene revealDelay={at.aboutText * 1000} onRevealed={onReady} />
           <motion.div 
             className="absolute -bottom-6 -right-6 z-10"
             initial={{ scale: 0, opacity: 0 }}
@@ -189,7 +214,7 @@ function HeroSection() {
               rotate: [0, 10, -5, 7, 0]
             }) : { scale: 0, opacity: 0 }}
             transition={heartSettled ? { duration: 0 } : {
-              delay: 4.2,
+              delay: at.heart,
               duration: 0.5,
               type: "spring",
               stiffness: 300

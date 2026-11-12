@@ -6,6 +6,7 @@ import { ReactComponent as HeartSvg } from '../../assets/Heart.svg';
 import { ReactComponent as StarSvg } from '../../assets/Star.svg';
 import { useEasterEgg } from '../../hooks/useEasterEgg';
 import TypingEffect from '../TypingEffect';
+import { Underline } from '../sketch/Sketch';
 import { hero } from '../../data/home';
 
 // Phone hero: one centered column. Avatar, small greeting, the role as the one
@@ -39,7 +40,10 @@ const pop = (delay) => ({
 });
 
 
-function HeroSectionMobile() {
+// `onReady` fires when the about text has faded in, the last big piece to arrive.
+// `instant` drops the short wait before the about text, for a visitor who
+// arrived on a link to a section further down.
+function HeroSectionMobile({ onReady, instant = false }) {
   const { handleSecretClick, EasterEggModal } = useEasterEgg();
   const heroRef = useRef(null);
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -89,18 +93,21 @@ function HeroSectionMobile() {
         variants={item}
         className="mt-1 text-2xl sm:text-4xl font-merriweather font-normal leading-tight break-words text-surface-foreground100-light dark:text-surface-foreground100-dark"
       >
-        <TypingEffect text={hero.title} instant />
+        {/* The marker underline draws right after the title has faded in. */}
+        <Underline bold tone="teal" wrap show={hasAnimated} delay={reduceMotion ? 0 : 600}>
+          <TypingEffect text={hero.title} instant />
+        </Underline>
       </motion.h2>
 
       <motion.p
         variants={item}
-        className="mt-2 text-base font-inter font-normal text-surface-foreground200-light dark:text-surface-foreground200-dark"
+        className="mt-4 text-base font-inter font-normal text-surface-foreground200-light dark:text-surface-foreground200-dark"
       >
         {hero.subline}
       </motion.p>
 
       <motion.div variants={box} className="relative w-full mt-7" style={{ transformOrigin: 'top center' }}>
-        <PersonalityScene revealDelay={reduceMotion ? 0 : 700} />
+        <PersonalityScene revealDelay={reduceMotion || instant ? 0 : 700} onRevealed={onReady} />
 
         <motion.div variants={pop(0.55)} className="absolute -right-3 -top-4 z-20" aria-hidden="true">
           <StarSvg className="w-8 h-8" />

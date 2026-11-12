@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { ReactComponent as HeroDoodle } from '../assets/doodle.svg';
 import { ReactComponent as ArrowSvg } from '../assets/Arrow.svg';
 import { ReactComponent as StarSvg } from '../assets/Star.svg';
@@ -8,6 +8,9 @@ import { ReactComponent as StarsSvg } from '../assets/Stars.svg';
 import { getCaseStudy, nextCaseStudy } from '../data/caseStudies';
 import { Block, OutlinedBlock, Reveal, bodyClass, chipClass } from '../components/caseStudy/Blocks';
 import Overview from '../components/caseStudy/Overview';
+import { Stage, Swap, Underline } from '../components/sketch/Sketch';
+import Stamp from '../components/sketch/Stamp';
+import { ease, land } from '../components/sketch/motion';
 import FloatingNav from '../components/FloatingNav';
 
 const ChevronLeft = (props) => (
@@ -35,18 +38,24 @@ function MetaRow({ label, children }) {
   );
 }
 
+// A section heading in the write-up. The words are always there. The first
+// time it is seen, a pen underline draws under it and the arrow doodle pops.
 function SectionHeading({ children }) {
+  const ref = useRef(null);
+  const seen = useInView(ref, { once: true, amount: 0.8 });
+  const reduce = useReducedMotion();
+
   return (
-    <div className="relative flex items-center mb-4">
-      <motion.div
-        className="hidden lg:block absolute -left-16 top-1/2 -translate-y-1/2"
-        whileHover={{ scale: 1.1, rotate: 10 }}
-        aria-hidden="true"
-      >
-        <ArrowSvg className="w-12 h-12 text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current" />
-      </motion.div>
-      <h2 className="text-2xl lg:text-3xl font-merriweather font-light text-surface-foreground100-light dark:text-surface-foreground100-dark">
-        {children}
+    <div ref={ref} className="relative flex items-center mb-5">
+      <span className="hidden lg:block absolute -left-16 top-1/2 -translate-y-1/2 w-12 h-12" aria-hidden="true">
+        <Stamp inView delay={0.5} className="block w-full h-full">
+          <ArrowSvg className="w-full h-full text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current" />
+        </Stamp>
+      </span>
+      <h2 className="flex-1 text-2xl lg:text-3xl font-merriweather font-light text-surface-foreground100-light dark:text-surface-foreground100-dark">
+        <Underline lines show={seen || !!reduce} delay={reduce ? 0 : 150}>
+          {children}
+        </Underline>
       </h2>
     </div>
   );
@@ -61,22 +70,15 @@ function CaseStudyPage() {
 
   const next = nextCaseStudy(slug);
 
-  const pop = (delay) =>
-    reduce
-      ? { initial: { opacity: 1 }, animate: { opacity: 1 } }
-      : {
-          initial: { scale: 0, opacity: 0 },
-          animate: { scale: [0, 1.15, 1], opacity: 1, rotate: [0, 8, 0] },
-          transition: { delay, duration: 0.4, ease: 'easeOut' },
-        };
-
   return (
-    <>
+    // Same dot grid canvas as the rest of the site. The write-up is finished
+    // work, so its cards and figures keep straight hairlines.
+    <div className="sk-canvas min-h-screen">
       {/* Faint doodle behind the header, same as home */}
       <div className="relative w-full overflow-hidden">
         <HeroDoodle
           className="absolute left-1/2 -translate-x-1/2 -top-24 w-[720px] max-w-none text-surface-foreground100-light dark:text-surface-foreground100-dark pointer-events-none"
-          style={{ opacity: 0.08 }}
+          style={{ opacity: 0.1 }}
           aria-hidden="true"
         />
 
@@ -94,15 +96,18 @@ function CaseStudyPage() {
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.45, ease }}
           >
             <p className="mt-6 text-xs uppercase tracking-wide font-inter font-medium text-surface-foreground400-light dark:text-surface-foreground400-dark">
               Case study
             </p>
             <h1 className="mt-1 text-3xl lg:text-5xl font-merriweather font-light leading-tight text-surface-foreground100-light dark:text-surface-foreground100-dark">
-              {study.title}
+              {/* The marker underline follows the title, line by line if it wraps. */}
+              <Underline lines bold tone="teal" delay={reduce ? 0 : 450}>
+                {study.title}
+              </Underline>
             </h1>
-            <p className="mt-3 font-inter text-base lg:text-lg text-surface-foreground200-light dark:text-surface-foreground200-dark">
+            <p className="mt-5 font-inter text-base lg:text-lg text-surface-foreground200-light dark:text-surface-foreground200-dark">
               {study.tagline}
             </p>
             <ul className="mt-4 flex flex-wrap gap-1.5 list-none p-0 m-0" aria-label="Tags">
@@ -113,19 +118,31 @@ function CaseStudyPage() {
           </motion.div>
 
           <div className="relative mt-8">
-            <motion.div className="absolute -left-3 -top-4 z-10" aria-hidden="true" {...pop(0.5)}>
-              <StarSvg className="w-8 h-8" />
+            <Stamp className="absolute -left-3 -top-4 z-10 w-8 h-8" delay={1.2}>
+              <StarSvg className="w-full h-full" />
+            </Stamp>
+            <Stamp className="absolute -right-3 -top-4 z-10 w-8 h-8" delay={1.3}>
+              <StarsSvg className="w-full h-full text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current" />
+            </Stamp>
+            {/* The selection block grows from its top edge, then its text fades in. */}
+            <motion.div
+              style={{ transformOrigin: 'top center' }}
+              initial={reduce ? false : { scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, ease: [0.34, 1.56, 0.64, 1], delay: 0.35 }}
+            >
+              <OutlinedBlock className="px-4 py-3 lg:px-6 lg:py-4">
+                <motion.dl
+                  initial={reduce ? false : { opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, ease: 'linear', delay: 0.85 }}
+                >
+                  <MetaRow label="Role">{study.meta.role}</MetaRow>
+                  <MetaRow label="Company">{study.meta.company}</MetaRow>
+                  <MetaRow label="Team">{study.meta.team}</MetaRow>
+                </motion.dl>
+              </OutlinedBlock>
             </motion.div>
-            <motion.div className="absolute -right-3 -top-4 z-10" aria-hidden="true" {...pop(0.6)}>
-              <StarsSvg className="w-8 h-8 text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current" />
-            </motion.div>
-            <OutlinedBlock className="px-4 py-3 lg:px-6 lg:py-4">
-              <dl>
-                <MetaRow label="Role">{study.meta.role}</MetaRow>
-                <MetaRow label="Company">{study.meta.company}</MetaRow>
-                <MetaRow label="Team">{study.meta.team}</MetaRow>
-              </dl>
-            </OutlinedBlock>
           </div>
         </header>
       </div>
@@ -138,14 +155,17 @@ function CaseStudyPage() {
           <p className={`${bodyClass} text-base lg:text-lg`}>{study.summary}</p>
         </Reveal>
 
+        {/* Wire to real: the first picture is sketched as a crossed box, then the real one takes its place. */}
         {!study.overview && (
-          <Reveal>
-            <img
-              src={study.hero.src}
-              alt={study.hero.alt}
-              className="mt-8 w-full h-auto rounded-lg border border-surface-outline-light dark:border-surface-outline-dark shadow-lg"
-            />
-          </Reveal>
+          <Stage className="mt-8">
+            <Swap at={150} wire={{ lines: [] }}>
+              <img
+                src={study.hero.src}
+                alt={study.hero.alt}
+                className="block w-full h-auto rounded-lg border border-surface-outline-light dark:border-surface-outline-dark shadow-lg"
+              />
+            </Swap>
+          </Stage>
         )}
 
         {study.sections.map((section) => (
@@ -163,7 +183,14 @@ function CaseStudyPage() {
           <SectionHeading>In short</SectionHeading>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {study.highlights.map((h, i) => (
-              <Reveal key={h}>
+              // Paper lands: each note drops in and settles, one after the other.
+              <motion.div
+                key={h}
+                variants={land(i)}
+                initial={reduce ? 'visible' : 'hidden'}
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.2 }}
+              >
                 <div
                   className="h-full rounded-md px-4 py-4 shadow-md font-inter text-sm leading-relaxed
                     bg-highlight-backgroundSticky-light dark:bg-highlight-backgroundSticky-dark
@@ -172,7 +199,7 @@ function CaseStudyPage() {
                 >
                   {h}
                 </div>
-              </Reveal>
+              </motion.div>
             ))}
           </div>
         </section>
@@ -199,8 +226,8 @@ function CaseStudyPage() {
         <div className="h-40 lg:h-48" />
       </main>
 
-      <FloatingNav show showProfileInNav />
-    </>
+      <FloatingNav show showHome />
+    </div>
   );
 }
 

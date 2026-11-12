@@ -1,6 +1,7 @@
 import React from 'react';
 import ControlledGif from '../atoms/ControlledGif';
 import { Reveal, chipClass } from './Blocks';
+import { Stage, Swap } from '../sketch/Sketch';
 
 // The summary cards for a case study. Content is from Erica's Figma (Portfolio
 // 2024, nodes 17:10775 and 1:11519); the card design follows the share cards
@@ -247,9 +248,12 @@ function Overview({ overview }) {
       <Reveal>
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-3 lg:gap-4">
           <div className="flex flex-col gap-3 lg:gap-4">
-            <div>
-              <ProblemCard problem={problem} />
-            </div>
+            {/* Wire to real, once per screen: the first card sketches itself, then the real card takes its place. */}
+            <Stage>
+              <Swap at={150} wire={{ lines: [22, 92, 84, 70, 40], image: false }}>
+                <ProblemCard problem={problem} />
+              </Swap>
+            </Stage>
             <div className="flex-1 min-h-[220px]">
               <PhotoCard photo={photo} />
             </div>

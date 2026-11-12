@@ -1,20 +1,39 @@
-import React from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import SideProjectsButton from './SideProjectsButton';
 import AtomContact from './atoms/atomContact';
 import AtomResume from './atoms/atomResume';
 import Stickies from './atoms/atomStickies.js';
-import NavItem, { navLabelClass, navFocusClass } from './atoms/NavItem';
-import { ReactComponent as Mesm } from '../assets/mesm.svg';
+import NavItem, { navFocusClass } from './atoms/NavItem';
+import StickyFan from './StickyFan';
+import { caseStudies } from '../data/caseStudies';
 import { useTheme } from '../hooks/useTheme';
 
 // Floating bottom nav, laid out like a FigJam toolbar: a white bar with
 // groups split by thin dividers.
-//   [avatar] | [sticky note + Side Projects] | [About, Contact, Resume, Theme]
-// The sticky note is Erica's original (atoms/atomStickies.js), untouched.
+//   [Home] | [sticky note + Side Projects] | [About, Contact, Resume, Theme]
+// The sticky note is Erica's original (atoms/atomStickies.js). Clicking it
+// fans its three notes out, one per case study (StickyFan.js).
 // On phones that group is hidden and a Work icon joins the icon group.
 // Text labels sit under each icon, inside the bar, from `sm` up.
+
+const HomeIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.75}
+      d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+    />
+  </svg>
+);
+
+const CloseIcon = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M6 6l12 12M18 6L6 18" />
+  </svg>
+);
 
 const PersonIcon = (props) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
@@ -78,20 +97,54 @@ const goToWork = () => {
   document.getElementById('case-studies')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
-function Nav({ showProfileInNav = false }) {
+function Nav({ showHome = false }) {
   const { isDark, toggle } = useTheme();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const onHome = pathname === '/';
   const inWork = pathname === '/work' || pathname.startsWith('/case-study/');
 
-  // On the home page the avatar scrolls to the top. Anywhere else it goes home.
-  const avatarAction = onHome ? scrollToTop : () => navigate('/');
-  const avatarLabel = onHome ? 'Back to top' : 'Home';
+  // On the home page the Home item is the current page, and it scrolls to the
+  // top. Anywhere else it goes home.
+  const homeAction = onHome ? scrollToTop : () => navigate('/');
 
-  // On the home page the stickies scroll to the case studies. Anywhere else
-  // they open the Past Work page.
+  // "All the work": on the home page that is the case studies section,
+  // anywhere else the Past Work page. The Work icon on phones and the "All"
+  // button in the sticky fan both use it.
   const workAction = onHome ? goToWork : () => navigate('/work');
+
+  // On desktop the sticky pile opens a fan of the case studies. The pile's
+  // notes leave the bar to make the fan, so the pile is hidden from the moment
+  // it opens until the notes are back (`pileOut`), and a close button sits in
+  // its place.
+  const [fanOpen, setFanOpen] = useState(false);
+  const [pileOut, setPileOut] = useState(false);
+  const pileRef = useRef(null);
+  const refocusPile = useRef(false);
+
+  const openFan = () => {
+    setPileOut(true);
+    setFanOpen(true);
+  };
+  const closeFan = useCallback(({ refocus = false } = {}) => {
+    refocusPile.current = refocus;
+    setFanOpen(false);
+  }, []);
+  const fanExited = useCallback(() => setPileOut(false), []);
+
+  // Once the pile is back, hand keyboard focus back to it if the fan was
+  // closed with the close button or Escape.
+  useEffect(() => {
+    if (!pileOut && refocusPile.current) {
+      refocusPile.current = false;
+      pileRef.current?.focus();
+    }
+  }, [pileOut]);
+
+  // A new page closes it.
+  useEffect(() => {
+    setFanOpen(false);
+  }, [pathname]);
 
   return (
     <div className="relative z-50 px-2 lg:px-8">
@@ -105,48 +158,17 @@ function Nav({ showProfileInNav = false }) {
           inline-flex w-max flex-row items-center rounded-2xl px-2 lg:px-3 h-14 sm:h-16 lg:h-[4.25rem]"
       >
         <AnimatePresence>
-          {showProfileInNav && (
+          {showHome && (
             <motion.div
-              key="nav-profile"
+              key="nav-home"
               className="flex flex-row items-center"
               initial={{ width: 0, opacity: 0 }}
               animate={{ width: 'auto', opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div
-                role="button"
-                tabIndex={0}
-                aria-label={avatarLabel}
-                onClick={avatarAction}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    avatarAction();
-                  }
-                }}
-                className={`group relative flex flex-col items-center flex-shrink-0 overflow-visible cursor-pointer rounded-full ${navFocusClass}`}
-              >
-                <motion.div
-                  className="w-10 h-10 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-full border-2 border-[#003347] dark:border-slate-200 overflow-hidden bg-surface-background200-light dark:bg-surface-background200-dark"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: [0, 1.2, 1] }}
-                  exit={{ scale: 0 }}
-                  transition={{ duration: 0.5, times: [0, 0.65, 1], ease: 'easeOut' }}
-                >
-                  <motion.div
-                    initial={{ scale: 1.7, y: 18, opacity: 0 }}
-                    animate={{ scale: 1, y: 0, opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ delay: 0.32, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  >
-                    <Mesm className="w-full h-full" />
-                  </motion.div>
-                </motion.div>
-                <span aria-hidden="true" className={navLabelClass}>
-                  {onHome ? 'Top' : 'Home'}
-                </span>
-              </div>
+              {/* A plain home icon, in the same shell as every other item. */}
+              <NavItem icon={HomeIcon} label="Home" onClick={homeAction} active={onHome} className="flex-shrink-0" />
               <Divider />
             </motion.div>
           )}
@@ -155,20 +177,44 @@ function Nav({ showProfileInNav = false }) {
         {/* Shared container: Erica's sticky note and Side Projects. Desktop only,
             the sticky is 160px tall and doesn't fit a phone bar. */}
         <div className="hidden lg:flex flex-row items-center gap-3">
-          <div
-            className="relative ml-2"
-            role="button"
-            tabIndex={0}
-            aria-label="Work"
-            onClick={workAction}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                workAction();
-              }
-            }}
-          >
-            <Stickies text="Case Study" />
+          <div className="relative ml-2">
+            <div
+              ref={pileRef}
+              className={`relative rounded-md ${navFocusClass} ${pileOut ? 'invisible' : ''}`}
+              role="button"
+              tabIndex={0}
+              aria-label="Case studies"
+              aria-expanded={fanOpen}
+              aria-controls="sticky-fan"
+              onClick={openFan}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  openFan();
+                }
+              }}
+            >
+              <Stickies text="Case Study" />
+            </div>
+            {/* While the notes are out, the close button takes the pile's place in the bar. */}
+            {fanOpen && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <NavItem
+                  icon={CloseIcon}
+                  label="Close case studies"
+                  shortLabel="Close"
+                  onClick={() => closeFan({ refocus: true })}
+                />
+              </div>
+            )}
+            <StickyFan
+              id="sticky-fan"
+              open={fanOpen}
+              studies={caseStudies}
+              onClose={closeFan}
+              onAll={workAction}
+              onExited={fanExited}
+            />
           </div>
           <SideProjectsButton />
         </div>

@@ -1,0 +1,555 @@
+/* The hand-drawn layer: the sk- classes from the portfolio design system
+   (https://claude.ai/artifact/Et67LjMYvXDF1ZH3xQzm7f, components/bundle.css, part 2).
+   Needs tokens.css. React wrappers are in components/sketch/Sketch.js.
+
+   Two kinds of line live here. Pen lines are SVG strokes (class sk-ink) and can draw
+   themselves. Finished edges are plain CSS borders.
+   Motion runs under an ancestor with the class is-in. With reduced motion on,
+   everything sits in its finished state. */
+
+/* ---------- Canvas ---------- */
+
+.sk-canvas {
+  background-color: var(--backdrop-background);
+  background-image: radial-gradient(circle at center, var(--canvas-dot) 1.25px, transparent 1.75px);
+  background-size: var(--size-grid, 24px) var(--size-grid, 24px);
+}
+.sk-section {
+  position: relative;
+  padding: var(--space-8) var(--space-4) var(--space-4);
+  border: var(--stroke-hairline, 1px) solid var(--surface-outline);
+  border-radius: var(--radius-lg);
+  background: var(--surface-background100);
+  box-shadow: var(--shadow-md);
+}
+.sk-section__tab {
+  position: absolute;
+  top: calc(var(--space-4) * -1);
+  left: var(--space-2);
+  margin: 0;
+  padding: var(--space-1-5) var(--space-2);
+  border: var(--stroke-hairline, 1px) solid var(--surface-outline);
+  border-radius: var(--radius-lg);
+  background: var(--surface-background200);
+  color: var(--surface-foreground100);
+  font: 600 13px/16px var(--font-hand, cursive);
+  transition: rotate var(--duration-hover, 300ms) var(--ease-out, ease-out);
+}
+.sk-section:hover > .sk-section__tab { rotate: calc(var(--tilt-hover, 2deg) * -1); }
+
+/* ---------- Pen lines ---------- */
+
+.sk-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.sk-ink {
+  fill: none;
+  stroke: var(--marker-ink);
+  stroke-width: var(--stroke-marker, 2px);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sk-ink--pen { stroke-width: var(--stroke-pen, 1.5px); }
+.sk-ink--bold { stroke-width: var(--stroke-bold, 3px); }
+.sk-ink--grey { stroke: var(--marker-grey); }
+.sk-ink--green { stroke: var(--marker-green); }
+.sk-ink--red { stroke: var(--marker-red); }
+.sk-ink--teal { stroke: var(--marker-teal); }
+.sk-ink--purple { stroke: var(--marker-purple); }
+
+/* A stroke that can draw itself. Needs pathLength="1" on the element. */
+.sk-draw { stroke-dasharray: 1 1.2; stroke-dashoffset: 0; }
+@keyframes sk-draw { from { stroke-dashoffset: 1.1; } to { stroke-dashoffset: 0; } }
+.is-in .sk-draw {
+  animation: sk-draw var(--sk-dur, var(--duration-draw, 600ms)) var(--ease-draw, cubic-bezier(0.65, 0, 0.35, 1)) both;
+  animation-delay: var(--sk-delay, 0ms);
+}
+
+/* Frame: a box drawn with four strokes that overshoot the corners a little. */
+.sk-frame {
+  position: absolute;
+  inset: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  overflow: visible;
+  pointer-events: none;
+}
+.sk-frame svg { overflow: visible; }
+.sk-frame .sk-draw { --sk-dur: var(--duration-stroke, 240ms); }
+.sk-frame .sk-s1 { --sk-delay: var(--sk-at, 0ms); }
+.sk-frame .sk-s2 { --sk-delay: calc(var(--sk-at, 0ms) + 150ms); }
+.sk-frame .sk-s3 { --sk-delay: calc(var(--sk-at, 0ms) + 300ms); }
+.sk-frame .sk-s4 { --sk-delay: calc(var(--sk-at, 0ms) + 450ms); }
+/* Loop: one closed stroke, for controls. */
+.sk-frame--loop { inset: 0; width: 100%; height: 100%; }
+.sk-frame--loop rect { rx: var(--radius-md); }
+.sk-frame--loop .sk-draw { --sk-dur: var(--duration-enter, 450ms); --sk-delay: var(--sk-at, 0ms); }
+.sk-framed { position: relative; }
+
+/* Marks: underline, circle, highlight, arrow. */
+.sk-mark { position: relative; display: inline-block; white-space: nowrap; isolation: isolate; }
+.sk-mark > svg { position: absolute; overflow: visible; pointer-events: none; }
+.sk-mark--underline > svg { left: -2%; width: 104%; bottom: -6px; height: 8px; }
+.sk-mark--underline.sk-mark--bold > svg { bottom: -10px; height: 12px; }
+.sk-mark--circle > svg { left: -0.55em; top: -0.3em; width: calc(100% + 1.1em); height: calc(100% + 0.6em); }
+.sk-mark--highlight { color: var(--highlight-foregroundTextHighlight); }
+.sk-mark--highlight > svg { left: -0.25em; top: 0.1em; width: calc(100% + 0.5em); height: 1.2em; z-index: -1; }
+.sk-mark--highlight .sk-ink { stroke: var(--highlight-backgroundTextHighlight); stroke-width: 19px; stroke-linecap: butt; }
+.sk-arrow { display: inline-block; width: 96px; height: 48px; overflow: visible; }
+.sk-arrow .sk-draw + .sk-draw { --sk-dur: var(--duration-stroke, 240ms); --sk-delay: calc(var(--sk-at, 0ms) + var(--duration-draw, 600ms) - 80ms); }
+.sk-arrow .sk-draw { --sk-delay: var(--sk-at, 0ms); }
+.sk-annotation { margin: 0; font: 400 15px/20px var(--font-hand, cursive); color: var(--surface-foreground100); }
+.sk-scribble { margin: 0; font: 600 28px/32px var(--font-hand, cursive); color: var(--marker-ink); rotate: var(--tilt-stamp, -6deg); }
+
+/* Squiggle: a pencil line that stands in for a line of text. */
+.sk-squiggle {
+  display: block;
+  height: 8px;
+  background: var(--marker-grey);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='8' viewBox='0 0 16 8'%3E%3Cpath d='M0 4q4-5 8 0t8 0' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") left center / 16px 8px repeat-x;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='8' viewBox='0 0 16 8'%3E%3Cpath d='M0 4q4-5 8 0t8 0' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") left center / 16px 8px repeat-x;
+}
+@keyframes sk-wipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+.is-in .sk-squiggle {
+  animation: sk-wipe var(--duration-enter, 450ms) var(--ease-draw, ease-in-out) both;
+  animation-delay: calc(var(--sk-at, 0ms) + var(--sk-delay, 0ms));
+}
+
+/* Spinner: a small hand-drawn loop with a gap that keeps travelling round it. */
+.sk-spinner { width: 16px; height: 16px; overflow: visible; flex-shrink: 0; }
+@keyframes sk-spin { to { stroke-dashoffset: -1; } }
+.sk-spinner .sk-ink { stroke-dasharray: 0.72 0.28; animation: sk-spin 900ms linear infinite; }
+
+/* ---------- Wireframe placeholders ---------- */
+
+.sk-wire { position: relative; display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-4); }
+.sk-wire__image { position: relative; flex: 1; min-height: 72px; }
+.sk-wire__cross { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.sk-wire__cross .sk-draw { --sk-dur: var(--duration-enter, 450ms); --sk-delay: calc(var(--sk-at, 0ms) + 500ms); }
+.sk-wire__cross .sk-draw + .sk-draw { --sk-delay: calc(var(--sk-at, 0ms) + 700ms); }
+.sk-wire .sk-squiggle { --sk-delay: 800ms; }
+.sk-wire .sk-squiggle + .sk-squiggle { --sk-delay: 920ms; }
+/* Row: the wireframe of a wide card, image on the left and lines on the right. Stacks on a phone. */
+.sk-wire__lines { display: flex; flex-direction: column; gap: var(--space-3); }
+@media (min-width: 640px) {
+  .sk-wire--row { flex-direction: row; gap: var(--space-5); }
+  .sk-wire--row > .sk-wire__image { flex: 0 0 42%; }
+  .sk-wire--row > .sk-wire__lines { flex: 1; min-width: 0; padding-top: var(--space-2); }
+}
+/* One crossed box on its own, where a photo will go. */
+.sk-wire-image { position: relative; display: block; }
+
+/* Swap: the wireframe draws first, then the finished thing takes its place. */
+.sk-swap { position: relative; }
+.sk-swap__wire { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+@keyframes sk-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes sk-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.is-in .sk-swap__wire {
+  animation: sk-fade-out var(--duration-enter, 450ms) linear both;
+  animation-delay: calc(var(--sk-at, 0ms) + var(--sk-hold, 1500ms));
+}
+.is-in .sk-swap__real {
+  animation: sk-rise var(--duration-enter, 450ms) var(--ease-out, ease-out) both;
+  animation-delay: calc(var(--sk-at, 0ms) + var(--sk-hold, 1500ms));
+}
+
+/* ---------- Reveal ---------- */
+
+.is-in .sk-rise {
+  animation: sk-rise var(--duration-enter, 450ms) var(--ease-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  animation-delay: calc(var(--sk-delay, 0ms) + var(--sk-i, 0) * var(--duration-stagger, 80ms));
+}
+
+/* ---------- Sticky notes ---------- */
+
+.sk-sticky {
+  position: relative;
+  display: block;
+  width: var(--size-sticky, 128px);
+  min-height: var(--size-sticky, 128px);
+  margin: 0;
+  padding: var(--space-4);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--highlight-backgroundSticky);
+  color: var(--highlight-foregroundSticky);
+  box-shadow: var(--shadow-md);
+  font: 500 18px/24px var(--font-hand, cursive);
+  text-align: left;
+  text-decoration: none;
+  rotate: var(--sk-tilt, var(--tilt-note, -1.5deg));
+  transition: translate var(--duration-hover, 300ms) var(--ease-out, ease-out),
+    rotate var(--duration-hover, 300ms) var(--ease-out, ease-out),
+    box-shadow var(--duration-hover, 300ms) var(--ease-out, ease-out);
+}
+.sk-sticky--green { background: var(--sticky-green); color: var(--sticky-ink); }
+.sk-sticky--blue { background: var(--sticky-blue); color: var(--sticky-ink); }
+.sk-sticky--note { width: auto; max-width: 28rem; min-height: 0; padding: var(--space-4) var(--space-5); }
+a.sk-sticky, button.sk-sticky { cursor: pointer; }
+a.sk-sticky:hover, button.sk-sticky:hover {
+  translate: 0 calc(var(--space-2) * -1);
+  rotate: calc(var(--sk-tilt, var(--tilt-note, -1.5deg)) + var(--tilt-hover, 2deg));
+  box-shadow: var(--shadow-lg);
+}
+a.sk-sticky:focus-visible, button.sk-sticky:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+@keyframes sk-land {
+  from { opacity: 0; transform: translateY(-28px) rotate(-7deg) scale(1.12); }
+  55% { opacity: 1; }
+  to { opacity: 1; transform: none; }
+}
+.is-in .sk-sticky {
+  animation: sk-land var(--duration-settle, 500ms) var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)) both;
+  animation-delay: var(--sk-delay, 0ms);
+}
+
+/* The testimonial note: a wide sticky with finished type on it. */
+.sk-sticky--quote {
+  width: 100%;
+  max-width: 380px;
+  min-height: 0;
+  padding: var(--space-5);
+  border-radius: var(--radius-sm);
+  font: 400 14px/1.625 var(--font-inter, sans-serif);
+  --sk-tilt: 0deg;
+}
+.sk-sticky__from { margin: 0; font-size: 12px; line-height: 16px; color: var(--highlight-foregroundStickyMuted); }
+.sk-sticky__quote { margin: var(--space-3) 0 0; }
+.sk-sticky__by { margin-top: var(--space-4); display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-3); }
+.sk-sticky__name { display: block; font-size: 18px; line-height: 1.25; }
+.sk-sticky__role { display: block; font-size: 12px; line-height: 16px; color: var(--highlight-foregroundStickyMuted); }
+.sk-avatar {
+  width: 64px; height: 64px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: 4px solid #ffffff;
+  border-radius: var(--radius-full);
+  background: #f8fafc; color: #475569;
+  box-shadow: var(--shadow-md);
+  font: 500 16px/1 var(--font-inter, sans-serif);
+  object-fit: cover;
+}
+
+/* The pile: three notes, used as the link to the work. */
+.sk-pile { position: relative; display: block; width: 144px; height: 160px; padding: 0; border: 0; background: none; cursor: pointer; text-decoration: none; }
+.sk-pile .sk-sticky { position: absolute; top: var(--space-4); --sk-tilt: 0deg; }
+.sk-pile__back { left: 0; background: var(--sticky-green); --sk-tilt: var(--tilt-pile-back, -8deg) !important; }
+.sk-pile__mid { left: var(--space-2); background: var(--sticky-blue); --sk-tilt: var(--tilt-pile-mid, -5deg) !important; }
+.sk-pile__front { left: var(--space-4); box-shadow: var(--shadow-lg); }
+.sk-pile:hover .sk-pile__back, .sk-pile:focus-visible .sk-pile__back { rotate: calc(var(--tilt-pile-back, -8deg) - var(--tilt-hover, 2deg)); }
+.sk-pile:hover .sk-pile__mid, .sk-pile:focus-visible .sk-pile__mid { rotate: calc(var(--tilt-pile-mid, -5deg) - var(--tilt-hover, 2deg)); }
+.sk-pile:hover .sk-pile__front, .sk-pile:focus-visible .sk-pile__front { translate: 0 calc(var(--space-2) * -1); }
+.sk-pile:focus-visible { outline: none; }
+.sk-pile:focus-visible .sk-pile__front { box-shadow: var(--focus-ring); }
+.sk-pile__mid { --sk-delay: var(--duration-stagger, 80ms); }
+.sk-pile__front { --sk-delay: calc(var(--duration-stagger, 80ms) * 2); }
+
+/* ---------- Stamps and stickers ---------- */
+
+.sk-stamp {
+  display: inline-block;
+  line-height: 0;
+  rotate: var(--sk-tilt, 0deg);
+  filter: drop-shadow(0 4px 3px #00000012) drop-shadow(0 2px 2px #0000000f);
+  transition: scale var(--duration-quick, 200ms) var(--ease-spring, ease-out), rotate var(--duration-quick, 200ms) var(--ease-spring, ease-out);
+}
+.sk-stamp:hover { scale: 1.1; rotate: calc(var(--sk-tilt, 0deg) - 10deg); }
+.sk-stamp > svg, .sk-stamp > img { display: block; width: 100%; height: 100%; }
+.sk-stamp > svg { fill: currentColor; }
+.sk-stamp--plus { font: 800 24px/1 var(--font-inter, sans-serif); color: var(--marker-purple); --sk-tilt: var(--tilt-stamp, -6deg); }
+.sk-stamp--emoji { font-size: 30px; line-height: 1; }
+@keyframes sk-pop {
+  0% { opacity: 0; transform: scale(0) rotate(0deg); }
+  25% { opacity: 1; transform: scale(1.2) rotate(-10deg); }
+  50% { transform: scale(0.9) rotate(5deg); }
+  75% { transform: scale(1.1) rotate(-7deg); }
+  100% { opacity: 1; transform: none; }
+}
+.is-in .sk-stamp {
+  animation: sk-pop var(--duration-settle, 500ms) ease-out both;
+  animation-delay: var(--sk-delay, 0ms);
+}
+
+/* ---------- Selection ---------- */
+
+.sk-selection {
+  position: relative;
+  border: var(--stroke-marker, 2px) solid var(--blockHighlight-outlineSurface);
+  background: var(--surface-background300);
+  color: var(--surface-foreground300);
+  transform-origin: top center;
+}
+.sk-selection__node {
+  position: absolute;
+  width: 8px; height: 8px;
+  border: 2px solid var(--blockHighlight-outlineSurface);
+  border-radius: var(--radius-full);
+  background: var(--blockHighlight-outlineFill);
+}
+.sk-selection__node--tl { top: -5px; left: -5px; }
+.sk-selection__node--tr { top: -5px; right: -5px; }
+.sk-selection__node--bl { bottom: -5px; left: -5px; }
+.sk-selection__node--br { bottom: -5px; right: -5px; }
+@keyframes sk-grow { from { transform: scale(0); } to { transform: none; } }
+@keyframes sk-fade-in { from { opacity: 0; } to { opacity: 1; } }
+.is-in .sk-selection {
+  animation: sk-grow var(--duration-settle, 500ms) var(--ease-spring, ease-out) both;
+  animation-delay: var(--sk-delay, 0ms);
+}
+.is-in .sk-selection__body {
+  animation: sk-fade-in var(--duration-settle, 500ms) linear both;
+  animation-delay: calc(var(--sk-delay, 0ms) + var(--duration-settle, 500ms));
+}
+
+/* ---------- Section heading ---------- */
+
+.sk-heading { position: relative; display: flex; align-items: center; gap: var(--space-4); }
+.sk-heading__title { margin: 0; text-align: center; font: 400 30px/36px var(--font-merriweather, serif); color: var(--surface-foreground100); }
+.sk-heading__rule { flex: 1; height: var(--stroke-hairline, 1px); background: var(--blockHighlight-outlineSurface); }
+.sk-heading__rule--left { transform-origin: right center; }
+.sk-heading__rule--right { transform-origin: left center; }
+@keyframes sk-rule { from { transform: scaleX(0); } to { transform: none; } }
+.is-in .sk-heading__rule {
+  animation: sk-rule var(--duration-settle, 500ms) var(--ease-out, ease-out) both;
+  animation-delay: calc(var(--sk-delay, 0ms) + 150ms);
+}
+
+/* ---------- Typing ---------- */
+
+.sk-typing { position: relative; display: inline-block; white-space: nowrap; }
+.sk-typing__ghost { visibility: hidden; }
+.sk-typing__live { position: absolute; left: 0; top: 0; }
+.sk-typing__caret { font-weight: 300; }
+.sk-typing__caret[data-off] { opacity: 0; }
+
+/* ---------- Slide cards ---------- */
+
+.sk-slide {
+  position: relative;
+  display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-5);
+  width: var(--size-slide, 264px);
+  height: var(--size-slide-height, 332px);
+  padding: var(--space-5);
+  overflow: hidden;
+  border: var(--stroke-hairline, 1px) solid var(--surface-outline);
+  border-radius: var(--radius-xl);
+  background: var(--surface-background200);
+  color: var(--surface-foreground100);
+  font-family: var(--font-inter, sans-serif);
+  text-align: left;
+}
+.sk-slide--wide { width: var(--size-slide-wide, 544px); }
+.sk-slide--tint { background: var(--surface-background300); color: var(--surface-foreground300); }
+.sk-slide--accent { background: var(--primary-foreground); color: var(--primary-inverse); border-color: var(--primary-foreground); }
+.sk-slide__label { margin: 0; display: flex; align-items: center; gap: var(--space-1-5); font-size: 12px; font-weight: 500; line-height: 1; color: var(--surface-foreground400); }
+.sk-slide__step { font-variant-numeric: tabular-nums; }
+.sk-slide__quote { margin: 0; font: 300 18px/1.375 var(--font-merriweather, serif); }
+.sk-slide__who { margin: var(--space-4) 0 0; font-size: 14px; line-height: 20px; }
+.sk-slide__metric { margin: 0; font-size: 96px; font-weight: 500; line-height: 0.9; letter-spacing: -4px; }
+.sk-slide__unit { vertical-align: top; margin-left: var(--space-1-5); font-size: 24px; line-height: 32px; letter-spacing: 0; }
+.sk-slide__caption { margin: var(--space-3) 0 0; font-size: 14px; line-height: 20px; }
+.sk-slide__note { margin: var(--space-2) 0 0; font-size: 12px; line-height: 1.5; color: var(--surface-foreground400); }
+.sk-slide--accent .sk-slide__label, .sk-slide--accent .sk-slide__note { color: var(--primary-inverseMuted); }
+.sk-slide__stats { margin: 0; padding-top: var(--space-4); border-top: var(--stroke-hairline, 1px) solid var(--surface-outline); display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-4) var(--space-3); }
+.sk-slide__stats > div { display: flex; flex-direction: column-reverse; }
+.sk-slide__stats dt { margin-top: var(--space-1-5); font-size: 12px; line-height: 16px; white-space: nowrap; color: var(--surface-foreground400); }
+.sk-slide__stats dd { margin: 0; font-size: 36px; font-weight: 500; line-height: 1; letter-spacing: -0.025em; }
+
+/* ---------- Badge ---------- */
+
+.sk-badge {
+  position: relative;
+  display: inline-flex; align-items: center; gap: var(--space-1);
+  padding: 2px var(--space-1-5);
+  border: var(--stroke-hairline, 1px) solid var(--surface-outline);
+  border-radius: var(--radius-lg);
+  background: var(--surface-background200);
+  color: var(--surface-foreground100);
+  box-shadow: var(--shadow-sm);
+  font: 400 12px/16px var(--font-inter, sans-serif);
+  white-space: nowrap;
+}
+.sk-badge--primary { background: var(--primary-surface); color: var(--primary-foreground); border-color: var(--primary-outline); box-shadow: none; }
+.sk-badge--sticky { background: var(--highlight-backgroundSticky); color: var(--highlight-foregroundSticky); border-color: transparent; rotate: var(--tilt-note, -1.5deg); font: 600 13px/16px var(--font-hand, cursive); }
+.sk-badge--outline { background: transparent; border-color: transparent; box-shadow: none; padding: 3px var(--space-2); }
+.sk-badge--outline .sk-frame--loop rect { rx: var(--radius-lg); }
+
+/* ---------- Button ---------- */
+
+.sk-button {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  height: var(--size-control, 36px);
+  padding: 0 var(--space-4);
+  border: var(--stroke-hairline, 1px) solid transparent;
+  border-radius: var(--radius-md);
+  background: var(--primary-foreground);
+  color: var(--primary-inverse);
+  font: 500 14px/20px var(--font-inter, sans-serif);
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--duration-quick, 200ms) ease-out, translate var(--duration-instant, 150ms) var(--ease-out, ease-out), box-shadow var(--duration-quick, 200ms) ease-out;
+}
+.sk-button:hover { translate: 0 -1px; box-shadow: var(--shadow-md); }
+.sk-button:active { translate: 0 1px; box-shadow: none; }
+.sk-button:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.sk-button[disabled], .sk-button[aria-disabled="true"] { opacity: 0.5; pointer-events: none; }
+.sk-button > svg:not(.sk-frame):not(.sk-spinner) { width: 16px; height: 16px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.sk-button--secondary { background: var(--primary-surface); color: var(--primary-foreground); border-color: var(--primary-outline); }
+.sk-button--secondary:hover { background: var(--primary-hover); }
+.sk-button--outline, .sk-button--ghost, .sk-button--link { background: transparent; color: var(--surface-foreground100); }
+.sk-button--outline:hover, .sk-button--ghost:hover { background: var(--surface-background200); box-shadow: none; }
+.sk-button--ghost:hover { translate: none; }
+.sk-button--link { height: auto; padding: 0; border-radius: var(--radius-base); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+.sk-button--link:hover { translate: none; box-shadow: none; text-decoration-thickness: 2px; }
+.sk-button--sm { height: var(--size-control-sm, 32px); padding: 0 var(--space-3); gap: var(--space-1-5); }
+.sk-button--xs { height: var(--size-control-xs, 24px); padding: 0 var(--space-2); gap: var(--space-1); border-radius: var(--radius-base); }
+.sk-button--icon { width: var(--size-control, 36px); padding: 0; }
+.sk-button--icon.sk-button--sm { width: var(--size-control-sm, 32px); }
+.sk-button--icon.sk-button--xs { width: var(--size-control-xs, 24px); }
+.sk-button--xs .sk-frame--loop rect { rx: var(--radius-base); }
+.sk-button .sk-spinner .sk-ink { stroke: currentColor; }
+
+/* ---------- Field, Input, Input Group ---------- */
+
+.sk-field { display: flex; flex-direction: column; gap: var(--space-1-5); }
+.sk-field__label { font: 400 15px/20px var(--font-hand, cursive); color: var(--surface-foreground100); }
+.sk-field__hint { margin: 0; font: 400 12px/16px var(--font-inter, sans-serif); color: var(--surface-foreground400); }
+.sk-field__error { margin: 0; display: flex; align-items: center; gap: var(--space-1-5); font: 400 12px/16px var(--font-inter, sans-serif); color: var(--surface-foreground100); }
+.sk-field__error svg { width: 12px; height: 12px; overflow: visible; flex-shrink: 0; }
+
+.sk-input-group {
+  position: relative;
+  display: flex; align-items: center;
+  width: 100%; min-width: 0;
+  height: var(--size-control, 36px);
+  border-radius: var(--radius-md);
+  background: var(--surface-background100);
+  color: var(--surface-foreground100);
+  transition: box-shadow var(--duration-quick, 200ms) ease-out;
+}
+.sk-input-group .sk-ink { stroke-width: var(--stroke-pen, 1.5px); }
+.sk-input-group:has(> textarea),
+.sk-input-group:has(> [data-align^="block"]) { height: auto; flex-direction: column; align-items: stretch; }
+.sk-input-group__control {
+  flex: 1; min-width: 0; width: 100%; height: 100%;
+  margin: 0; padding: 0 var(--space-3);
+  border: 0; border-radius: inherit; outline: none;
+  background: transparent; color: inherit;
+  font: 400 14px/20px var(--font-inter, sans-serif);
+}
+textarea.sk-input-group__control { min-height: 76px; padding: var(--space-3); resize: none; }
+.sk-input-group__control::placeholder { font-family: var(--font-hand, cursive); font-size: 15px; color: var(--surface-foreground400); opacity: 1; }
+.sk-input-group__addon {
+  display: flex; align-items: center; justify-content: center; gap: var(--space-2);
+  padding-block: var(--space-1-5);
+  color: var(--surface-foreground400);
+  font: 500 14px/20px var(--font-inter, sans-serif);
+  cursor: text; user-select: none;
+}
+.sk-input-group__addon > svg:not(.sk-spinner) { width: 16px; height: 16px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.sk-input-group__addon[data-align="inline-start"] { order: -1; padding-left: var(--space-3); }
+.sk-input-group__addon[data-align="inline-end"] { order: 1; padding-right: var(--space-3); }
+.sk-input-group__addon[data-align="inline-start"]:has(> button) { margin-left: -6px; }
+.sk-input-group__addon[data-align="inline-end"]:has(> button) { margin-right: -6px; }
+.sk-input-group:has(> [data-align="inline-start"]) > .sk-input-group__control { padding-left: var(--space-2); }
+.sk-input-group:has(> [data-align="inline-end"]) > .sk-input-group__control { padding-right: var(--space-2); }
+.sk-input-group__addon[data-align="block-start"] { order: -1; width: 100%; justify-content: flex-start; padding: var(--space-3) var(--space-3) 0; }
+.sk-input-group__addon[data-align="block-end"] { order: 1; width: 100%; justify-content: flex-start; padding: 0 var(--space-3) var(--space-3); }
+.sk-input-group__text { display: flex; align-items: center; gap: var(--space-2); font: 400 14px/20px var(--font-inter, sans-serif); color: var(--surface-foreground400); }
+.sk-input-group__spacer { margin-left: auto; }
+.sk-input-group:focus-within { box-shadow: var(--focus-ring); }
+.sk-input-group:focus-within > .sk-frame .sk-draw { animation: sk-draw var(--duration-enter, 450ms) var(--ease-draw, ease-in-out) both; }
+.sk-input-group:has([aria-invalid="true"]) > .sk-frame .sk-ink { stroke: var(--marker-red); stroke-width: var(--stroke-marker, 2px); }
+.sk-input-group[data-disabled="true"] { opacity: 0.5; pointer-events: none; }
+
+.sk-kbd {
+  display: inline-flex; align-items: center; justify-content: center; gap: 2px;
+  height: 20px; min-width: 20px; padding: 0 var(--space-1);
+  border: var(--stroke-hairline, 1px) solid var(--surface-outline);
+  border-radius: var(--radius-base);
+  background: var(--surface-background200);
+  color: var(--surface-foreground400);
+  font: 500 12px/1 var(--font-inter, sans-serif);
+}
+
+/* ---------- Toolbar ---------- */
+
+.sk-toolbar {
+  display: inline-flex; align-items: center;
+  height: 64px; padding: 0 var(--space-3);
+  border: var(--stroke-hairline, 1px) solid var(--surface-outline);
+  border-radius: var(--radius-2xl);
+  background: var(--surface-background100);
+  color: var(--surface-foreground100);
+  box-shadow: var(--shadow-lg);
+}
+.sk-toolbar__group { display: flex; align-items: center; gap: var(--space-4); margin: 0; padding: 0; list-style: none; }
+.sk-toolbar__divider { flex-shrink: 0; width: var(--stroke-hairline, 1px); height: 36px; margin: 0 10px; background: var(--surface-outline); }
+.sk-toolbar__item { display: flex; flex-direction: column; align-items: center; margin: 0; padding: 0; border: 0; border-radius: var(--radius-lg); background: none; color: inherit; text-decoration: none; cursor: pointer; }
+.sk-toolbar__box { display: flex; align-items: center; justify-content: center; width: 44px; height: 32px; border-radius: var(--radius-lg); transition: background-color var(--duration-quick, 200ms) ease-out; }
+.sk-toolbar__box svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.sk-toolbar__label { font: 400 12px/1.25 var(--font-inter, sans-serif); color: var(--surface-foreground200); white-space: nowrap; }
+.sk-toolbar__item:hover .sk-toolbar__box { background: var(--surface-background200); }
+.sk-toolbar__item:hover .sk-toolbar__label { color: var(--surface-foreground100); }
+.sk-toolbar__item[aria-current="page"] .sk-toolbar__box { background: var(--primary-foreground); color: var(--primary-inverse); }
+.sk-toolbar__item:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+@keyframes sk-dock { from { opacity: 0; transform: translateY(100%); } to { opacity: 1; transform: none; } }
+.is-in .sk-toolbar {
+  animation: sk-dock var(--duration-settle, 500ms) var(--ease-out, ease-out) both;
+  animation-delay: var(--sk-delay, 0ms);
+}
+
+/* ---------- Cursor ---------- */
+
+.sk-cursor { position: absolute; left: 0; top: 0; pointer-events: none; }
+.sk-cursor__arrow { display: block; width: 24px; height: 24px; margin: -2px 0 0 -2px; overflow: visible; filter: drop-shadow(0 4px 3px #00000012) drop-shadow(0 2px 2px #0000000f); }
+.sk-cursor__arrow path { fill: var(--cursor-fill); stroke: var(--cursor-outline); stroke-width: 1.6; stroke-linejoin: round; }
+.sk-cursor__tag {
+  position: absolute; left: 16px; top: 20px;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--cursor-fill);
+  color: var(--cursor-outline);
+  box-shadow: var(--shadow-md);
+  font: 500 14px/1.375 var(--font-inter, sans-serif);
+  white-space: nowrap;
+  transform-origin: left top;
+}
+.sk-cursor--green .sk-cursor__arrow path { fill: var(--marker-green); }
+.sk-cursor--green .sk-cursor__tag { background: var(--marker-green); color: var(--sticky-ink); }
+@keyframes sk-tag { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: none; } }
+.is-in .sk-cursor__tag {
+  animation: sk-tag var(--duration-quick, 200ms) ease-out both;
+  animation-delay: var(--sk-delay, 0ms);
+}
+
+
+/* ---------- On the site: waiting offscreen ----------
+   A stage (components/sketch Stage) gets is-in the first time it is seen. Until then its
+   pen lines are undrawn and its risers are hidden, so nothing flashes before it plays. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .sk-stage:not(.is-in) .sk-draw { stroke-dashoffset: 1.1; }
+  .sk-stage:not(.is-in) .sk-squiggle { clip-path: inset(0 100% 0 0); }
+  .sk-stage:not(.is-in) .sk-rise,
+  .sk-stage:not(.is-in) .sk-annotation { opacity: 0; }
+  .sk-stage:not(.is-in) .sk-swap__wire { opacity: 1; }
+  .sk-stage:not(.is-in) .sk-swap__real { opacity: 0; }
+  .sk-stage:not(.is-in) .sk-heading__rule { transform: scaleX(0); }
+}
+.sk-stage.is-in .sk-annotation {
+  animation: sk-rise var(--duration-enter, 450ms) var(--ease-out, ease-out) both;
+  animation-delay: var(--sk-delay, 0ms);
+}
+
+/* A mark around text that is allowed to wrap, such as the hero title on a small phone. */
+.sk-mark--wrap { white-space: normal; }
+/* A mark that follows wrapped text line by line. The strokes are placed by Underline's `lines` mode. */
+.sk-mark--lines { display: block; white-space: normal; }
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .is-in *, .is-in *::before, .is-in *::after { animation: none !important; }
+  [class^="sk-"], [class*=" sk-"] { transition: none !important; }
+  .sk-spinner .sk-ink { animation: none !important; }
+  .sk-input-group:focus-within > .sk-frame .sk-draw { animation: none !important; }
+}

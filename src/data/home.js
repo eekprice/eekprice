@@ -92,3 +92,9 @@ export const cursorLabels = [
     ],
   },
 ];
+
+// Lines the cursor says when the visitor does something, instead of when the
+// mouse rests. `reader` shows the first time "Read more" is opened in the hero.
+export const cursorLines = {
+  reader: 'ah, we have a reader, respect',
+};

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ReactComponent as HeartSvg } from '../assets/Heart.svg';
 import { ReactComponent as ShiningStars } from '../assets/ShiningStars.svg';
 import SectionHeading from './SectionHeading';
-import { Reveal } from './caseStudy/Blocks';
+import { land } from './sketch/motion';
 import { kindConnections, sectionTitles } from '../data/home';
 
 const ChevronRight = (props) => (
@@ -28,12 +29,20 @@ function Avatar({ photo, name }) {
   );
 }
 
-function ConnectionNote({ note }) {
+// Paper lands (design system): each note drops in and settles with a spring.
+// `order` staggers the four notes.
+function ConnectionNote({ note, order = 0 }) {
   const [open, setOpen] = useState(false);
+  const reduce = useReducedMotion();
   const firstName = note.name.split(' ')[0];
 
   return (
-    <Reveal>
+    <motion.div
+      variants={land(order)}
+      initial={reduce ? 'visible' : 'hidden'}
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+    >
       <figure
         className="rounded-sm shadow-md p-5
           bg-highlight-backgroundSticky-light dark:bg-highlight-backgroundSticky-dark
@@ -66,7 +75,7 @@ function ConnectionNote({ note }) {
           <Avatar photo={note.photo} name={note.name} />
         </figcaption>
       </figure>
-    </Reveal>
+    </motion.div>
   );
 }
 
@@ -83,13 +92,13 @@ function KindConnections() {
           aria-hidden="true"
         />
         <div className="flex flex-col gap-5">
-          {kindConnections.left.map((note) => (
-            <ConnectionNote key={note.name} note={note} />
+          {kindConnections.left.map((note, i) => (
+            <ConnectionNote key={note.name} note={note} order={i * 2} />
           ))}
         </div>
         <div className="flex flex-col gap-5 sm:mt-16">
-          {kindConnections.right.map((note) => (
-            <ConnectionNote key={note.name} note={note} />
+          {kindConnections.right.map((note, i) => (
+            <ConnectionNote key={note.name} note={note} order={i * 2 + 1} />
           ))}
         </div>
         <ShiningStars

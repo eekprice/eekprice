@@ -1,4 +1,7 @@
 import './styles/tailwind.css';
+// Design system layer: token variables, then the hand-drawn sk- classes.
+import './styles/tokens.css';
+import './styles/sketch.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';

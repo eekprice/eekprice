@@ -10,11 +10,21 @@ import { cursorLabels } from '../data/home';
 // mouse rests near the bottom of the page. It goes away as soon as the mouse
 // moves or after a few seconds, and then it's done for that visit.
 //
+// It can also say a line on request: cursorSay('...') from anywhere on the
+// page. That tag follows the mouse for a few seconds, then goes.
+//
 // The arrow is pinned to the real mouse position (no lag, or clicks feel off).
 
 const PAUSE_MS = 700; // how long the mouse has to rest before the tag shows
 const LINGER_MS = 5000; // how long the tag stays up if the mouse stays put
+const SAY_MS = 3500; // how long a requested line follows the mouse
+const SAY_EVENT = 'cursor:say';
 const FINE_POINTER = '(hover: hover) and (pointer: fine)';
+
+// Make the cursor say a line. Does nothing on phones, where there is no cursor.
+export const cursorSay = (line) => {
+  window.dispatchEvent(new CustomEvent(SAY_EVENT, { detail: line }));
+};
 
 function useFinePointer() {
   const [fine, setFine] = useState(false);
@@ -61,15 +71,28 @@ function CursorTag() {
     let lingerTimer;
     let lastLine = '';
     let said = false; // once per page load
+    let sayTimer;
+    let saying = false; // a requested line is up and follows the mouse
     const hide = () => {
       clearTimeout(pauseTimer);
       clearTimeout(lingerTimer);
+      clearTimeout(sayTimer);
+      saying = false;
       setShowTag(false);
+    };
+    const onSay = (e) => {
+      if (!e.detail) return;
+      hide();
+      saying = true;
+      setLabel(e.detail);
+      setShowTag(true);
+      sayTimer = setTimeout(hide, SAY_MS);
     };
     const onMove = (e) => {
       x.set(e.clientX);
       y.set(e.clientY);
       setOverLink(!!e.target.closest?.('a, button, [role="button"], summary'));
+      if (saying) return; // keep the requested line up while the mouse moves
       hide();
       pauseTimer = setTimeout(() => {
         if (said) return;
@@ -84,13 +107,16 @@ function CursorTag() {
     };
     const onLeave = hide;
     window.addEventListener('mousemove', onMove, { passive: true });
+    window.addEventListener(SAY_EVENT, onSay);
     document.documentElement.addEventListener('mouseleave', onLeave);
 
     return () => {
       document.documentElement.classList.remove('custom-cursor');
       clearTimeout(pauseTimer);
       clearTimeout(lingerTimer);
+      clearTimeout(sayTimer);
       window.removeEventListener('mousemove', onMove);
+      window.removeEventListener(SAY_EVENT, onSay);
       document.documentElement.removeEventListener('mouseleave', onLeave);
     };
   }, [fine, x, y]);

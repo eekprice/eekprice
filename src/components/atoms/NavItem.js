@@ -29,7 +29,13 @@ export const navLabelClass = `hidden sm:block text-xs font-inter font-normal whi
   text-surface-foreground200-light dark:text-surface-foreground200-dark
   group-hover:text-surface-foreground100-light dark:group-hover:text-surface-foreground100-dark`;
 
-export const navFocusClass = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-outline-light dark:focus-visible:ring-primary-outline-dark rounded-lg';
+// The design system's focus ring: a 2px gap in the page color, then 2px of
+// solid dark teal. The old light teal ring was 1.8:1 on white.
+export const focusRingClass = `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+  focus-visible:ring-primary-foreground-light dark:focus-visible:ring-primary-foreground-dark
+  focus-visible:ring-offset-backdrop-background-light dark:focus-visible:ring-offset-backdrop-background-dark`;
+
+export const navFocusClass = `${focusRingClass} rounded-lg`;
 
 // `label` is the accessible name. `shortLabel` is what shows under the icon
 // when the accessible name is too long to fit (e.g. "Theme").

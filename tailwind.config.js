@@ -11,6 +11,8 @@ module.exports = {
       fontFamily: {
         merriweather: ['Merriweather', 'serif'],
         inter: ['Inter', 'sans-serif'],
+        // Handwriting: sticky notes, annotations, placeholders. Twelve words at most.
+        hand: ['"Shantell Sans"', '"Bradley Hand"', '"Segoe Print"', 'cursive'],
       },
       colors: {
         backdrop: {

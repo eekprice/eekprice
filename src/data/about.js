@@ -4,6 +4,9 @@
 export const intro = {
   kicker: 'Hobbies...',
   heading: "I'm a bit chaotic...",
+  // The part of the heading that gets circled in red marker. Remove this line
+  // for a plain heading.
+  circled: 'chaotic...',
   text:
     'My ADHD fuels my passion for exploring the many facets of life, from teaching and designing to latte art and making up silly games with my 5-year-old son.',
 };

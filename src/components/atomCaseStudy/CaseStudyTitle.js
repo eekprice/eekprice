@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import CaseStudyPreview from './CaseStudySlides';
+import { WireBlock } from '../sketch/Sketch';
 
 const ChevronIcon = (props) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" {...props}>
@@ -9,9 +10,12 @@ const ChevronIcon = (props) => (
 );
 
 // A work card: title top-left, optional slide strip, optional link.
-// With no slides and no link it shows a quiet "coming soon" line so an
-// unwritten card doesn't look broken.
-const CaseStudyContainer = ({ title, slides = [], href, slideHeight }) => {
+// With no slides it shows a wireframe of the strip (design system: wire
+// first), and with no link either, a handwritten "coming soon".
+// `sketchAt` is when those pencil blocks start drawing, in ms after the card
+// is first seen. The card (caseStudyHero.js) sets it so they follow its own
+// wireframe entrance.
+const CaseStudyContainer = ({ title, slides = [], href, slideHeight, sketchAt = 0 }) => {
   const hasSlides = slides.length > 0;
 
   return (
@@ -46,10 +50,18 @@ const CaseStudyContainer = ({ title, slides = [], href, slideHeight }) => {
           <CaseStudyPreview slides={slides} heightClass={slideHeight} />
         </div>
       ) : (
-        <div className="min-h-[88px] lg:min-h-[120px] flex items-end">
+        // No slides yet, so the card shows its wireframe: three pencil blocks
+        // where the slides will go. They sketch themselves once the card has
+        // arrived. Decorative, so hidden from screen readers.
+        <div className="mt-3">
+          <div className="flex gap-4 overflow-hidden p-2">
+            <WireBlock className="w-[264px] h-40 shrink-0" lines={[38, 82, 64, 72]} image={false} at={sketchAt} />
+            <WireBlock className="w-[264px] h-40 shrink-0" lines={[46, 70]} at={sketchAt + 300} />
+            <WireBlock className="w-[544px] h-40 shrink-0" lines={[24, 52, 40]} image={false} at={sketchAt + 600} />
+          </div>
           {!href && (
-            <p className="text-sm font-inter text-surface-foreground400-light dark:text-surface-foreground400-dark">
-              Coming soon.
+            <p className="sk-annotation mt-1 px-2" style={{ '--sk-delay': `${sketchAt + 1500}ms` }}>
+              coming soon
             </p>
           )}
         </div>
