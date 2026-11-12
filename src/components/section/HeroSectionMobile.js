@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ReactComponent as Mesm } from '../../assets/mesm.svg';
 import PersonalityScene from '../atoms/PersonalityAtom';
 import { ReactComponent as HeartSvg } from '../../assets/Heart.svg';
 import { ReactComponent as StarSvg } from '../../assets/Star.svg';
-import { ReactComponent as StarsSvg } from '../../assets/Stars.svg';
 import { useEasterEgg } from '../../hooks/useEasterEgg';
 import TypingEffect from '../TypingEffect';
-import { MAILTO, RESUME_HREF } from '../../data/links';
 import { hero } from '../../data/home';
 
-// Phone hero: a centered column. Avatar, name, headline, chips, links, then
-// the about box. Everything is on screen within about 1.5s of mount.
+// Phone hero: one centered column. Avatar, small greeting, the role as the one
+// big line, small subline, then the about box. Email, Resume, and About live
+// in the nav, so there's no link row here. The star and heart are pinned to
+// the box's right corners, same as desktop. Everything is on screen within
+// about 1.5s of mount.
 
 const ease = [0.22, 1, 0.36, 1];
 
@@ -39,8 +39,6 @@ const pop = (delay) => ({
 });
 
 
-const linkClass = 'underline underline-offset-2 hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark';
-
 function HeroSectionMobile() {
   const { handleSecretClick, EasterEggModal } = useEasterEgg();
   const heroRef = useRef(null);
@@ -66,7 +64,7 @@ function HeroSectionMobile() {
   return (
     <motion.div
       ref={heroRef}
-      className="w-full max-w-md mx-auto flex flex-col items-center px-4 pt-6 pb-4 text-center"
+      className="w-full max-w-md sm:max-w-xl mx-auto flex flex-col items-center px-4 pt-6 pb-4 text-center"
       initial="hidden"
       animate={hasAnimated ? 'visible' : 'hidden'}
       variants={container}
@@ -82,53 +80,33 @@ function HeroSectionMobile() {
 
       <motion.h1
         variants={item}
-        className="mt-3 text-2xl font-merriweather font-light text-surface-foreground100-light dark:text-surface-foreground100-dark"
+        className="mt-3 text-base font-inter font-normal text-surface-foreground200-light dark:text-surface-foreground200-dark"
       >
         <TypingEffect text={hero.greeting} maxBlinksAfterTyping={1} instant={!!reduceMotion} />
       </motion.h1>
 
       <motion.h2
         variants={item}
-        className="mt-1 text-xl font-merriweather font-normal leading-snug break-words text-surface-foreground100-light dark:text-surface-foreground100-dark"
+        className="mt-1 text-2xl sm:text-4xl font-merriweather font-normal leading-tight break-words text-surface-foreground100-light dark:text-surface-foreground100-dark"
       >
         <TypingEffect text={hero.title} instant />
       </motion.h2>
 
       <motion.p
         variants={item}
-        className="mt-1 text-base font-merriweather font-light text-surface-foreground200-light dark:text-surface-foreground200-dark"
+        className="mt-2 text-base font-inter font-normal text-surface-foreground200-light dark:text-surface-foreground200-dark"
       >
         {hero.subline}
       </motion.p>
 
-      <motion.div
-        variants={item}
-        className="mt-3 flex flex-row items-center gap-2 text-sm font-inter font-normal text-surface-foreground200-light dark:text-surface-foreground200-dark"
-      >
-        <a href={MAILTO} className={linkClass}>Email</a>
-        <span aria-hidden="true">•</span>
-        <a href={RESUME_HREF} target="_blank" rel="noopener noreferrer" className={linkClass}>Resume</a>
-        <span aria-hidden="true">•</span>
-        <Link to="/about" className={linkClass}>About me</Link>
-      </motion.div>
+      <motion.div variants={box} className="relative w-full mt-7" style={{ transformOrigin: 'top center' }}>
+        <PersonalityScene revealDelay={reduceMotion ? 0 : 700} />
 
-      <motion.div variants={box} className="relative w-full mt-6" style={{ transformOrigin: 'top center' }}>
-        <motion.div variants={pop(0.55)} className="absolute -left-3 -top-4 z-10" aria-hidden="true">
+        <motion.div variants={pop(0.55)} className="absolute -right-3 -top-4 z-20" aria-hidden="true">
           <StarSvg className="w-8 h-8" />
         </motion.div>
 
-        <PersonalityScene revealDelay={reduceMotion ? 0 : 700} />
-
-        <motion.div
-          variants={pop(0.62)}
-          className="absolute -right-3 -top-4 z-20 cursor-pointer"
-          onClick={handleSecretClick}
-          aria-hidden="true"
-        >
-          <StarsSvg className="w-8 h-8 text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current" />
-        </motion.div>
-
-        <motion.div variants={pop(0.7)} className="absolute -right-2 -bottom-4 z-10" aria-hidden="true">
+        <motion.div variants={pop(0.7)} className="absolute -right-3 -bottom-4 z-10" aria-hidden="true">
           <HeartSvg className="w-8 h-8" />
         </motion.div>
       </motion.div>

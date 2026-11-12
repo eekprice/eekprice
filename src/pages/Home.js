@@ -49,9 +49,9 @@ function Home() {
 
     const timers = [
       setTimeout(() => {
-        // On desktop the doodle fades out completely so it doesn't sit behind
-        // the hero text. Phones keep the faint version.
-        setDoodleOpacity(isMobile ? 0.1 : 0);
+        // The doodle is the loading moment. Once the hero arrives it fades out
+        // completely so it doesn't sit behind the text.
+        setDoodleOpacity(0);
         setLoadingComplete(true);
       }, t.doodle),
       setTimeout(() => setMinLoadingTimePassed(true), t.minimum),
