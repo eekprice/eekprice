@@ -32,7 +32,7 @@ const PersonalityScene = ({ revealDelay = 4000 }) => {
   }, [revealDelay]);
 
   return (
-    <div className="flex items-start justify-start w-full max-w-[600px] lg:max-w-[760px]">
+    <div className="flex items-start justify-start w-full max-w-[600px] lg:max-w-[680px]">
       <div className="flex flex-row items-start w-full">
         <div
           ref={textRef}

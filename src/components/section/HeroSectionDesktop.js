@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ReactComponent as Melg } from '../../assets/melg.svg';
 import PersonalityScene from '../atoms/PersonalityAtom';
 import { ReactComponent as HeartSvg } from '../../assets/Heart.svg';
 import { ReactComponent as StarSvg } from '../../assets/Star.svg';
-import { ReactComponent as StarsSvg } from '../../assets/Stars.svg';
 import { useEasterEgg } from '../../hooks/useEasterEgg';
 import TypingEffect from '../TypingEffect';
-import { MAILTO, RESUME_HREF } from '../../data/links';
 import { hero } from '../../data/home';
 
 function HeroSection() {
@@ -18,7 +15,7 @@ function HeroSection() {
   // Once the heart has popped in it stays put. Without this, any re-render
   // (like opening the easter egg) replays the pop-in and hides it for 4s.
   const [heartSettled, setHeartSettled] = useState(false);
-  const [showQuickLinks, setShowQuickLinks] = useState(false);
+  const [showSubline, setShowSubline] = useState(false);
   const { handleSecretClick, EasterEggModal } = useEasterEgg();
 
   useEffect(() => {
@@ -86,17 +83,20 @@ function HeroSection() {
       animate={hasAnimated ? "visible" : "hidden"}
       variants={containerVariants}
     >
-      {/* Same width as the about box below so the two edges line up. */}
+      {/* Photo and text. Same width as the about box below, and the photo's
+          left edge sits on the box's left edge, so everything hangs off one line. */}
       <motion.div className="flex flex-row items-center gap-6 w-full max-w-[680px]" variants={itemVariants}>
         {hasAnimated && (
             <motion.div
-              className="flex-shrink-0 w-44"
+              className="flex-shrink-0 w-40 -ml-[46px]"
               initial="hidden"
               animate="visible"
               variants={melgVariants}
               transition={{ type: "spring", stiffness: 100, delay: 2 }}
             >
-              {/* The SVG is 304x350; scale it to the column so the photo lines up with the text. */}
+              {/* The SVG is 304x350 and the photo itself starts 88px in (the blob
+                  and squiggle sit left of it). At w-40 that's 46px, so the
+                  negative margin lets the doodles hang outside the shared edge. */}
               <Melg
                 className="w-full h-auto cursor-pointer"
                 onClick={revealEasterEgg}
@@ -104,18 +104,17 @@ function HeroSection() {
             </motion.div>
         )}
 
-        <motion.div className="flex flex-col space-y-4 flex-1 min-w-0 items-start" variants={itemVariants}>
-          <div className="flex flex-row items-center justify-between w-full space-x-4 rounded-lg relative text-left">
-            <motion.h1 
-              className="text-3xl font-merriweather font-light z-10 text-surface-foreground100-light dark:text-surface-foreground100-dark" 
-              variants={slideInFromTop}
-              custom={0}
-            >
-              <TypingEffect text={` ${hero.greeting}`} maxBlinksAfterTyping={1} />
-            </motion.h1>
-          </div>
-          <motion.h2 
-            className="text-[2.125rem] leading-tight font-merriweather font-normal text-surface-foreground100-light dark:text-surface-foreground100-dark relative"
+        {/* One big line (the role). The greeting and subline are small and sans. */}
+        <motion.div className="flex flex-col flex-1 min-w-0 items-start text-left" variants={itemVariants}>
+          <motion.h1
+            className="text-lg font-inter font-normal text-surface-foreground200-light dark:text-surface-foreground200-dark"
+            variants={slideInFromTop}
+            custom={0}
+          >
+            <TypingEffect text={hero.greeting} maxBlinksAfterTyping={1} />
+          </motion.h1>
+          <motion.h2
+            className="mt-1 text-[2.375rem] leading-tight font-merriweather font-normal text-surface-foreground100-light dark:text-surface-foreground100-dark"
             variants={itemVariants}
             custom={0}
           >
@@ -123,76 +122,22 @@ function HeroSection() {
               text={hero.title}
               delay={1000}
               maxBlinksAfterTyping={6}
-              onComplete={() => setShowQuickLinks(true)}
+              onComplete={() => setShowSubline(true)}
             />
-            
-
-            <motion.div
-              className="absolute -right-20 top-1/2 -translate-y-1/2 cursor-pointer"
-              initial={{ scale: 0, opacity: 0 }}
-              animate={hasAnimated ? (starsSettled ? {
-                scale: 1,
-                opacity: 1,
-                rotate: 0
-              } : {
-                scale: [0, 1.2, 0.9, 1.1, 1],
-                opacity: 1,
-                rotate: [0, 10, -5, 7, 0]
-              }) : { scale: 0, opacity: 0 }}
-              transition={{
-                delay: 4.1,
-                duration: 0.5,
-                type: "spring",
-                stiffness: 300
-              }}
-              whileHover={{ scale: 1.1, rotate: 10 }}
-              onAnimationComplete={() => { if (hasAnimated) setStarsSettled(true); }}
-              onClick={handleSecretClick}
-            >
-              <StarsSvg className="w-16 h-16 text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current" />
-            </motion.div>
           </motion.h2>
           <motion.p
-            className="text-2xl font-merriweather font-light text-surface-foreground200-light dark:text-surface-foreground200-dark"
+            className="mt-2 text-lg font-inter font-normal text-surface-foreground200-light dark:text-surface-foreground200-dark"
             initial={{ opacity: 0, y: -12 }}
-            animate={showQuickLinks ? { opacity: 1, y: 0 } : { opacity: 0, y: -12 }}
+            animate={showSubline ? { opacity: 1, y: 0 } : { opacity: 0, y: -12 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
             {hero.subline}
           </motion.p>
-          <motion.div
-            className="flex flex-row items-center gap-2 text-sm font-inter font-normal text-surface-foreground200-light dark:text-surface-foreground200-dark"
-            initial={{ opacity: 0, y: -16 }}
-            animate={showQuickLinks ? { opacity: 1, y: 0 } : { opacity: 0, y: -16 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <a
-              href={MAILTO}
-              className="underline underline-offset-2 hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark"
-            >
-              Email
-            </a>
-            <span aria-hidden="true">•</span>
-            <a
-              href={RESUME_HREF}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline underline-offset-2 hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark"
-            >
-              Resume
-            </a>
-            <span aria-hidden="true">•</span>
-            <Link
-              to="/about"
-              className="underline underline-offset-2 hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark"
-            >
-              About me
-            </Link>
-          </motion.div>
         </motion.div>
       </motion.div>
 
-      {/* The about box sits under the whole row, centered on the page. */}
+      {/* The about box, centered on the page, with a clear gap under the row.
+          The star and heart are pinned to its right corners. */}
         <motion.div
           initial={{ scale: 0 }}
           animate={hasAnimated ? { scale: 1 } : { scale: 0 }}
@@ -202,13 +147,13 @@ function HeroSection() {
             damping: 10,
             delay: 3,
           }}
-          className="flex items-start justify-center w-full relative -mt-6 z-10"
+          className="flex items-start justify-center w-full max-w-[680px] relative -mt-2 z-10"
           style={{ transformOrigin: 'top center' }}
           custom={8}
         >
-          {/* Yellow star on the box's top left corner */}
-            <motion.div
-            className="absolute -left-5 -top-5 z-20"
+          {/* Yellow star, centered on the box's top right corner */}
+          <motion.div
+            className="absolute -right-5 -top-1 z-20"
             initial={{ scale: 0, opacity: 0 }}
             animate={hasAnimated ? (starsSettled ? {
               scale: 1,
@@ -226,12 +171,13 @@ function HeroSection() {
               stiffness: 300
             }}
             whileHover={{ scale: 1.1, rotate: -10 }}
+            onAnimationComplete={() => { if (hasAnimated) setStarsSettled(true); }}
           >
             <StarSvg className="w-10 h-10" />
           </motion.div>
           <PersonalityScene />
           <motion.div 
-            className="absolute bottom-0 -right-10 z-10"
+            className="absolute -bottom-6 -right-6 z-10"
             initial={{ scale: 0, opacity: 0 }}
             animate={hasAnimated ? (heartSettled ? {
               scale: 1,
@@ -251,7 +197,7 @@ function HeroSection() {
             onAnimationComplete={() => { if (hasAnimated) setHeartSettled(true); }}
             whileHover={{ scale: 1.1, rotate: 10 }}
           >
-            <HeartSvg className="w-16 h-16" />
+            <HeartSvg className="w-12 h-12" />
           </motion.div>
         </motion.div>
 
