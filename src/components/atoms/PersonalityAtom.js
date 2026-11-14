@@ -1,16 +1,30 @@
 import React, { useRef, useState, useEffect } from 'react';
-import AboutMeContent from './AtomAboutMeContent';
+import AboutMeContent, { aboutComments } from './AtomAboutMeContent';
+import CommentPins from '../comments/CommentPins';
+import { cursorSay } from '../CursorTag';
+import { cursorLines, heroComments } from '../../data/home';
 
 // The outlined "selected block" that holds the about text. The text fades in
 // `revealDelay` ms after the block scrolls into view. Desktop keeps the long
 // pause so it lands after the hero choreography; mobile passes something short.
 // The text is the last big piece of the hero to arrive, so `onRevealed` is how
 // the page knows the hero is done.
+//
+// The rest of the bio is posted as comments once the text is in: pins on the
+// box's bottom edge, each one opening a paragraph to read. The first time one
+// is opened, the desktop cursor says a line about it.
 const PersonalityScene = ({ revealDelay = 4000, onRevealed }) => {
   const textRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
   const revealed = useRef(onRevealed);
   revealed.current = onRevealed;
+  const saidIt = useRef(false);
+
+  const onCommentOpen = () => {
+    if (saidIt.current) return;
+    saidIt.current = true;
+    cursorSay(cursorLines.reader);
+  };
 
   useEffect(() => {
     const node = textRef.current;
@@ -50,6 +64,15 @@ const PersonalityScene = ({ revealDelay = 4000, onRevealed }) => {
           <div style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.5s' }}>
             <AboutMeContent />
           </div>
+
+          {/* Half on the box, half on the canvas, like a pin dropped on a frame. */}
+          <CommentPins
+            comments={aboutComments}
+            meta={heroComments}
+            show={isVisible}
+            onOpen={onCommentOpen}
+            className="absolute left-3 lg:left-4 bottom-0 translate-y-1/2 z-30"
+          />
 
           {/* Corner Nodes */}
           <div className="absolute w-2 h-2 border-2

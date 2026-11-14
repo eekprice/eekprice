@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import CaseStudyPage from './pages/CaseStudyPage';
 import WorkPage from './pages/WorkPage';
 import AboutPage from './pages/AboutPage';
+import SideProjectsPage from './pages/SideProjectsPage';
 import CursorTag from './components/CursorTag';
 import { SketchDefs } from './components/sketch/Sketch';
 
@@ -29,6 +30,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/work" element={<WorkPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/side-projects" element={<SideProjectsPage />} />
         <Route path="/case-study/:slug" element={<CaseStudyPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

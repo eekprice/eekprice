@@ -7,8 +7,9 @@ const SideProjectsButton = () => {
   const navigate = useNavigate();
 
   const handleTextClick = () => {
-    // TODO: /new-page has no Route yet (index.js only has a BrowserRouter).
-    navigate('/new-page');
+    // A placeholder page for now (pages/SideProjectsPage.js). This used to go
+    // to /new-page, which had no route and bounced back to Home.
+    navigate('/side-projects');
   };
 
   return (

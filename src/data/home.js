@@ -94,7 +94,17 @@ export const cursorLabels = [
 ];
 
 // Lines the cursor says when the visitor does something, instead of when the
-// mouse rests. `reader` shows the first time "Read more" is opened in the hero.
+// mouse rests. `reader` shows the first time a comment is opened in the hero.
 export const cursorLines = {
   reader: 'ah, we have a reader, respect',
+};
+
+// The comment pins on the hero's about box. The comments themselves are the
+// second and third paragraphs of the bio, in
+// components/atoms/AtomAboutMeContent.js. `title` is the heading of an open
+// comment. The avatar shows the first letter of `author`.
+export const heroComments = {
+  author: 'Erica',
+  time: 'Just now',
+  title: 'Comment',
 };
