@@ -37,6 +37,39 @@ function ExperienceCard({ card, mostInView = false }) {
     );
   }
 
+  // A supporting role: the same card with less in it, and a smaller title.
+  if (card.size === 'small') {
+    return (
+      <Reveal className="h-full">
+        <article
+          className="h-full rounded-lg border border-surface-outline-light dark:border-surface-outline-dark
+            bg-surface-background100-light dark:bg-surface-background100-dark p-4"
+        >
+          <p className={eyebrowClass}>{card.where}</p>
+          <h3 className="mt-1 font-merriweather font-light text-lg leading-snug text-surface-foreground100-light dark:text-surface-foreground100-dark">
+            {card.role}
+          </h3>
+          {card.reports && (
+            <p className="m-0 mt-1 font-inter text-xs font-medium text-surface-foreground300-light dark:text-surface-foreground300-dark">
+              {card.reports}
+            </p>
+          )}
+          <p className="m-0 mt-2 font-inter text-sm leading-normal text-surface-foreground200-light dark:text-surface-foreground200-dark">
+            {card.text}
+          </p>
+          {card.href && (
+            <p className="m-0 mt-3">
+              <Button as={Link} to={card.href} variant="outline" size="sm">
+                {card.linkLabel || 'Read the case study'}
+                <Arrow />
+              </Button>
+            </p>
+          )}
+        </article>
+      </Reveal>
+    );
+  }
+
   return (
     <Reveal>
       <div className="relative group/card" data-in-view-key={card.role}>

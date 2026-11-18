@@ -38,6 +38,38 @@ function MetaRow({ label, children }) {
   );
 }
 
+// The short version of a study, right under the role box, for a reader who
+// won't get through the whole page. `brief` on the study is a list of
+// { label, text }: problem, role, who, scope, decisions, what is supported.
+// Every line is cut from the write-up below it, so change that first.
+function Brief({ items }) {
+  return (
+    <Reveal className="mt-6">
+      <section
+        aria-label="The short version"
+        className="rounded-lg border border-surface-outline-light dark:border-surface-outline-dark
+          bg-surface-background100-light dark:bg-surface-background100-dark px-4 py-4 lg:px-6 lg:py-5"
+      >
+        <h2 className="m-0 text-xs uppercase tracking-wide font-inter font-medium text-surface-foreground400-light dark:text-surface-foreground400-dark">
+          The short version
+        </h2>
+        <dl className="m-0 mt-3 grid gap-x-8 gap-y-4 sm:grid-cols-2">
+          {items.map((item) => (
+            <div key={item.label}>
+              <dt className="font-inter font-semibold text-sm text-surface-foreground100-light dark:text-surface-foreground100-dark">
+                {item.label}
+              </dt>
+              <dd className="m-0 mt-1 font-inter text-sm lg:text-base leading-relaxed text-surface-foreground200-light dark:text-surface-foreground200-dark">
+                {item.text}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    </Reveal>
+  );
+}
+
 // A section heading in the write-up. The words are always there. The first
 // time it is seen, a pen underline draws under it and the arrow doodle pops.
 function SectionHeading({ children }) {
@@ -196,6 +228,8 @@ function CaseStudyPage() {
               </OutlinedBlock>
             </motion.div>
           </div>
+
+          {study.brief && <Brief items={study.brief} />}
         </header>
       </div>
 

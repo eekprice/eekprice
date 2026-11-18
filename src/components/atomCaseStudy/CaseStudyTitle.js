@@ -51,7 +51,7 @@ const CaseStudyContainer = ({ title, slides = [], href, slideHeight, sketchAt = 
               text-surface-foreground200-light dark:text-surface-foreground200-dark
               hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark"
           >
-            Read full study
+            {study?.linkLabel || 'Read full study'}
             <ChevronIcon className="w-4 h-4" />
           </Link>
         )}

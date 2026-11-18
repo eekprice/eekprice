@@ -139,6 +139,9 @@ function Home() {
 
   const publishedStudies = caseStudies.filter((study) => study.published);
   const designStudies = publishedStudies;
+  const shownRoles = leadershipCards.filter((card) => !card.hidden);
+  const featuredRoles = shownRoles.filter((card) => card.size !== 'small');
+  const supportingRoles = shownRoles.filter((card) => card.size === 'small');
   // The card with the most of itself on screen. Its sticky is the one that's out.
   const cardInView = useMostInView('[data-in-view-key]', { ready: showSections });
 
@@ -181,10 +184,18 @@ function Home() {
           {leadershipCards.length > 0 && (
             <section id="leadership" className="relative max-w-[800px] mx-auto px-4 pt-10 pb-6 scroll-mt-24">
               <SectionHeading>{sectionTitles.leadership}</SectionHeading>
+              {/* The featured card first, then the smaller supporting ones in a row. */}
               <div className="relative space-y-6">
-                {leadershipCards.map((card) => (
+                {featuredRoles.map((card) => (
                   <ExperienceCard key={card.role} card={card} mostInView={cardInView === card.role} />
                 ))}
+                {supportingRoles.length > 0 && (
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {supportingRoles.map((card) => (
+                      <ExperienceCard key={card.where} card={card} />
+                    ))}
+                  </div>
+                )}
               </div>
             </section>
           )}

@@ -70,7 +70,7 @@ const studies = [
     ],
   },
   {
-    title: "Simplifying menu schemas",
+    title: "Simplifying schemas in menus",
     stickers: [
       { emoji: '🍕', className: 'left-[22%] bottom-3 lg:left-[31%] lg:bottom-5', rotate: 14 },
       { emoji: '👍', className: 'right-[9%] bottom-7 lg:right-[14%] lg:bottom-9', rotate: -9 },

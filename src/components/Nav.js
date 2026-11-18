@@ -99,7 +99,8 @@ const GridIcon = (props) => (
 const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
 const goToWork = () => {
-  document.getElementById('case-studies')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // The work starts at the leadership section, the first one under the hero.
+  (document.getElementById('leadership') || document.getElementById('case-studies'))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
 function Nav({ showHome = false }) {

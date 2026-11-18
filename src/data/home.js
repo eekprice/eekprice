@@ -23,6 +23,11 @@ export const sectionTitles = {
 // Erica, 2026-11-16: leadership is a card, not a slide strip with a sticky,
 // with a second one for her role as Principal Product Consultant at CGI.
 // The Yum card's words come from CaseStudy/yum-ux-leadership.md.
+//
+// 2026-11-18, for the Workiva application: Yum is the featured card. A card
+// with `size: 'small'` is a supporting one, drawn smaller in a row under it
+// (CGI, then GE Aerospace). A card with `hidden: true` is kept here but not
+// drawn. `linkLabel` is what the button says.
 export const leadershipCards = [
   {
     where: 'Yum Brands · March 2022 to September 2025',
@@ -32,12 +37,15 @@ export const leadershipCards = [
     role: 'UX Manager and Principal Product Designer',
     text: 'I set the direction for how design should support the move to Byte, built the system the team ran on, and pushed for research in real stores.',
     points: [
-      { title: 'Direction', text: 'Four workstreams to turn many products into one platform.' },
+      // "Proposed": only the store research workstream is recorded as going ahead.
+      { title: 'Direction', text: 'I proposed four workstreams to turn many products into one platform.' },
       { title: 'How the team works', text: 'A checklist at intake, one Jira workflow, critiques at 30, 60 and 90.' },
-      { title: 'In stores', text: 'Project Keystone, field research across four brands.' },
+      // TODO(Erica): the sources show the plan for Keystone, not what the fieldwork found. Say what was carried out.
+      { title: 'In stores', text: 'Project Keystone, a field study across four brands. I owned the plan.' },
     ],
     tags: ['Leadership', 'Design ops', 'Design strategy', 'Field research'],
     href: '/case-study/yum-ux-leadership',
+    linkLabel: 'Read the Yum leadership case study',
     // The yellow sticky that slides out by the title, like the drive thru card's
     // green one. Erica asked for it back on 2026-11-16. Same yellow as this
     // study's note in the nav fan.
@@ -49,12 +57,27 @@ export const leadershipCards = [
   // TODO(Erica): a write-up to link.
   // TODO(Erica): Canon says the GE work is under CMMC and client confidentiality.
   // Confirm both client names can be public before this is pushed.
+  // The private outline for a small CGI case is CaseStudy/cgi-consulting.md.
+  // This card stays short until Erica fills that in.
   {
+    size: 'small',
     where: 'CGI · June 2025 to present',
     // Erica, 2026-11-16: "i have 4 at CGI".
     reports: '4 direct reports',
     role: 'Principal Product Consultant',
     text: 'I consult with large organizations to build new products from zero and improve enterprise systems. I worked with Topstep and GE Aerospace on their data platforms.',
+  },
+  // GE Aerospace as its own supporting card. Erica, 2026-11-18: build the card,
+  // keep it off the site until she gives facts she is cleared to share (Canon
+  // says the work is under CMMC and client confidentiality). Nothing below is
+  // public copy yet. The outline is CaseStudy/ge-aerospace.md.
+  // TODO(Erica): the role line, dates, one or two sentences, and whether GE is named.
+  {
+    hidden: true,
+    size: 'small',
+    where: 'GE Aerospace',
+    role: 'TODO(Erica)',
+    text: 'TODO(Erica)',
   },
 ];
 

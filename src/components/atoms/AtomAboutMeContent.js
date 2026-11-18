@@ -33,9 +33,12 @@ export const aboutComments = [
         <Link href="https://openaccess.cms-conferences.org/publications/book/978-1-964867-19-9/article/978-1-964867-19-9_22">published author in the AHFE journal</Link>,
         retired <Link href="https://www.memorisely.com/">teacher at Memorisely</Link>,
         the{' '}
-        {/* TODO(Erica): Canon/about.md says "founding designer", the Figma says "co-founder". */}
-        <Link href={SCISUMMARY_URL}>co-founder of SciSummary</Link>{' '}
-        and Helix Booking, a conference speaker, and{' '}
+        {/* The Figma said "co-founder" of both. LinkedIn, her named source, says
+            Founding Experience Designer at SciSummary and Founder of Helix Booking,
+            and so do the about box and the resume page. Changed 2026-11-18 so the
+            roles agree. TODO(Erica): confirm. */}
+        <Link href={SCISUMMARY_URL}>founding designer at SciSummary</Link>,
+        the founder of Helix Booking, a conference speaker, and{' '}
         <Link href="https://podcasts.apple.com/us/podcast/the-forward-slash-podcast/id1744372906?i=1000679262388">guest on the Forward Slash podcast</Link>,
         where I shared insights on UX and design leadership. Before diving into the world of UX, I brought characters to life as a performer at Disney, a role that probably explains my Energizer Bunny energy.
       </p>
@@ -60,8 +63,13 @@ function AboutMeSection() {
   return (
     <div className="flex flex-col w-full items-start px-3 lg:px-4">
       <div className="mt-3 mb-8 lg:mt-4 lg:mb-9 text-left">
+        {/* The first sentence is the through-line: what connects the leadership,
+            consulting and founding design work (added 2026-11-18 for the Workiva
+            application). TODO(Erica): pick the wording. Two other candidates are in
+            Canon/workiva-role.md. */}
         <p className={p}>
-          I'm Erica: bubbly, energetic, and always curious. I thrive on variety and excitement, which is why I'm never bored.
+          I lead design for complicated enterprise products, and I still do the hands-on work as a founding designer on AI products.
+          I'm bubbly, energetic, and always curious. I thrive on variety and excitement, which is why I'm never bored.
           By day, I'm a product consultant leading an AWS data migration and shaping AI product strategy for a global aerospace company.
           By night, I'm the Founding Experience Designer at{' '}
           <Link href={ARISO_URL}>Ariso</Link>, <Link href={SCISUMMARY_URL}>SciSummary</Link>, and Helix.

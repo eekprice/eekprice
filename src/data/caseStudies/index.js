@@ -24,6 +24,7 @@ export const caseStudies = [
   {
     slug: 'yum-pos',
     title: 'Speeding up the drive thru',
+    linkLabel: 'Read the drive thru case study',
     tagline: 'KFC and Taco Bell. One flexible flow that follows how customers actually order.',
     hero: { src: img('kfc-pos-final-ui-with-team-quotes'), alt: 'Final Taco Bell and KFC POS screens with team member feedback' },
     // For this study's sticky note in the nav fan (StickyFan.js): a picture
@@ -216,6 +217,8 @@ export const caseStudies = [
   {
     slug: 'menu-management',
     title: 'Simplifying schemas in menus',
+    // What the link on the home card says, so it names the study it opens.
+    linkLabel: 'Read the menu case study',
     tagline: "Yum's Menu Management tool, rebuilt around the people who publish menus instead of the API.",
     hero: { src: img('menu-management-final-ui-tree-grid'), alt: 'Menu Management with the tree grid and action panel' },
     meta: {
@@ -227,6 +230,15 @@ export const caseStudies = [
       scale: '13,000 menu items. Live in 5,925 stores across 4 markets, as of spring 2025',
       tags: ['Admin tool', 'Information architecture', 'Design studio', 'Data grid'],
     },
+    // The short version under the role box (Brief in pages/CaseStudyPage.js),
+    // added 2026-11-18: before, after, why, and what the evidence is.
+    // TODO(Erica): any adoption or time-on-task numbers you can defend go in "Evidence".
+    brief: [
+      { label: 'Before', text: "To publish a menu you had to understand the API's data model. People were scared to publish, and bulk updates were painful." },
+      { label: 'After', text: 'A tree view that shows how menu items relate. A panel that shows only the actions for what you selected. A diff to review before anything goes live.' },
+      { label: 'Why', text: 'Each one answers a problem from the interviews and tests. The tree is for seeing relationships, the panel is for finding the right action, and the diff is for checking a change before it reaches stores.' },
+      { label: 'Evidence', text: "Interviews, a discovery workshop, a design studio and rounds of prototype testing. I don't have usage numbers from after launch." },
+    ],
     // The seven story cards. They tell the engineering story: the schema came
     // first, Erica brought product and engineering to the users, and the team
     // changed course. Copy is from CaseStudy/menu-management.md ("Slides").
@@ -359,14 +371,14 @@ export const caseStudies = [
       {
         heading: 'The solution',
         blocks: [
-          { type: 'figure', src: img('menu-management-final-ui-tree-grid'), alt: 'Menu Management final UI with the tree grid and action panel' },
+          { type: 'figure', src: img('menu-management-final-ui-tree-grid'), alt: 'Menu Management final UI with the tree grid and action panel', caption: 'The final screen, with the tree grid and the action panel.' },
           { type: 'p', text: "A working menu you can search, expand, and edit in place. It's built on the three ideas from the studio, plus diffing." },
           { type: 'heading', text: 'Visualize relationships' },
           {
             type: 'p',
             text: 'An advanced data grid with a tree view. Bundle, choice, product, variant, slot, modifier, all nested so you can see how menu items relate and how a change ripples.',
           },
-          { type: 'figure', src: img('menu-management-tree-view'), alt: 'The tree grid, from a whiteboard sketch to the final screen', caption: 'The tree grid, from sketch to screen.' },
+          { type: 'figure', src: img('menu-management-tree-view'), alt: 'The tree grid, from a whiteboard sketch to the final screen', caption: 'The tree grid, from sketch to screen. Nesting shows how menu items relate.' },
           { type: 'heading', text: 'Admin for context' },
           { type: 'p', text: "Show where you are and what you're affecting, so publishing stops feeling like a leap." },
           { type: 'heading', text: 'Dynamic action panel' },
@@ -374,13 +386,13 @@ export const caseStudies = [
             type: 'p',
             text: 'Select an entity and the panel shows only the actions that apply to it. Nobody has to decode the data model to find the right button. Range pricing lives here too.',
           },
-          { type: 'figure', src: img('menu-management-action-panel'), alt: 'Action panel sketches on either side of the final screen', caption: 'Action panel sketches on either side of the final screen.' },
+          { type: 'figure', src: img('menu-management-action-panel'), alt: 'Action panel sketches on either side of the final screen', caption: 'Action panel sketches on either side of the final screen. Only the actions for the selected item show.' },
           { type: 'heading', text: 'Diffing' },
           {
             type: 'p',
             text: 'Before anything goes live you see what will change, store by store and channel by channel, so you can catch problems first. Save a patch, review the diff, then publish.',
           },
-          { type: 'figure', src: img('menu-management-diffing'), alt: 'Diffing, from a paper sketch to the publishing flow and the review changes screen', caption: 'From a paper sketch to the publishing flow and the review screen.' },
+          { type: 'figure', src: img('menu-management-diffing'), alt: 'Diffing, from a paper sketch to the publishing flow and the review changes screen', caption: 'From a paper sketch to the publishing flow and the review screen. You see every change before it goes live.' },
         ],
       },
       {
@@ -389,21 +401,25 @@ export const caseStudies = [
           {
             type: 'quote',
             text: "I know we've asked for a lot of different changes and enhancements to patching, so I appreciate this creative approach. Instead of just implementing what we've asked for, you're aiming for a better overall solution. I like that. We'll need to play with it and see how it works in practice. I can see this leading to a significant rewrite of the way we currently do things.",
-            who: 'Nathan Shelman, Analyst at KFC, during review',
+            who: 'Nathan Shelman, Analyst at KFC, on seeing the design in review',
             // Shown as his Teams contact card, the way the 2023 Framer page credited him.
             person: {
               card: '/images/case-studies/nathan-shelman-card.png',
               alt: 'Nathan Shelman, Analyst, RIS Kentucky Fried Chicken, Information Technology',
             },
           },
-          { type: 'p', text: 'What changed for users:' },
+          // Reworded 2026-11-18. The 2023 page stated four results as fact, but no
+          // source says they were measured, so this says what each piece was built
+          // to change. TODO(Erica): which of these you saw in testing or after launch.
+          { type: 'p', text: "That was Nathan's first reaction to the design. As he says, they still needed to use it to see how it works in practice." },
+          { type: 'p', text: "What each piece was built to change. These come from the research and the testing rounds. I don't have numbers from after launch." },
           {
             type: 'list',
             items: [
-              'They could see how menu items connect, so there was less confusion.',
-              'Admin context took some of the fear out of publishing.',
-              'The action panel made the common tasks shorter.',
-              'The tool got easier to use and could scale with the business.',
+              'The tree view shows how menu items connect, so there is less to work out in your head.',
+              'Admin context shows what a change will touch before you publish it.',
+              'The action panel shows only what applies, so nobody has to decode the data model to find the right button.',
+              'The structure was built for more stores, channels, and pricing rules.',
             ],
           },
         ],
@@ -421,7 +437,7 @@ export const caseStudies = [
     highlights: [
       'Turned an API-shaped admin tool into a user-shaped one.',
       'Ran a design studio that got engineers and product owners sketching, not just reviewing.',
-      'Tree view, action panel, and diffing solved fear, scale, and bulk edits with one model.',
+      'Tree view, action panel, and diffing were built to answer fear, scale, and bulk edits with one model.',
     ],
   },
 
@@ -507,17 +523,30 @@ export const caseStudies = [
     tagline: 'How I set the direction for design, built the way the team worked, and took research into stores.',
     meta: {
       // TODO(Erica): exact starting title, and how long until the promotion.
-      role: 'Joined as a senior designer, promoted to UX Manager and Principal Product Designer. I led the design strategy for Byte, the way the team worked, and field research across four brands.',
+      role: 'Joined as a senior designer, promoted to UX Manager and Principal Product Designer. I led the design strategy for Byte, the way the team worked, and the plan for field research across four brands.',
       company: 'Yum Brands (KFC, Taco Bell, Pizza Hut, Habit Burger)',
       years: 'March 2022 to September 2025',
       // Six direct reports is from Canon/about.md (Erica pointed to it, 2026-11-16).
-      team: 'Six direct reports. Designers and researchers across six product areas, with partners in product, engineering, brand operations and an outside research partner',
+      // The table below is the wider team (16 designers, 2 researchers). Six of them reported to her.
+      team: 'Six direct reports, within a wider UX team of designers and researchers across six product areas. Partners in product, engineering, brand operations and an outside research partner',
       tags: ['Leadership', 'Design ops', 'Design strategy', 'Field research'],
     },
     // The cards at the top of this page are the two product case studies from
     // the same company (Erica, 2026-11-16), so someone who lands here first
     // still sees that work. Any study can list `related` slugs.
     related: { label: 'Case studies from my time at Yum', slugs: ['menu-management', 'yum-pos'] },
+    // The short version under the role box (Brief in pages/CaseStudyPage.js),
+    // added 2026-11-18. Every line is cut from the sections below.
+    // TODO(Erica): the last line says there are no product metrics tied to this
+    // work, because none are in your doc. Change it if you have some.
+    brief: [
+      { label: 'The problem', text: 'UX reported into engineering and came in after the decisions were made. Designers were spread across products with no shared way of working, right as Yum planned to bring its restaurant tools into one platform, Byte.' },
+      { label: 'My role', text: 'UX Manager and Principal Product Designer, with six direct reports. I owned the design direction for Byte, how the team worked, and the plan for field research.' },
+      { label: 'Who I worked with', text: 'Product owners, engineering, brand operations, our design director, and an outside research partner who ran the store sessions.' },
+      { label: 'Scope and status', text: 'The intake checklist, the Jira workflow and the critiques were how the team ran. For Byte I proposed four workstreams. The store research one went ahead as Project Keystone.' },
+      { label: 'Key decisions', text: 'A checklist every request had to pass before design took it on. Critiques at 30, 60 and 90. For menu reverts, undo the whole publish in the first version and write down the risks.' },
+      { label: 'What I can stand behind', text: "Design got involved a full quarter ahead of implementation, and bulk change requests moved into one workflow. These are changes in how we worked. I don't have product metrics tied to them." },
+    ],
     summary:
       'I joined Yum as a senior designer. UX reported into engineering and got pulled in after the decisions were made. I saw that the team needed someone to lead, so I stepped up, and I was quickly promoted to manager. Designers were spread across products with no shared way of working. Yum was also about to bring many separate restaurant tools together into one platform, Byte.',
     sections: [
@@ -530,7 +559,7 @@ export const caseStudies = [
           },
           {
             type: 'table',
-            caption: 'The team, by product area',
+            caption: 'The wider UX team, by product area. Six of these people reported to me.',
             head: ['Area', 'People'],
             rows: [
               ['Byte Coach', '8'],
@@ -578,7 +607,7 @@ export const caseStudies = [
           // TODO(Erica): what the North Star plan covered and who approved it.
           { type: 'p', text: 'I started with a North Star plan for UX at Yum. It made the case for bringing designers into one team, defined roles and responsibilities, and mapped how work actually moved.' },
           { type: 'p', text: 'Then I looked ahead to Byte. Taking separate products, each with its own stack and components, into new markets would mean low adoption and higher costs. The products had to feel like one system first. I laid out what design would need to make that possible, as four workstreams leadership could fund one at a time.' },
-          { type: 'diagram', name: 'workstreams', caption: 'Design strategy for Byte, four workstreams' },
+          { type: 'diagram', name: 'workstreams', caption: 'Design strategy for Byte, the four workstreams I proposed' },
           // TODO(Erica): your role in writing the proposal, and what happened to the other three workstreams.
           { type: 'p', text: 'The order mattered. First learn what exists and who uses it, then build the shared system and the team to support it. The store research piece went ahead as Project Keystone.' },
         ],
@@ -662,8 +691,9 @@ export const caseStudies = [
               'Set a standard way to document every visit, from planning to summary',
             ],
           },
-          { type: 'heading', text: 'Scope' },
-          { type: 'p', text: 'Three stores per brand, shadowing general managers, shift managers, and team members through opening, peak, and close. Virtual interviews with franchise owners, data managers, and above-store leaders.' },
+          // "The plan": the doc records what was planned. TODO(Erica): say what was carried out and what came of it.
+          { type: 'heading', text: 'The plan' },
+          { type: 'p', text: 'The plan was three stores per brand, shadowing general managers, shift managers, and team members through opening, peak, and close, plus virtual interviews with franchise owners, data managers, and above-store leaders.' },
           { type: 'p', text: 'The questions were written for each role. A general manager was asked about balancing labor, digital orders, and profit. A shift manager: "What defines a successful shift for you?" A team member: "If you could improve one thing about the systems you use, what would it be?"' },
           { type: 'diagram', name: 'keystone', caption: 'Project Keystone, planned phases by week' },
           // TODO(Erica): what came out of it. Which deliverables were finished, and one roadmap decision the research changed.
@@ -689,7 +719,8 @@ export const caseStudies = [
             items: [
               'Design got involved a full quarter ahead of implementation.',
               'Bulk change requests were combined into one streamlined workflow, which cut time to market.',
-              'Accessibility work to WCAG 2.1 ran across product lines.',
+              // TODO(Erica): what the accessibility work was. This wording does not claim an audit.
+              'We worked toward WCAG 2.1 across product lines.',
             ],
           },
         ],
@@ -714,8 +745,9 @@ export const caseStudies = [
     highlights: [
       'Joined Yum as a senior designer and was promoted to lead UX.',
       'Built how the team worked: a checklist at intake, one Jira workflow, critiques at 30, 60 and 90.',
-      'Led Project Keystone, field research in stores across four brands.',
-      'Design got involved a full quarter ahead of implementation.',
+      'Proposed four workstreams to turn many products into one platform.',
+      // TODO(Erica): "a quarter earlier" moved to the short version until you give the comparison behind it.
+      'Owned the plan for Project Keystone, a field study in stores across four brands.',
     ],
   },
 ];

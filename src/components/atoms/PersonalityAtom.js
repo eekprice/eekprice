@@ -3,6 +3,16 @@ import AboutMeContent, { aboutComments } from './AtomAboutMeContent';
 import CommentPins from '../comments/CommentPins';
 import { cursorSay } from '../CursorTag';
 import { cursorLines, heroComments } from '../../data/home';
+import Button from '../Button';
+
+// The work starts at the first section under the hero. If the page is still
+// holding the sections back, a wheel event tells it to show them, then we scroll.
+const seeWork = () => {
+  const go = () => document.getElementById('leadership')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (document.getElementById('leadership')) return go();
+  window.dispatchEvent(new Event('wheel'));
+  setTimeout(go, 120);
+};
 
 // The outlined "selected block" that holds the about text. The text fades in
 // `revealDelay` ms after the block scrolls into view. Desktop keeps the long
@@ -53,7 +63,7 @@ const PersonalityScene = ({ revealDelay = 4000, onRevealed }) => {
   }, [revealDelay]);
 
   return (
-    <div className="flex items-start justify-start w-full max-w-[600px] lg:max-w-[680px]">
+    <div className="flex flex-col items-start justify-start w-full max-w-[600px] lg:max-w-[680px]">
       <div className="flex flex-row items-start w-full">
         <div
           ref={textRef}
@@ -92,6 +102,22 @@ const PersonalityScene = ({ revealDelay = 4000, onRevealed }) => {
             border-blockHighlight-outlineSurface-light dark:border-blockHighlight-outlineSurface-dark
             rounded-full" style={{ bottom: '-5px', right: '-5px' }}></div>
         </div>
+      </div>
+
+      {/* The one way into the work from the hero. It arrives a beat after the
+          about text, when the sections under the hero are on the page, and
+          scrolls to the first of them. It sits in the middle: the comment pins
+          have the left corner and the heart has the right one. */}
+      <div
+        className="mt-7 w-full flex justify-center"
+        style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.5s 0.9s', pointerEvents: isVisible ? 'auto' : 'none' }}
+      >
+        <Button onClick={seeWork}>
+          See my work
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" className="w-4 h-4">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v14m-6-6 6 6 6-6" />
+          </svg>
+        </Button>
       </div>
     </div>
   );
