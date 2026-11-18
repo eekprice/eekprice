@@ -7,11 +7,14 @@ import {
   ActivitiesCard,
   ResearchCard,
   ArtCard,
+  SlideCard,
 } from '../components/caseStudy/Overview';
 import { getCaseStudy } from './caseStudies';
 import { ReactComponent as KfcWires } from '../assets/StudyPOS/wiresKfc.svg';
 
-const pos = getCaseStudy('yum-pos').overview;
+const posStudy = getCaseStudy('yum-pos');
+const pos = posStudy.overview;
+const menuSlides = getCaseStudy('menu-management').slides;
 
 // Slide widths. WIDE is two STANDARD slides plus the 16px gap between them.
 const STANDARD = 'w-[264px]';
@@ -21,7 +24,7 @@ const WIDE = 'w-[544px]';
 // `placeholder: true` on a slide hides that slide the same way.
 // `href` is the link to the full study. Leave it off until the page exists;
 // the card only shows "Read full study" when href is set.
-// `stickers` are emoji scattered around the card. `className` is the spot
+// `stickers` are emoji or brand logos (`image` and `name`) scattered around the card. `className` is the spot
 // (Tailwind position classes, relative to the card), `rotate` is the tilt.
 
 const cardClass = `flex flex-col justify-between h-full p-4
@@ -34,9 +37,13 @@ const studies = [
   {
     title: "Speeding up the drive thru",
     stickers: [
-      { emoji: '🍗', className: 'right-4 top-2 lg:right-[27%] lg:top-3', rotate: -16 },
-      { emoji: '🌮', className: 'left-[9%] -bottom-3 lg:left-[44%] lg:-bottom-4', rotate: 12 },
+      { image: '/images/case-studies/brands/kfc.webp', name: 'KFC', className: 'w-16 lg:w-20 right-4 top-1 lg:right-[24%] lg:top-3', rotate: -8 },
+      { image: '/images/case-studies/brands/taco-bell.webp', name: 'Taco Bell', className: 'w-9 lg:w-11 left-[9%] -bottom-3 lg:left-auto lg:bottom-auto lg:-right-8 lg:top-12', rotate: 8 },
     ],
+    // On desktop, hovering the card slides this green sticky out from behind
+    // its left edge, up by the title. It links to the study. It also comes
+    // out when the card is the one most in view. Same picture as the study's note in the nav fan.
+    peek: { title: 'Speeding up the drive thru', image: posStudy.note.image },
     order: 2,
     published: true,
     href: '/case-study/yum-pos',
@@ -69,12 +76,16 @@ const studies = [
       { emoji: '👍', className: 'right-[9%] bottom-7 lg:right-[14%] lg:bottom-9', rotate: -9 },
     ],
     order: 1,
-    published: true, // TODO(Erica): slides for this home card. The full page is ready.
+    published: true,
     href: '/case-study/menu-management',
-    slides: [
-      { content: "Slide 1 Content", placeholder: true },
-      { content: "Slide 2 Content", placeholder: true },
-    ],
+    // Seven slides that tell the engineering story, not the drive thru beats.
+    // The list lives in data/caseStudies (`slides`) and is shared with the
+    // grid at the top of the case study page.
+    slideHeight: 'h-[332px]',
+    slides: menuSlides.map((slide, i) => ({
+      content: <SlideCard slide={slide} step={i + 1} />,
+      width: slide.wide ? WIDE : STANDARD,
+    })),
   },
   {
     title: "poop",

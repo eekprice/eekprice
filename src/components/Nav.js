@@ -7,8 +7,13 @@ import AtomResume from './atoms/atomResume';
 import Stickies from './atoms/atomStickies.js';
 import NavItem, { navFocusClass } from './atoms/NavItem';
 import StickyFan from './StickyFan';
-import { caseStudies } from '../data/caseStudies';
+import { getCaseStudy } from '../data/caseStudies';
 import { useTheme } from '../hooks/useTheme';
+
+// The three notes in the sticky fan, back to front: green, blue, yellow.
+// Erica, 2026-11-16: the yellow one is the leadership study. Helix Booking
+// used to be there; it is still on Past Work, behind the fan's "All" button.
+const fanStudies = ['yum-pos', 'menu-management', 'yum-ux-leadership'].map(getCaseStudy).filter(Boolean);
 
 // Floating bottom nav, laid out like a FigJam toolbar: a white bar with
 // groups split by thin dividers.
@@ -210,7 +215,7 @@ function Nav({ showHome = false }) {
             <StickyFan
               id="sticky-fan"
               open={fanOpen}
-              studies={caseStudies}
+              studies={fanStudies}
               onClose={closeFan}
               onAll={workAction}
               onExited={fanExited}
@@ -240,7 +245,7 @@ function Nav({ showHome = false }) {
             <AtomContact />
           </li>
           <li className="inline-flex m-0 p-0">
-            <AtomResume />
+            <AtomResume onClick={() => navigate('/resume')} active={pathname === '/resume'} />
           </li>
           <li className="inline-flex m-0 p-0">
             <NavItem

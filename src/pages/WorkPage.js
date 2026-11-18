@@ -19,6 +19,15 @@ import FloatingNav from '../components/FloatingNav';
 // The first card's wireframe, laid out like the card: picture, then a short
 // line, a title, two lines of copy and the link.
 const cardWire = { row: true, lines: [22, 58, 90, 76, 34] };
+// The same wireframe for a card with no picture.
+const textWire = { image: false, lines: [22, 58, 90, 76, 34] };
+
+// Leadership first (Erica, 2026-11-16), then the rest in the data's order.
+const FIRST = ['yum-ux-leadership'];
+const ordered = [
+  ...FIRST.map((slug) => caseStudies.find((s) => s.slug === slug)).filter(Boolean),
+  ...caseStudies.filter((s) => !FIRST.includes(s.slug)),
+];
 
 const ChevronLeft = (props) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" {...props}>
@@ -44,15 +53,18 @@ function WorkCard({ study, first = false }) {
         focus-visible:ring-primary-foreground-light dark:focus-visible:ring-primary-foreground-dark
         focus-visible:ring-offset-backdrop-background-light dark:focus-visible:ring-offset-backdrop-background-dark"
     >
-      <div className="sm:w-[44%] shrink-0 bg-surface-background200-light dark:bg-surface-background200-dark border-b sm:border-b-0 sm:border-r border-surface-outline-light dark:border-surface-outline-dark">
-        <img
-          src={study.hero.src}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          className="w-full h-44 sm:h-full object-cover object-left-top"
-        />
-      </div>
+      {/* A study with no picture yet, like a leadership story, is a text card. */}
+      {study.hero && (
+        <div className="sm:w-[44%] shrink-0 bg-surface-background200-light dark:bg-surface-background200-dark border-b sm:border-b-0 sm:border-r border-surface-outline-light dark:border-surface-outline-dark">
+          <img
+            src={study.hero.src}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            className="w-full h-44 sm:h-full object-cover object-left-top"
+          />
+        </div>
+      )}
 
       <div className="flex flex-col p-4 lg:p-5 min-w-0">
         <p className="text-xs uppercase tracking-wide font-inter font-medium text-surface-foreground400-light dark:text-surface-foreground400-dark">
@@ -86,7 +98,7 @@ function WorkCard({ study, first = false }) {
   if (first) {
     return (
       <Stage>
-        <Swap at={150} wire={cardWire}>
+        <Swap at={150} wire={study.hero ? cardWire : textWire}>
           {card}
         </Swap>
       </Stage>
@@ -142,7 +154,7 @@ function WorkPage() {
 
       <main className="max-w-[800px] mx-auto px-4 pb-12">
         <div className="space-y-6">
-          {caseStudies.map((study, i) => (
+          {ordered.map((study, i) => (
             <WorkCard key={study.slug} study={study} first={i === 0} />
           ))}
         </div>

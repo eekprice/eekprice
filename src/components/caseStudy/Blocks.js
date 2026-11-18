@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { land } from '../sketch/motion';
+import Diagram from './Diagrams';
 
 // Building blocks for a case study page, styled like the rest of the site:
 // Merriweather body, outlined "selected" boxes, sticky notes, quote callouts.
@@ -92,7 +93,10 @@ export function Paragraph({ text }) {
   return <p className={bodyClass}>{text}</p>;
 }
 
-export function Figure({ src, alt, caption }) {
+// No box, border or drop shadow (Erica's call): most of these are cut-out
+// PNG collages, and a box around them showed up as an empty white panel.
+// `invert` flips a black-on-transparent graphic to light in dark mode.
+export function Figure({ src, alt, caption, invert = false }) {
   return (
     <Reveal>
       <figure className="my-2">
@@ -101,7 +105,7 @@ export function Figure({ src, alt, caption }) {
           alt={alt}
           loading="lazy"
           decoding="async"
-          className="w-full h-auto rounded-lg border border-surface-outline-light dark:border-surface-outline-dark shadow-md bg-surface-background100-light dark:bg-surface-background100-dark"
+          className={`w-full h-auto rounded-lg ${invert ? 'dark:invert' : ''}`}
         />
         {caption && (
           <figcaption className="mt-2 text-sm font-inter text-surface-foreground400-light dark:text-surface-foreground400-dark">
@@ -119,8 +123,37 @@ const PersonIcon = (props) => (
   </svg>
 );
 
+// A quote with a named person, the Framer page treatment Erica liked: a soft
+// gray panel, a teal quote mark, the words set large, and the person's Teams
+// contact card (the real screenshot, at its own size) tucked into the bottom
+// right. `person` is { card, alt }.
+function PersonQuote({ text, person }) {
+  return (
+    <Reveal>
+      <figure
+        className="relative mt-6 rounded-3xl px-5 py-6 sm:px-8 sm:py-8
+          bg-surface-background200-light dark:bg-surface-background200-dark"
+      >
+        <div className="flex gap-3 sm:gap-4">
+          <span className="shrink-0 font-inter font-bold text-4xl leading-none text-teal-400 select-none" aria-hidden="true">
+            "
+          </span>
+          <blockquote className="m-0 font-inter text-lg lg:text-xl leading-loose text-surface-foreground100-light dark:text-surface-foreground100-dark">
+            {text}&rdquo;
+          </blockquote>
+        </div>
+        <figcaption className="mt-5">
+          <img src={person.card} alt={person.alt} className="block w-full h-auto max-w-[574px] sm:ml-auto" />
+        </figcaption>
+      </figure>
+    </Reveal>
+  );
+}
+
 // Quote callout: bordered card with a little avatar badge, like the old site.
-export function Quote({ text, who }) {
+// With a `person` ({ card, alt }) it uses the panel and the contact card image.
+export function Quote({ text, who, person }) {
+  if (person) return <PersonQuote text={text} person={person} />;
   return (
     <Reveal>
       <blockquote
@@ -184,6 +217,34 @@ export function Note({ text }) {
   );
 }
 
+// A row of yellow sticky notes, one short point each. Used for "In short" and
+// for lessons. Paper lands: each note drops in and settles, one after the other.
+export function Stickies({ items }) {
+  const reduce = useReducedMotion();
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      {items.map((item, i) => (
+        <motion.div
+          key={item}
+          variants={land(i)}
+          initial={reduce ? 'visible' : 'hidden'}
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+        >
+          <div
+            className="h-full rounded-md px-4 py-4 shadow-md font-inter text-sm leading-relaxed
+              bg-highlight-backgroundSticky-light dark:bg-highlight-backgroundSticky-dark
+              text-highlight-foregroundSticky-light dark:text-highlight-foregroundSticky-dark"
+            style={{ transform: `rotate(${[-1.5, 1, -0.5][i % 3]}deg)` }}
+          >
+            {item}
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
 export function List({ items }) {
   return (
     <ul className={`${bodyClass} list-disc pl-5 space-y-2 marker:text-primary-outline-light dark:marker:text-primary-outline-dark`}>
@@ -220,22 +281,92 @@ export function Steps({ items }) {
   );
 }
 
+// A step inside a section, like "Research" under "What I did". Same font as
+// the section headings (Merriweather light), one size down.
+export function Subheading({ text }) {
+  return (
+    <h3 className="pt-3 font-merriweather font-light text-xl lg:text-2xl text-surface-foreground100-light dark:text-surface-foreground100-dark">
+      {text}
+    </h3>
+  );
+}
+
+// A list where each item opens with a bold lead-in, like "Design came in late."
+export function Points({ items, ordered = false }) {
+  const Tag = ordered ? 'ol' : 'ul';
+  return (
+    <Tag className={`${bodyClass} ${ordered ? 'list-decimal' : 'list-disc'} pl-5 space-y-2 marker:text-primary-outline-light dark:marker:text-primary-outline-dark`}>
+      {items.map((it) => (
+        <li key={it.title}>
+          <strong className="font-semibold text-surface-foreground100-light dark:text-surface-foreground100-dark">{it.title}</strong>{' '}
+          {it.text}
+        </li>
+      ))}
+    </Tag>
+  );
+}
+
+// A small plain table. `head` is the header row, `rows` the rest.
+export function Table({ head, rows, caption }) {
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse font-inter text-sm lg:text-base text-left text-surface-foreground100-light dark:text-surface-foreground100-dark">
+        {caption && <caption className="sr-only">{caption}</caption>}
+        <thead>
+          <tr>
+            {head.map((h) => (
+              <th key={h} scope="col" className="py-2 pr-4 text-xs uppercase tracking-wide font-medium text-surface-foreground400-light dark:text-surface-foreground400-dark border-b border-surface-outline-light dark:border-surface-outline-dark">
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row[0]}>
+              {row.map((cell, i) => (
+                <td key={i} className="py-2 pr-4 border-b border-surface-outline-light/60 dark:border-surface-outline-dark/60">
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export function Block({ block }) {
   switch (block.type) {
     case 'p':
       return <Paragraph text={block.text} />;
+    case 'heading':
+      return <Subheading text={block.text} />;
     case 'figure':
-      return <Figure src={block.src} alt={block.alt} caption={block.caption} />;
+      return <Figure src={block.src} alt={block.alt} caption={block.caption} invert={block.invert} />;
     case 'quote':
-      return <Quote text={block.text} who={block.who} />;
+      return <Quote text={block.text} who={block.who} person={block.person} />;
     case 'quotes':
       return <QuoteGrid items={block.items} />;
     case 'note':
       return <Note text={block.text} />;
     case 'list':
       return <List items={block.items} />;
+    case 'stickies':
+      return <Stickies items={block.items} />;
     case 'steps':
       return <Steps items={block.items} />;
+    case 'points':
+      return <Points items={block.items} ordered={block.ordered} />;
+    case 'table':
+      return <Table head={block.head} rows={block.rows} caption={block.caption} />;
+    case 'diagram':
+      return (
+        <Reveal>
+          <Diagram name={block.name} caption={block.caption} />
+        </Reveal>
+      );
     default:
       return null;
   }

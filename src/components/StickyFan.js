@@ -36,6 +36,22 @@ const NOTES = [
   },
 ];
 
+// Brand logos that pop out around a note on hover or keyboard focus. Where
+// each one sits, by its `spot` in the study data. Dark mode puts them on a
+// white chip, because some logos have black type.
+const BRAND_SPOT = {
+  top: 'left-1/2 -top-8 w-12 -ml-6 -rotate-6',
+  left: '-left-10 top-[56%] w-[68px] -rotate-3',
+  right: '-right-5 top-[50%] w-9 rotate-6',
+};
+const brandClass = `absolute h-auto pointer-events-none select-none
+  [filter:drop-shadow(0_0_2px_rgb(255_255_255))_drop-shadow(0_0_1px_rgb(255_255_255))_drop-shadow(0_4px_6px_rgb(15_23_42/0.45))]
+  dark:bg-white dark:rounded dark:p-0.5
+  opacity-0 scale-50 transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
+  group-hover:opacity-100 group-hover:scale-100
+  group-focus-visible:opacity-100 group-focus-visible:scale-100
+  motion-reduce:scale-100 motion-reduce:transition-opacity`;
+
 // A white patch behind an outline button, so it reads on top of the page.
 const patch = 'inline-flex rounded-md bg-surface-background100-light dark:bg-surface-background100-dark shadow-md';
 
@@ -111,7 +127,7 @@ function StickyFan({ id, open, studies, onClose, onAll, onExited }) {
                     ref={i === 0 ? firstNote : undefined}
                     to={`/case-study/${study.slug}`}
                     onClick={() => onClose()}
-                    className={`block w-36 h-36 p-4 rounded-md shadow-lg -translate-x-1/2 -translate-y-1/2
+                    className={`group relative block w-36 h-36 p-4 rounded-md shadow-lg -translate-x-1/2 -translate-y-1/2
                       font-hand text-base leading-5 font-medium
                       transition-[transform,box-shadow] duration-300 ease-out
                       motion-safe:hover:-translate-y-[calc(50%+8px)] motion-safe:hover:rotate-2 hover:shadow-xl
@@ -127,6 +143,32 @@ function StickyFan({ id, open, studies, onClose, onAll, onExited }) {
                     >
                       {study.title}
                     </motion.span>
+                    {/* A picture of the work, always on the note. It fades in with the name. */}
+                    {study.note?.image && (
+                      <motion.img
+                        src={study.note.image}
+                        alt=""
+                        className="absolute inset-x-2 bottom-2 w-[calc(100%-16px)] h-auto pointer-events-none"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, transition: { duration: 0.08 } }}
+                        transition={{ duration: 0.2, delay: reduce ? 0 : 0.1 + i * 0.06 }}
+                      />
+                    )}
+                    {/* The brands, on hover. Each one a beat after the last. */}
+                    {study.note?.brands?.map((brand, b) => (
+                      <img
+                        key={brand.name}
+                        src={brand.src}
+                        alt=""
+                        aria-hidden="true"
+                        className={`${brandClass} ${BRAND_SPOT[brand.spot]}`}
+                        style={{ transitionDelay: `${b * 60}ms` }}
+                      />
+                    ))}
+                    {study.note?.brands && (
+                      <span className="sr-only">, {study.note.brands.map((b) => b.name).join(', ')}</span>
+                    )}
                   </Link>
                 </motion.div>
               );

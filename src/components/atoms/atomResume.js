@@ -1,5 +1,4 @@
 import NavItem from './NavItem';
-import { RESUME_HREF } from '../../data/links';
 
 const ResumeIcon = (props) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
@@ -12,8 +11,10 @@ const ResumeIcon = (props) => (
   </svg>
 );
 
-function AtomResume() {
-  return <NavItem icon={ResumeIcon} label="Resume" href={RESUME_HREF} external />;
+// Goes to the Resume page (pages/ResumePage.js). It used to open
+// /resume.pdf, a file that was never added.
+function AtomResume({ onClick, active = false }) {
+  return <NavItem icon={ResumeIcon} label="Resume" onClick={onClick} active={active} />;
 }
 
 export default AtomResume;

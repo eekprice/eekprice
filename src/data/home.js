@@ -11,11 +11,52 @@ export const hero = {
 
 export const sectionTitles = {
   caseStudies: 'Product Design Case Studies',
+  // Erica, 2026-11-16: leadership gets its own section, and it is the first one on the page.
+  leadership: 'Leadership Experience',
   // Figma: "Product Design Manager". These cards are delivery work, so the
   // heading says that. Change here if you want the original back.
   delivery: 'Program and Delivery Lead',
   connections: 'My Kind Connections',
 };
+
+// Cards in the Leadership Experience section (components/ExperienceCard.js).
+// Erica, 2026-11-16: leadership is a card, not a slide strip with a sticky,
+// with a second one for her role as Principal Product Consultant at CGI.
+// The Yum card's words come from CaseStudy/yum-ux-leadership.md.
+export const leadershipCards = [
+  {
+    where: 'Yum Brands · March 2022 to September 2025',
+    // Six, from Canon/about.md. Erica pointed to it on 2026-11-16.
+    reports: '6 direct reports',
+    // TODO(Erica): your doc says "UX Manager and Principal Product Designer". Change it here if the card should say something else.
+    role: 'UX Manager and Principal Product Designer',
+    text: 'I set the direction for how design should support the move to Byte, built the system the team ran on, and pushed for research in real stores.',
+    points: [
+      { title: 'Direction', text: 'Four workstreams to turn many products into one platform.' },
+      { title: 'How the team works', text: 'A checklist at intake, one Jira workflow, critiques at 30, 60 and 90.' },
+      { title: 'In stores', text: 'Project Keystone, field research across four brands.' },
+    ],
+    tags: ['Leadership', 'Design ops', 'Design strategy', 'Field research'],
+    href: '/case-study/yum-ux-leadership',
+    // The yellow sticky that slides out by the title, like the drive thru card's
+    // green one. Erica asked for it back on 2026-11-16. Same yellow as this
+    // study's note in the nav fan.
+    peek: { title: 'Leading UX at Yum Brands', color: 'yellow' },
+  },
+  // Erica, in chat, 2026-11-16: "im a principal product consultant at CGI where I
+  // worked with Topstep and GE Aerospace. working on their data platforms."
+  // Dates are from LinkedIn (2026-11-16), where the company is still Callibrity.
+  // TODO(Erica): a write-up to link.
+  // TODO(Erica): Canon says the GE work is under CMMC and client confidentiality.
+  // Confirm both client names can be public before this is pushed.
+  {
+    where: 'CGI · June 2025 to present',
+    // Erica, 2026-11-16: "i have 4 at CGI".
+    reports: '4 direct reports',
+    role: 'Principal Product Consultant',
+    text: 'I consult with large organizations to build new products from zero and improve enterprise systems. I worked with Topstep and GE Aerospace on their data platforms.',
+  },
+];
 
 // Cards under the second section. No write-ups yet.
 // TODO(Erica): content for both. They map to the Topstep and GE program work.

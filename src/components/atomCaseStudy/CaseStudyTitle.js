@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import CaseStudyPreview from './CaseStudySlides';
 import { WireBlock } from '../sketch/Sketch';
+import { ReadFullCard } from '../caseStudy/Overview';
+import { getCaseStudy } from '../../data/caseStudies';
 
 const ChevronIcon = (props) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" {...props}>
@@ -17,6 +19,16 @@ const ChevronIcon = (props) => (
 // wireframe entrance.
 const CaseStudyContainer = ({ title, slides = [], href, slideHeight, sketchAt = 0 }) => {
   const hasSlides = slides.length > 0;
+  // The picture on that last slide: the study's note picture if it has one,
+  // or its hero image.
+  const study = href ? getCaseStudy(href.split('/').pop()) : null;
+  const picture = study?.note?.image || study?.hero?.src;
+  // Every strip ends on a slide that links to the full case study. It isn't
+  // counted in "N slides".
+  const strip =
+    hasSlides && href
+      ? [...slides, { content: <ReadFullCard to={href} title={title} image={picture} />, width: 'w-[264px]' }]
+      : slides;
 
   return (
     <div className="p-3 lg:p-4">
@@ -47,7 +59,7 @@ const CaseStudyContainer = ({ title, slides = [], href, slideHeight, sketchAt = 
 
       {hasSlides ? (
         <div className="mt-3">
-          <CaseStudyPreview slides={slides} heightClass={slideHeight} />
+          <CaseStudyPreview slides={strip} heightClass={slideHeight} />
         </div>
       ) : (
         // No slides yet, so the card shows its wireframe: three pencil blocks

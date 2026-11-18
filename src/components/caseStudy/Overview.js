@@ -1,5 +1,7 @@
+import { Link } from 'react-router-dom';
 import React from 'react';
 import ControlledGif from '../atoms/ControlledGif';
+import Button from '../Button';
 import { Reveal, chipClass } from './Blocks';
 import { Stage, Swap } from '../sketch/Sketch';
 
@@ -65,10 +67,12 @@ const TimerIcon = () => (
   </svg>
 );
 
-export function ProblemCard({ problem, step }) {
+// A quote with who said it. Tinted by default (the problem card); pass
+// look="plain" when the quote isn't the problem.
+export function ProblemCard({ problem, step, look = 'tint' }) {
   return (
-    <Slide look="tint" className={`${pad} ${column}`}>
-      <Label step={step} look="tint">{problem.title}</Label>
+    <Slide look={look} className={`${pad} ${column}`}>
+      <Label step={step} look={look}>{problem.title}</Label>
       <figure className="m-0">
         <blockquote className="m-0 font-merriweather font-light text-lg leading-snug">
           “{problem.quote}”
@@ -88,10 +92,14 @@ export function ProblemCard({ problem, step }) {
   );
 }
 
+// A clip behind a play button. It fills the card, cropped to fit. With
+// `photo.contain` the whole picture shows on black, for a screen recording
+// that shouldn't lose its edges.
 export function PhotoCard({ photo, step }) {
+  const fit = photo.contain ? 'object-contain bg-black' : 'object-cover';
   return (
     <Slide>
-      <ControlledGif src={photo.src} poster={photo.poster} alt={photo.alt} className="w-full h-full object-cover" />
+      <ControlledGif src={photo.src} poster={photo.poster} alt={photo.alt} className={`w-full h-full ${fit}`} />
       {photo.title && (
         <Label
           step={step}
@@ -115,7 +123,19 @@ export function ResearchCard({ research, step }) {
   return (
     <Slide className={`${pad} ${column}`}>
       <Label step={step}>{research.title}</Label>
-      <dl className={`m-0 pt-4 border-t ${hairline} grid grid-cols-2 sm:grid-cols-5 gap-x-3 gap-y-4`}>
+      {research.photo && (
+        <div className="relative flex-1 min-h-0">
+          <img
+            src={research.photo.src}
+            alt={research.photo.alt}
+            loading="lazy"
+            decoding="async"
+            className={`absolute inset-0 w-full h-full object-cover rounded-md ${research.photo.position || 'object-center'}`}
+          />
+        </div>
+      )}
+      {/* The line above the numbers is only for a card with no photo. */}
+      <dl className={`m-0 ${research.photo ? '' : `pt-4 border-t ${hairline}`} grid grid-cols-2 sm:grid-cols-5 gap-x-3 gap-y-4`}>
         {research.stats.map((stat) => (
           <div key={stat.label} className="flex flex-col-reverse">
             <dt className={`mt-1.5 text-xs whitespace-nowrap ${MUTED.plain}`}>{stat.label}</dt>
@@ -128,12 +148,101 @@ export function ResearchCard({ research, step }) {
 }
 
 // A labelled card that holds any picture or illustration (the wireframes slide).
-export function ArtCard({ title, step, children }) {
+// Pass `image` ({ src, alt, position?, framed? }) with an optional one-line
+// `caption` under it, or pass children for anything else. Images sit straight
+// on the card, whole, with no box: the photo collages are cut-out PNGs. Set
+// `framed: true` for a plain screenshot, which fills the space inside a
+// hairline box so its white edges don't melt into the card.
+export function ArtCard({ title, step, image, caption, children }) {
   return (
     <Slide className={`${pad} flex flex-col`}>
       <Label step={step}>{title}</Label>
-      <div className="relative flex-1 min-h-0 mt-3">{children}</div>
+      <div className="relative flex-1 min-h-0 mt-3">
+        {image ? (
+          <img
+            src={image.src}
+            alt={image.alt}
+            loading="lazy"
+            decoding="async"
+            className={`absolute inset-0 w-full h-full ${image.position || 'object-center'} ${
+              image.framed ? `object-cover rounded-md border ${hairline}` : 'object-contain'
+            }`}
+          />
+        ) : (
+          children
+        )}
+      </div>
+      {caption && <p className="m-0 mt-3 text-sm leading-snug">{caption}</p>}
     </Slide>
+  );
+}
+
+// One statement, set big, with a smaller line under it. Label on top, words
+// pinned to the bottom. Works in any look: `tint` for a challenge, `accent`
+// for the one dark card in a set.
+export function TextCard({ title, step, look = 'plain', big, small }) {
+  return (
+    <Slide look={look} className={`${pad} ${column}`}>
+      <Label step={step} look={look}>{title}</Label>
+      <div>
+        <p className="m-0 font-merriweather font-light text-2xl leading-snug">{big}</p>
+        {small && <p className={`m-0 mt-3 text-sm leading-normal ${MUTED[look]}`}>{small}</p>}
+      </div>
+    </Slide>
+  );
+}
+
+// The last slide of a home strip: the whole card is a link to the full case
+// study. A picture of the work, tilted like a print, then the study's name
+// and a solid button, so it reads as the thing to click. On hover the card
+// lifts, the picture straightens and the arrow moves.
+export function ReadFullCard({ to, title, image }) {
+  return (
+    <Link
+      to={to}
+      className="group/read block h-full rounded-xl transition-transform duration-300 ease-out
+        motion-safe:hover:-translate-y-1
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+        focus-visible:ring-primary-foreground-light dark:focus-visible:ring-primary-foreground-dark"
+    >
+      <Slide
+        look="tint"
+        className={`${pad} flex flex-col gap-4 transition-[border-color,box-shadow] duration-300
+          group-hover/read:shadow-lg
+          group-hover/read:border-primary-foreground-light dark:group-hover/read:border-primary-foreground-dark`}
+      >
+        <Label look="tint">The whole story</Label>
+        {image && (
+          <div className="flex-1 min-h-0 flex items-center justify-center">
+            <img
+              src={image}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="max-w-full max-h-full object-contain -rotate-3 transition-transform duration-300 ease-out
+                motion-safe:group-hover/read:rotate-0 motion-safe:group-hover/read:scale-105"
+            />
+          </div>
+        )}
+        <div className={image ? '' : 'mt-auto'}>
+          <p className="m-0 font-merriweather font-light text-lg leading-snug text-surface-foreground100-light dark:text-surface-foreground100-dark">
+            {title}
+          </p>
+          <Button as="span" className="mt-3 w-full justify-center">
+            Read full case study
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              aria-hidden="true"
+              className="w-4 h-4 transition-transform duration-300 group-hover/read:translate-x-1"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 12h16m-6-6 6 6-6 6" />
+            </svg>
+          </Button>
+        </div>
+      </Slide>
+    </Link>
   );
 }
 
@@ -237,38 +346,157 @@ export function ActivitiesCard({ activities, step }) {
   );
 }
 
+// One story card from a study's `slides` list (see menu-management in
+// data/caseStudies). `type` picks the card.
+export function SlideCard({ slide, step }) {
+  const { type, look, title } = slide;
+  if (type === 'art') {
+    return <ArtCard title={title} step={step} image={slide.image} caption={slide.caption} />;
+  }
+  if (type === 'quote') {
+    return <ProblemCard problem={slide} look={look || 'plain'} step={step} />;
+  }
+  return <TextCard title={title} step={step} look={look} big={slide.big} small={slide.small} />;
+}
+
+// Columns out of 12 for each card from 1024px up. Full class names so
+// Tailwind keeps them.
+const SPAN = {
+  3: 'lg:col-span-3',
+  4: 'lg:col-span-4',
+  5: 'lg:col-span-5',
+  6: 'lg:col-span-6',
+  7: 'lg:col-span-7',
+  8: 'lg:col-span-8',
+  12: 'lg:col-span-12',
+};
+
+// Wire to real for one card: it sketches itself as a pencil wireframe the
+// first time it's seen, holds, then the real card rises in. `at` is when the
+// sketch starts (ms after the card is seen), so cards in a row can follow
+// each other. `wire` is WireBlock options shaped like the card.
+const FIRST = 150; // ms before the first card in a row starts sketching
+const STAGGER = 150; // ms between cards in the same row
+
+function Sketched({ at = FIRST, wire, className = 'h-full', children }) {
+  return (
+    <Stage className={className}>
+      <Swap at={at} className="h-full" wire={{ image: false, ...wire, at }}>
+        {children}
+      </Swap>
+    </Stage>
+  );
+}
+
+// The wireframe for each kind of story card: a squiggle for the label, then
+// lines for words or a crossed box for a picture.
+const WIRE = {
+  text: { lines: [22, 92, 84, 70] },
+  quote: { lines: [22, 92, 88, 84, 76, 40] },
+  art: { lines: [24, 70], image: true },
+  artNoCaption: { lines: [24], image: true },
+};
+
+const wireFor = (slide) => {
+  if (slide.type === 'art') return slide.caption ? WIRE.art : WIRE.artNoCaption;
+  return WIRE[slide.type] || WIRE.text;
+};
+
+// A bento grid of a study's story cards at the top of its page, read left to
+// right, top to bottom, in story order. Each card's `span` sets its width;
+// rows are spans that add up to 12. Under 1024px the cards stack, and picture
+// cards get a fixed height since the picture has none of its own. Every card
+// is sketched first, and cards in the same row sketch one after another.
+export function StoryGrid({ slides }) {
+  let used = 0; // columns used so far in the current row
+  let position = -1; // this card's place in its row: 0, 1, 2
+  return (
+    <section aria-label="At a glance" className="max-w-[1000px] mx-auto px-4 pb-4">
+      <Reveal>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-4">
+          {slides.map((slide, i) => {
+            const span = slide.span || 12;
+            if (used === 0 || used + span > 12) {
+              used = 0;
+              position = 0;
+            } else {
+              position += 1;
+            }
+            used = (used + span) % 12;
+            const size = slide.type === 'art' ? 'h-[280px] sm:h-[340px] lg:h-auto' : 'min-h-[240px]';
+            return (
+              <div key={slide.title} className={`${SPAN[span] || SPAN[12]} ${size} lg:min-h-[320px]`}>
+                <Sketched at={FIRST + position * STAGGER} wire={wireFor(slide)}>
+                  <SlideCard slide={slide} step={i + 1} />
+                </Sketched>
+              </div>
+            );
+          })}
+        </div>
+      </Reveal>
+    </section>
+  );
+}
+
 // The grid at the top of the case study page.
-//   Row 1: Problem stacked on the photo | The solution (wide)
-//   Row 2: Benefits | the big number | Main activities
+//   Row 1: Problem | The solution (wide)
+//   Row 2: the before, side by side: the old POS in use | its screen
+//   Row 3: Benefits | the big number | Main activities
+// Rows 1 and 2 share the same two columns so their edges line up.
+// Every card is sketched first, left to right.
+const TWO_COLUMNS = 'grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-3 lg:gap-4';
+const BEFORE_ROW = 'grid grid-cols-1 sm:grid-cols-[2fr_3fr] gap-3 lg:gap-4';
+
 function Overview({ overview }) {
-  const { problem, photo, solution, benefits, metric, activities } = overview;
+  const { problem, photo, screen, solution, benefits, metric, activities } = overview;
 
   return (
     <section aria-label="At a glance" className="max-w-[1000px] mx-auto px-4 pb-4 space-y-3 lg:space-y-4">
       <Reveal>
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-3 lg:gap-4">
-          <div className="flex flex-col gap-3 lg:gap-4">
-            {/* Wire to real, once per screen: the first card sketches itself, then the real card takes its place. */}
-            <Stage>
-              <Swap at={150} wire={{ lines: [22, 92, 84, 70, 40], image: false }}>
-                <ProblemCard problem={problem} />
-              </Swap>
-            </Stage>
-            <div className="flex-1 min-h-[220px]">
+        <div className={TWO_COLUMNS}>
+          <Sketched wire={{ lines: [22, 92, 84, 70, 40] }}>
+            <ProblemCard problem={problem} />
+          </Sketched>
+          <Sketched at={FIRST + STAGGER} className="h-full min-h-[332px]" wire={{ lines: [22], image: true }}>
+            <SolutionCard solution={solution} />
+          </Sketched>
+        </div>
+      </Reveal>
+
+      {/* The before. Erica asked for the recording smaller, so the two clips
+          sit side by side from 640px up, in a row 280px tall (332px on
+          desktop, like the other rows). The recording shows whole, on black.
+          Only phones stack them, and there its cell keeps the recording's shape. */}
+      <Reveal>
+        <div className={screen ? BEFORE_ROW : ''}>
+          <div className="h-[240px] sm:h-auto">
+            <Sketched wire={{ lines: [30], image: true }}>
               <PhotoCard photo={photo} />
-            </div>
+            </Sketched>
           </div>
-          <SolutionCard solution={solution} />
+          {screen && (
+            <div className="aspect-[604/418] sm:aspect-auto sm:h-[280px] lg:h-[332px]">
+              <Sketched at={FIRST + STAGGER} wire={{ lines: [30], image: true }}>
+                <PhotoCard photo={screen} />
+              </Sketched>
+            </div>
+          )}
         </div>
       </Reveal>
 
       <Reveal>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-4">
-          <BenefitsCard benefits={benefits} />
+          <Sketched wire={{ lines: [22, 60, 92, 84, 60, 92, 70] }}>
+            <BenefitsCard benefits={benefits} />
+          </Sketched>
           <div className="min-h-[332px]">
-            <MetricCard metric={metric} />
+            <Sketched at={FIRST + STAGGER} wire={{ lines: [30, 50, 40, 80] }}>
+              <MetricCard metric={metric} />
+            </Sketched>
           </div>
-          <ActivitiesCard activities={activities} />
+          <Sketched at={FIRST + STAGGER * 2} wire={{ lines: [36, 70], image: true }}>
+            <ActivitiesCard activities={activities} />
+          </Sketched>
         </div>
       </Reveal>
     </section>

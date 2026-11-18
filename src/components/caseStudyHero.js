@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { EmojiSticker } from './SectionHeading';
 import CaseStudyContainer from './atomCaseStudy/CaseStudyTitle';
 import { Frame, Stage, Swap, WireImage } from './sketch/Sketch';
@@ -22,7 +23,64 @@ const WireBox = ({ at, className }) => (
   </span>
 );
 
-const CaseStudyHero = ({ title, slides, href, stickers = [], slideHeight }) => {
+// A logo used as a sticker, in the same spots as the emoji ones. It pops in
+// just after the sticky: when the card is the one most in view (`show`), or on
+// hover. The thin white edge keeps dark logo type readable on the dark card.
+// Logos wait for the sticky to be most of the way out, then pop in one after
+// the other. Going away, they leave at once.
+const LOGOS_AFTER = 350; // ms
+
+const LogoSticker = ({ sticker, show, order = 0 }) => (
+  <img
+    src={sticker.image}
+    alt=""
+    aria-hidden="true"
+    className={`absolute z-10 h-auto pointer-events-none select-none
+      [filter:drop-shadow(0_0_1px_rgb(255_255_255))_drop-shadow(0_0_1px_rgb(255_255_255))_drop-shadow(0_3px_4px_rgb(15_23_42/0.3))]
+      transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
+      motion-reduce:transition-opacity
+      ${show
+        ? 'opacity-100 scale-100 [transition-delay:var(--after-sticky)]'
+        : 'opacity-0 scale-50 group-hover/card:opacity-100 group-hover/card:scale-100 group-hover/card:[transition-delay:var(--after-sticky)]'}
+      ${sticker.className}`}
+    style={{ '--tw-rotate': `${sticker.rotate || 0}deg`, '--after-sticky': `${LOGOS_AFTER + order * 120}ms` }}
+  />
+);
+
+// The sticky that slides out from behind the card's left edge, up by the
+// title, while this card is the one most in view (`out`), or on hover. It goes to the same place as that link, so it is kept out of the
+// tab order and hidden from screen readers. Desktop only: there is no room
+// beside the card on a phone.
+// The sticky's paper. Same colors as the notes in the nav fan (StickyFan.js).
+const PEEK_PAPER = {
+  green: 'bg-green-300 text-slate-800',
+  blue: 'bg-blue-300 text-slate-800',
+  yellow:
+    'bg-highlight-backgroundSticky-light dark:bg-highlight-backgroundSticky-dark text-highlight-foregroundSticky-light dark:text-highlight-foregroundSticky-dark',
+};
+
+export const Peek = ({ peek, href, out }) => {
+  const paper = `hidden lg:block absolute left-2 top-3 z-0 w-36 h-36 p-4 rounded-md shadow-lg
+    ${PEEK_PAPER[peek.color] || PEEK_PAPER.green} font-hand text-base leading-5 font-medium
+    transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]
+    ${out ? '-translate-x-[138px] -rotate-[8deg]' : '-rotate-3 group-hover/card:-translate-x-[138px] group-hover/card:-rotate-[8deg]'}
+    hover:shadow-xl hover:-translate-y-1 motion-reduce:transition-none`;
+  const inside = (
+    <>
+      {peek.title}
+      {peek.image && <img src={peek.image} alt="" className="absolute inset-x-2 bottom-2 w-[calc(100%-16px)] h-auto" />}
+    </>
+  );
+  return href ? (
+    <Link to={href} tabIndex={-1} aria-hidden="true" className={paper}>{inside}</Link>
+  ) : (
+    <span aria-hidden="true" className={`${paper} pointer-events-none`}>{inside}</span>
+  );
+};
+
+// `mostInView` is true while this card has more of itself on screen than any
+// other card (Home.js works that out from `data-in-view-key`).
+const CaseStudyHero = ({ title, slides, href, stickers = [], slideHeight, peek, mostInView = false }) => {
   const hasSlides = slides.length > 0;
   const hold = hasSlides ? HOLD.slides : HOLD.empty;
 
@@ -45,7 +103,9 @@ const CaseStudyHero = ({ title, slides, href, stickers = [], slideHeight }) => {
   return (
     <Stage>
       <Swap at={SKETCH_AT} hold={hold} wire={wire}>
-        <div className="relative border border-surface-outline-light dark:border-surface-outline-dark
+        <div className="relative group/card" data-in-view-key={title}>
+        {peek && <Peek peek={peek} href={href} out={mostInView} />}
+        <div className="relative z-[1] border border-surface-outline-light dark:border-surface-outline-dark
           bg-surface-background100-light dark:bg-surface-background100-dark
           rounded-md shadow-sm text-surface-foreground100-light dark:text-surface-foreground100-dark"
         >
@@ -56,15 +116,20 @@ const CaseStudyHero = ({ title, slides, href, stickers = [], slideHeight }) => {
             slideHeight={slideHeight}
             sketchAt={SKETCH_AT + hold}
           />
-          {stickers.map((sticker) => (
-            <EmojiSticker
-              key={sticker.emoji}
-              className={`z-10 pointer-events-none ${sticker.className}`}
-              rotate={sticker.rotate}
-            >
-              {sticker.emoji}
-            </EmojiSticker>
-          ))}
+          {stickers.map((sticker, i) =>
+            sticker.image ? (
+              <LogoSticker key={sticker.name} sticker={sticker} show={mostInView} order={i} />
+            ) : (
+              <EmojiSticker
+                key={sticker.emoji}
+                className={`z-10 pointer-events-none ${sticker.className}`}
+                rotate={sticker.rotate}
+              >
+                {sticker.emoji}
+              </EmojiSticker>
+            )
+          )}
+        </div>
         </div>
       </Swap>
     </Stage>

@@ -3,13 +3,15 @@ import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ReactComponent as HeroDoodle } from '../assets/doodle.svg';
 import CaseStudyHero from '../components/caseStudyHero';
+import useMostInView from '../hooks/useMostInView';
 import FloatingNav from '../components/FloatingNav';
 import SectionHeading from '../components/SectionHeading';
 import KindConnections from '../components/KindConnections';
 import StillHere from '../components/StillHere';
 import Button from '../components/Button';
 import { caseStudies } from '../data/caseStudiesData';
-import { deliveryCards, sectionTitles } from '../data/home';
+import { deliveryCards, leadershipCards, sectionTitles } from '../data/home';
+import ExperienceCard from '../components/ExperienceCard';
 import HeroSectionMobile from '../components/section/HeroSectionMobile.js';
 import EmergencyStop from '../components/EmergencyStop';
 import { useIsMobile } from '../hooks/useMediaQuery';
@@ -136,6 +138,9 @@ function Home() {
   }, [showSections]);
 
   const publishedStudies = caseStudies.filter((study) => study.published);
+  const designStudies = publishedStudies;
+  // The card with the most of itself on screen. Its sticky is the one that's out.
+  const cardInView = useMostInView('[data-in-view-key]', { ready: showSections });
 
   return (
     // The home page sits on the dot grid canvas from the design system.
@@ -172,16 +177,30 @@ function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
         >
+          {/* Leadership experience: cards, not slide strips */}
+          {leadershipCards.length > 0 && (
+            <section id="leadership" className="relative max-w-[800px] mx-auto px-4 pt-10 pb-6 scroll-mt-24">
+              <SectionHeading>{sectionTitles.leadership}</SectionHeading>
+              <div className="relative space-y-6">
+                {leadershipCards.map((card) => (
+                  <ExperienceCard key={card.role} card={card} mostInView={cardInView === card.role} />
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Product design case studies */}
           <section id="case-studies" className="relative max-w-[800px] mx-auto px-4 pt-10 pb-6 scroll-mt-24">
             <SectionHeading>{sectionTitles.caseStudies}</SectionHeading>
 
             <div className="relative space-y-6">
-              {publishedStudies.map((study) => (
+              {designStudies.map((study) => (
                 <CaseStudyHero
                   key={study.title}
                   title={study.title}
                   stickers={study.stickers}
+                  peek={study.peek}
+                  mostInView={cardInView === study.title}
                   slides={study.slides.filter((slide) => !slide.placeholder)}
                   slideHeight={study.slideHeight}
                   href={study.href}

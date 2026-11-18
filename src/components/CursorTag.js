@@ -13,12 +13,19 @@ import { cursorLabels } from '../data/home';
 // It can also say a line on request: cursorSay('...') from anywhere on the
 // page. That tag follows the mouse for a few seconds, then goes.
 //
+// Over anything clickable the arrow becomes a pointing hand (CLICKABLE below).
+//
 // The arrow is pinned to the real mouse position (no lag, or clicks feel off).
 
 const PAUSE_MS = 700; // how long the mouse has to rest before the tag shows
 const LINGER_MS = 5000; // how long the tag stays up if the mouse stays put
 const SAY_MS = 3500; // how long a requested line follows the mouse
 const SAY_EVENT = 'cursor:say';
+// Anything you can click. Over these the arrow turns into the pointing hand,
+// the same as a normal cursor would. `.cursor-pointer` covers clickable
+// things that are not links or buttons.
+const CLICKABLE =
+  'a[href], button:not(:disabled), [role="button"], [role="link"], [role="tab"], summary, label, select, input[type="checkbox"], input[type="radio"], input[type="range"], .cursor-pointer';
 const FINE_POINTER = '(hover: hover) and (pointer: fine)';
 
 // Make the cursor say a line. Does nothing on phones, where there is no cursor.
@@ -91,7 +98,7 @@ function CursorTag() {
     const onMove = (e) => {
       x.set(e.clientX);
       y.set(e.clientY);
-      setOverLink(!!e.target.closest?.('a, button, [role="button"], summary'));
+      setOverLink(!!e.target.closest?.(CLICKABLE));
       if (saying) return; // keep the requested line up while the mouse moves
       hide();
       pauseTimer = setTimeout(() => {
@@ -125,19 +132,44 @@ function CursorTag() {
 
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[9000] overflow-hidden">
-      {/* Arrow, glued to the mouse */}
+      {/* Arrow, glued to the mouse. Hidden while over something clickable. */}
       <motion.svg
         viewBox="0 0 24 24"
         className="absolute w-6 h-6 -left-0.5 -top-0.5 drop-shadow-md"
         style={{ x, y }}
-        animate={{ scale: overLink ? 1.15 : 1 }}
-        transition={{ duration: 0.15 }}
+        initial={false}
+        animate={{ opacity: overLink ? 0 : 1 }}
+        transition={{ duration: 0.08 }}
       >
         <path
           d="M5.5 3.2 19 11.4l-6.1 1.3-3.5 5.3z"
           className="fill-slate-900 dark:fill-slate-100 stroke-white dark:stroke-slate-900"
           strokeWidth="1.6"
           strokeLinejoin="round"
+        />
+      </motion.svg>
+
+      {/* The pointing hand, over anything clickable. Its fingertip sits on the mouse. */}
+      <motion.svg
+        viewBox="0 0 24 24"
+        className="absolute w-7 h-7 -left-[9px] -top-[2px] drop-shadow-md"
+        style={{ x, y }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: overLink ? 1 : 0 }}
+        transition={{ duration: 0.08 }}
+      >
+        <path
+          d="M6 14V4a2 2 0 0 1 4 0v5a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v1a2 2 0 0 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L6 14z"
+          className="fill-slate-900 dark:fill-slate-100 stroke-white dark:stroke-slate-900"
+          strokeWidth="1.4"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M10 9.5v3.5M14 10.5v2.5M18 11.5v1.5"
+          className="stroke-white dark:stroke-slate-900"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          fill="none"
         />
       </motion.svg>
 

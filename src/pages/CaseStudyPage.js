@@ -6,11 +6,11 @@ import { ReactComponent as ArrowSvg } from '../assets/Arrow.svg';
 import { ReactComponent as StarSvg } from '../assets/Star.svg';
 import { ReactComponent as StarsSvg } from '../assets/Stars.svg';
 import { getCaseStudy, nextCaseStudy } from '../data/caseStudies';
-import { Block, OutlinedBlock, Reveal, bodyClass, chipClass } from '../components/caseStudy/Blocks';
-import Overview from '../components/caseStudy/Overview';
+import { Block, OutlinedBlock, Reveal, Stickies, bodyClass, chipClass } from '../components/caseStudy/Blocks';
+import Overview, { StoryGrid } from '../components/caseStudy/Overview';
 import { Stage, Swap, Underline } from '../components/sketch/Sketch';
 import Stamp from '../components/sketch/Stamp';
-import { ease, land } from '../components/sketch/motion';
+import { ease } from '../components/sketch/motion';
 import FloatingNav from '../components/FloatingNav';
 
 const ChevronLeft = (props) => (
@@ -61,6 +61,54 @@ function SectionHeading({ children }) {
   );
 }
 
+// Small cards for other studies, shown at the top of a study that has no
+// cards of its own. Each is a thumbnail, the title, and a link. They sit in
+// the same column as the write-up.
+function RelatedStudies({ related }) {
+  const studies = related.slugs.map(getCaseStudy).filter(Boolean);
+  if (!studies.length) return null;
+  return (
+    <section aria-label={related.label} className="max-w-[760px] mx-auto px-4 lg:px-0 pb-2">
+      <Reveal>
+        <p className="mb-2 text-xs uppercase tracking-wide font-inter font-medium text-surface-foreground400-light dark:text-surface-foreground400-dark">
+          {related.label}
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {studies.map((s) => (
+            <Link
+              key={s.slug}
+              to={`/case-study/${s.slug}`}
+              className="group flex items-center gap-3 p-2 pr-3 rounded-lg
+                border border-surface-outline-light dark:border-surface-outline-dark
+                bg-surface-background100-light dark:bg-surface-background100-dark
+                transition-transform duration-300 hover:-translate-y-0.5
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+                focus-visible:ring-primary-foreground-light dark:focus-visible:ring-primary-foreground-dark
+                focus-visible:ring-offset-backdrop-background-light dark:focus-visible:ring-offset-backdrop-background-dark"
+            >
+              {s.hero && (
+                <img
+                  src={s.hero.src}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  className="shrink-0 w-20 h-14 rounded object-cover object-left-top
+                    border border-surface-outline-light dark:border-surface-outline-dark
+                    bg-surface-background200-light dark:bg-surface-background200-dark"
+                />
+              )}
+              <span className="min-w-0 flex-1 font-merriweather text-sm lg:text-base leading-snug text-surface-foreground100-light dark:text-surface-foreground100-dark">
+                {s.title}
+              </span>
+              <ChevronRight className="shrink-0 w-4 h-4 text-surface-foreground400-light dark:text-surface-foreground400-dark transition-transform group-hover:translate-x-1" />
+            </Link>
+          ))}
+        </div>
+      </Reveal>
+    </section>
+  );
+}
+
 function CaseStudyPage() {
   const { slug } = useParams();
   const study = getCaseStudy(slug);
@@ -69,6 +117,8 @@ function CaseStudyPage() {
   if (!study) return <Navigate to="/" replace />;
 
   const next = nextCaseStudy(slug);
+  // Cards at the top take the hero image's place.
+  const hasCards = Boolean(study.overview || study.slides || study.related);
 
   return (
     // Same dot grid canvas as the rest of the site. The write-up is finished
@@ -139,7 +189,9 @@ function CaseStudyPage() {
                 >
                   <MetaRow label="Role">{study.meta.role}</MetaRow>
                   <MetaRow label="Company">{study.meta.company}</MetaRow>
+                  {study.meta.years && <MetaRow label="Years">{study.meta.years}</MetaRow>}
                   <MetaRow label="Team">{study.meta.team}</MetaRow>
+                  {study.meta.scale && <MetaRow label="Scale">{study.meta.scale}</MetaRow>}
                 </motion.dl>
               </OutlinedBlock>
             </motion.div>
@@ -147,16 +199,18 @@ function CaseStudyPage() {
         </header>
       </div>
 
-      {/* High-level view first: the overview cards, then the write-up. */}
+      {/* High-level view first: the overview cards (or the story cards), then the write-up. */}
       {study.overview && <Overview overview={study.overview} />}
+      {!study.overview && study.slides && <StoryGrid slides={study.slides} />}
+      {!study.overview && !study.slides && study.related && <RelatedStudies related={study.related} />}
 
-      <main className={`max-w-[760px] mx-auto px-4 lg:px-0 pb-12 ${study.overview ? 'pt-8' : ''}`}>
+      <main className={`max-w-[760px] mx-auto px-4 lg:px-0 pb-12 ${hasCards ? 'pt-8' : ''}`}>
         <Reveal>
           <p className={`${bodyClass} text-base lg:text-lg`}>{study.summary}</p>
         </Reveal>
 
         {/* Wire to real: the first picture is sketched as a crossed box, then the real one takes its place. */}
-        {!study.overview && (
+        {!hasCards && study.hero && (
           <Stage className="mt-8">
             <Swap at={150} wire={{ lines: [] }}>
               <img
@@ -181,27 +235,7 @@ function CaseStudyPage() {
 
         <section className="mt-14">
           <SectionHeading>In short</SectionHeading>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {study.highlights.map((h, i) => (
-              // Paper lands: each note drops in and settles, one after the other.
-              <motion.div
-                key={h}
-                variants={land(i)}
-                initial={reduce ? 'visible' : 'hidden'}
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-              >
-                <div
-                  className="h-full rounded-md px-4 py-4 shadow-md font-inter text-sm leading-relaxed
-                    bg-highlight-backgroundSticky-light dark:bg-highlight-backgroundSticky-dark
-                    text-highlight-foregroundSticky-light dark:text-highlight-foregroundSticky-dark"
-                  style={{ transform: `rotate(${[-1.5, 1, -0.5][i % 3]}deg)` }}
-                >
-                  {h}
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          <Stickies items={study.highlights} />
         </section>
 
         {next && (
