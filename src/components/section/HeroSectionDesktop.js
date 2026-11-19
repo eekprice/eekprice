@@ -7,7 +7,7 @@ import { ReactComponent as StarSvg } from '../../assets/Star.svg';
 import { useEasterEgg } from '../../hooks/useEasterEgg';
 import TypingEffect from '../TypingEffect';
 import { Underline } from '../sketch/Sketch';
-import { hero } from '../../data/home';
+import { useHeroCopy } from '../../data/heroCopy';
 
 // When each piece of the hero starts, in seconds after the hero appears.
 // Change the opening's pace here. The title types at 50ms a letter, so it
@@ -29,6 +29,7 @@ const AT_ONCE = { photo: 0, title: 0, box: 0, aboutText: 0, star: 0, heart: 0 };
 // `instant` skips the choreography, for a visitor who arrived on a link to a
 // section further down. The pieces still settle in, all together, with no typing.
 function HeroSection({ onReady, instant = false }) {
+  const hero = useHeroCopy();
   const at = instant ? AT_ONCE : START;
   const heroRef = useRef(null);
   const [hasAnimated, setHasAnimated] = useState(false);

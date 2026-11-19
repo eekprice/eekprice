@@ -7,7 +7,7 @@ import { ReactComponent as StarSvg } from '../../assets/Star.svg';
 import { useEasterEgg } from '../../hooks/useEasterEgg';
 import TypingEffect from '../TypingEffect';
 import { Underline } from '../sketch/Sketch';
-import { hero } from '../../data/home';
+import { useHeroCopy } from '../../data/heroCopy';
 
 // Phone hero: one centered column. Avatar, small greeting, the role as the one
 // big line, small subline, then the about box. Email, Resume, and About live
@@ -44,6 +44,7 @@ const pop = (delay) => ({
 // `instant` drops the short wait before the about text, for a visitor who
 // arrived on a link to a section further down.
 function HeroSectionMobile({ onReady, instant = false }) {
+  const hero = useHeroCopy();
   const { handleSecretClick, EasterEggModal } = useEasterEgg();
   const heroRef = useRef(null);
   const [hasAnimated, setHasAnimated] = useState(false);

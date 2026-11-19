@@ -1,6 +1,7 @@
 import React from 'react';
 import { ARISO_URL, SCISUMMARY_URL, PREVIEWS } from '../../data/links';
 import Link from '../ExternalLink';
+import { useHeroCopy } from '../../data/heroCopy';
 
 // Copy is Erica's, from the Figma hero (Tailwind Portfolio, node 158:1376),
 // with em dashes and exclamation points swapped for periods and commas per
@@ -58,6 +59,8 @@ export const aboutComments = [
 
 // The bottom margin leaves room for the pins, which sit on the box's bottom edge.
 function AboutMeSection() {
+  // A copy of Home for one reader can bring its own about text (data/heroCopy.js).
+  const { about } = useHeroCopy();
   return (
     <div className="flex flex-col w-full items-start px-3 lg:px-4">
       <div className="mt-3 mb-8 lg:mt-4 lg:mb-9 text-left">
@@ -65,6 +68,7 @@ function AboutMeSection() {
             consulting and founding design work (added 2026-11-18 for the Workiva
             application). TODO(Erica): pick the wording. Two other candidates are in
             Canon/workiva-role.md. */}
+        {about ? <p className={p}>{about}</p> : (
         <p className={p}>
           I lead design for complicated enterprise products, and I still do the hands-on work as a founding designer on AI products.
           I'm bubbly, energetic, and always curious. I thrive on variety and excitement, which is why I'm never bored.
@@ -72,6 +76,7 @@ function AboutMeSection() {
           By night, I'm the Founding Experience Designer at{' '}
           <Link href={ARISO_URL} preview={PREVIEWS.ariso}>Ariso</Link>, <Link href={SCISUMMARY_URL} preview={PREVIEWS.scisummary}>SciSummary</Link>, and Helix.
         </p>
+        )}
       </div>
     </div>
   );
