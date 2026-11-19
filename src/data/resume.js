@@ -21,12 +21,11 @@ export const roles = [
     points: [
       'I consult with large organizations to build new products from zero and improve enterprise systems. I bring product strategy, research, and design.',
       'I help clients find product-market fit, turn complex systems into experiences people can follow, and give them clear insight to decide with.',
-      'I worked with Topstep and GE Aerospace on their data platforms.',
+      'I worked with Topstep and a global aerospace manufacturer on their data platforms.',
     ],
-    // Erica, 2026-11-19: "add case studies to the resume page". GE first, as on Home.
-    // The GE Aerospace study is not cleared for public use yet. Do not push.
+    // Erica, 2026-11-19: "add case studies to the resume page". the aerospace client first, as on Home.
     links: [
-      { label: 'Taking over an enterprise AI platform program mid-flight', to: '/case-study/ge-aerospace' },
+      { label: 'Taking over an enterprise AI platform program mid-flight', to: '/case-study/aerospace-program' },
       { label: 'Cutting dropped trade data by 100% at Topstep', to: '/case-study/topstep' },
     ],
   },

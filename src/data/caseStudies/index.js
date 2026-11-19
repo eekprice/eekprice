@@ -910,14 +910,16 @@ export const caseStudies = [
       'Trade sync moved to production and dropped trades went to zero.',
     ],
   },
-  // The aerospace program. Source: CaseStudy/ge-aerospace.md, which is Erica's
+  // The aerospace program. Source: the aerospace program draft in CaseStudy/, which is Erica's
   // working draft of 2026-11-19, word for word.
   //
   // NOT CLEARED FOR PUBLIC USE. Her draft says so, and Canon says the work is
   // under CMMC and client confidentiality. This repo is public, so do not push
   // this entry until she says it is cleared.
   //
-  // The client is named: Erica, 2026-11-19, "Name GE Aerospace". Her employer
+  // The client is not named. Erica, 2026-11-19, after publishing: anonymize
+  // this one and keep everything else. So no copy on the site names the
+  // client, and the page address is /case-study/aerospace-program. Her employer
   // is not named. Naming the client is not the same as clearing the content.
   // Left off, as the markdown lists: every line her
   // draft marks "(confirm)", the "direction changed" section, the numbers from
@@ -925,15 +927,15 @@ export const caseStudies = [
   // TODO(Erica): exact title, start date (her draft says
   // July 2026, Canon says 2025), and everything on her "Before publishing" list.
   {
-    slug: 'ge-aerospace',
+    slug: 'aerospace-program',
     homeSection: 'leadership',
     title: 'Taking over an enterprise AI platform program mid-flight',
     tagline: "I made the work visible, cut what didn't serve the vision, reorganized the team into pods, and gave stakeholders a plan with a fallback.",
-    linkLabel: 'Read the GE Aerospace case study',
+    linkLabel: 'Read the aerospace program case study',
     meta: {
       role: 'Program lead and product consultant. My focus was visibility, prioritization, team structure, and stakeholder expectations.',
-      company: 'GE Aerospace',
-      // Erica, 2026-11-19, asked July 2026 or 2025: "GE is ongoing". So no start
+      company: 'A global aerospace manufacturer',
+      // Erica, 2026-11-19, asked July 2026 or 2025: that it is ongoing. So no start
       // date is shown. TODO(Erica): the start date, when you want one here.
       years: 'Ongoing',
       team: 'One platform team spread across government and commercial environments, plus a strategy group and an internal customer team',
@@ -1062,10 +1064,10 @@ export const caseStudies = [
     ],
   },
   // Leadership at CGI. Source: CaseStudy/cgi-consulting.md, first draft
-  // 2026-11-19. Erica asked for one study that combines GE, Topstep, the
+  // 2026-11-19. Erica asked for one study that combines the aerospace client, Topstep, the
   // company-wide training and the upskilling in her practice.
   //
-  // NOT CLEARED FOR PUBLIC USE: it leans on the GE Aerospace study and on
+  // NOT CLEARED FOR PUBLIC USE: it leans on the aerospace client study and on
   // internal training material. This repo is public, so do not push it yet.
   //
   // The client parts are lines from her two studies. The training part is from
@@ -1080,26 +1082,26 @@ export const caseStudies = [
     tagline: 'Two client programs, two workshops for the whole company, and the people I coach.',
     meta: {
       role: 'Principal Product Consultant. I lead client programs, teach inside the company, and coach product people.',
-      company: 'CGI, which bought Callibrity. Clients: GE Aerospace and Topstep',
+      company: 'CGI, which bought Callibrity. Clients: a global aerospace manufacturer and Topstep',
       years: 'June 2025 to present',
-      team: 'Four direct reports. On client work, six Topstep engineers, then one platform team at GE Aerospace',
+      team: 'Four direct reports. On client work, six Topstep engineers, then one platform team at an aerospace client',
       tags: ['Leadership', 'Consulting', 'Training', 'Program delivery'],
     },
-    related: { label: 'The two client case studies', slugs: ['ge-aerospace', 'topstep'] },
+    related: { label: 'The two client case studies', slugs: ['aerospace-program', 'topstep'] },
     brief: [
       { label: 'My role', text: 'Principal Product Consultant, with four direct reports.' },
-      { label: 'Client programs', text: 'At Topstep I led an engineering team of 6 through a migration, and dropped trades went to zero. At GE Aerospace I took over a platform program and still run it.' },
+      { label: 'Client programs', text: 'At Topstep I led an engineering team of 6 through a migration, and dropped trades went to zero. At a global aerospace manufacturer I took over a platform program and still run it.' },
       { label: 'Company training', text: 'I wrote and taught two workshops, Discovery and Land and Expand. By July 2026, 43 people had completed both.' },
       { label: 'Who I worked with', text: 'Ryan Wilson, my director. I worked closely with him to drive his vision and enable the team.' },
       { label: 'What ties it together', text: 'The hard part of this work is usually communication, clarity, and expectations. So that is what I spend my time on.' },
     ],
     summary:
-      "I'm a Principal Product Consultant at CGI, with four direct reports. In this role I lead in three places. On client work, I ran programs at Topstep and GE Aerospace. Inside the company, I wrote and taught two workshops that every salaried employee is asked to take. And I coach the product people around me.",
+      "I'm a Principal Product Consultant at CGI, with four direct reports. In this role I lead in three places. On client work, I ran programs at Topstep and a global aerospace manufacturer. Inside the company, I wrote and taught two workshops that every salaried employee is asked to take. And I coach the product people around me.",
     sections: [
       {
         heading: '1. Leading client programs',
         blocks: [
-          { type: 'heading', text: 'GE Aerospace' },
+          { type: 'heading', text: 'A global aerospace manufacturer' },
           { type: 'p', text: 'I joined as the previous program lead was rolling off. Within weeks I was running day-to-day delivery for the team behind an internal AI assistant platform.' },
           {
             type: 'list',
@@ -1124,7 +1126,7 @@ export const caseStudies = [
           },
           { type: 'heading', text: 'One framework, two clients' },
           // TODO(Erica): the cross-pod framework drawing goes here once you send it.
-          { type: 'p', text: 'At Topstep I built a cross-pod framework to keep teams in sync. At GE Aerospace I used it again to reorganize the team into pods.' },
+          { type: 'p', text: 'At Topstep I built a cross-pod framework to keep teams in sync. At the aerospace client I used it again to reorganize the team into pods.' },
         ],
       },
       {
@@ -1186,7 +1188,7 @@ export const caseStudies = [
               'Accessibility',
             ],
           },
-          { type: 'p', text: "I have four direct reports at CGI. At GE Aerospace I chose pod leaders for their questioning and product mindset, and I've been coaching them since." },
+          { type: 'p', text: "I have four direct reports at CGI. At the aerospace client I chose pod leaders for their questioning and product mindset, and I've been coaching them since." },
           { type: 'p', text: 'Both workshops make the same point about growth: these skills matter more as a consultant becomes more senior.' },
         ],
       },

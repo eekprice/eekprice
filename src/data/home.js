@@ -28,7 +28,7 @@ export const sectionTitles = {
 //
 // 2026-11-18, for the Workiva application: Yum is the featured card. A card
 // with `size: 'small'` is a supporting one, drawn smaller in a row under it
-// (CGI, then GE Aerospace). A card with `hidden: true` is kept here but not
+// (CGI, then the aerospace client). A card with `hidden: true` is kept here but not
 // drawn. `linkLabel` is what the button says.
 export const leadershipCards = [
   {
@@ -60,10 +60,10 @@ export const leadershipCards = [
     ],
   },
   // Erica, in chat, 2026-11-16: "im a principal product consultant at CGI where I
-  // worked with Topstep and GE Aerospace. working on their data platforms."
+  // worked with Topstep and [an aerospace client]. working on their data platforms." (client name taken out)
   // Dates are from LinkedIn (2026-11-16), where the company is still Callibrity.
   // TODO(Erica): a write-up to link.
-  // TODO(Erica): Canon says the GE work is under CMMC and client confidentiality.
+  // TODO(Erica): Canon says the aerospace client work is under CMMC and client confidentiality.
   // Confirm both client names can be public before this is pushed.
   // The private outline for a small CGI case is CaseStudy/cgi-consulting.md.
   // This card stays short until Erica fills that in.
@@ -73,7 +73,7 @@ export const leadershipCards = [
     // Erica, 2026-11-16: "i have 4 at CGI".
     reports: '4 direct reports',
     role: 'Principal Product Consultant',
-    text: 'I consult with large organizations to build new products from zero and improve enterprise systems. I worked with Topstep and GE Aerospace on their data platforms.',
+    text: 'I consult with large organizations to build new products from zero and improve enterprise systems. I worked with Topstep and a global aerospace manufacturer on their data platforms.',
     // The leadership write-up for this role (CaseStudy/cgi-consulting.md, drafted
     // 2026-11-19). Not cleared for public use yet.
     href: '/case-study/cgi-leadership',
@@ -81,29 +81,28 @@ export const leadershipCards = [
     // right of this card marked, then "should be one container actually". So
     // the role and its two studies are one card: the role on the left, two link
     // tiles on the right (StudyLinks in ExperienceCard.js). `label` is the small line over the study's title.
-    // The GE Aerospace study is not cleared for public use yet. Do not push.
-    // GE Aerospace first (Erica, same day: "GE should be on the top").
+    // the aerospace client first (Erica, same day: this one goes on top).
     studies: [
-      { slug: 'ge-aerospace', label: 'GE Aerospace' },
+      { slug: 'aerospace-program', label: 'Aerospace client' },
       { slug: 'topstep', label: 'Topstep' },
     ],
   },
-  // GE Aerospace as its own supporting card. Erica, 2026-11-18: build the card,
+  // the aerospace client as its own supporting card. Erica, 2026-11-18: build the card,
   // keep it off the site until she gives facts she is cleared to share (Canon
   // says the work is under CMMC and client confidentiality). Nothing below is
-  // public copy yet. The outline is CaseStudy/ge-aerospace.md.
-  // TODO(Erica): the role line, dates, one or two sentences, and whether GE is named.
+  // public copy yet. The outline is the aerospace program draft in CaseStudy/.
+  // TODO(Erica): the role line, dates, one or two sentences, and whether the aerospace client is named.
   {
     hidden: true,
     size: 'small',
-    where: 'GE Aerospace',
+    where: 'Aerospace client',
     role: 'TODO(Erica)',
     text: 'TODO(Erica)',
   },
 ];
 
 // Cards under the second section. No write-ups yet.
-// TODO(Erica): content for both. They map to the Topstep and GE program work.
+// TODO(Erica): content for both. They map to the Topstep and the aerospace client program work.
 export const deliveryCards = [
   { title: 'PRD clarity' },
   { title: 'Jira wrangling' },

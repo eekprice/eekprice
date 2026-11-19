@@ -290,7 +290,7 @@ function DataOwnership() {
   );
 }
 
-// The next two are for the aerospace program study (CaseStudy/ge-aerospace.md).
+// The next two are for the aerospace program study (the aerospace program draft in CaseStudy/).
 // Erica's draft describes eleven visuals. These are the two that can be drawn
 // from her words alone, with nothing made up.
 function RequestMap() {
