@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { land } from '../sketch/motion';
 import Diagram from './Diagrams';
+import ExternalLink from '../ExternalLink';
+import MenuPrototype from './MenuPrototype';
 
 // Building blocks for a case study page, styled like the rest of the site:
 // Merriweather body, outlined "selected" boxes, sticky notes, quote callouts.
@@ -89,8 +91,27 @@ export function OutlinedBlock({ children, className = '' }) {
   );
 }
 
-export function Paragraph({ text }) {
-  return <p className={bodyClass}>{text}</p>;
+// `link` adds a link after the words: { label, href, preview }. It leaves
+// the site, so it gets the new-tab icon, and a hover preview when it has one.
+export function Paragraph({ text, link }) {
+  return (
+    <p className={bodyClass}>
+      {text}
+      {link && (
+        <>
+          {' '}
+          <ExternalLink
+            href={link.href}
+            preview={link.preview}
+            className="text-surface-foreground100-light dark:text-surface-foreground100-dark
+              hover:text-primary-foreground-light dark:hover:text-primary-foreground-dark"
+          >
+            {link.label}
+          </ExternalLink>
+        </>
+      )}
+    </p>
+  );
 }
 
 // No box, border or drop shadow (Erica's call): most of these are cut-out
@@ -340,7 +361,7 @@ export function Table({ head, rows, caption }) {
 export function Block({ block }) {
   switch (block.type) {
     case 'p':
-      return <Paragraph text={block.text} />;
+      return <Paragraph text={block.text} link={block.link} />;
     case 'heading':
       return <Subheading text={block.text} />;
     case 'figure':
@@ -361,6 +382,14 @@ export function Block({ block }) {
       return <Points items={block.items} ordered={block.ordered} />;
     case 'table':
       return <Table head={block.head} rows={block.rows} caption={block.caption} />;
+    // Something a reader can click around in. Only one so far: the menu
+    // action panel (MenuPrototype.js).
+    case 'prototype':
+      return (
+        <Reveal>
+          <MenuPrototype caption={block.caption} />
+        </Reveal>
+      );
     case 'diagram':
       return (
         <Reveal>

@@ -2,6 +2,8 @@
 // Portfolio/Canon/resume.md. Change it there first, then here.
 // Anything marked TODO(Erica) there is left out here rather than guessed.
 
+import { ARISO_URL, SCISUMMARY_URL, PREVIEWS } from './links';
+
 export const intro =
   'Where I have worked and what I did there. Leadership roles are first, and case studies are linked where I have written them up.';
 
@@ -20,6 +22,12 @@ export const roles = [
       'I consult with large organizations to build new products from zero and improve enterprise systems. I bring product strategy, research, and design.',
       'I help clients find product-market fit, turn complex systems into experiences people can follow, and give them clear insight to decide with.',
       'I worked with Topstep and GE Aerospace on their data platforms.',
+    ],
+    // Erica, 2026-11-19: "add case studies to the resume page". GE first, as on Home.
+    // The GE Aerospace study is not cleared for public use yet. Do not push.
+    links: [
+      { label: 'Taking over an enterprise AI platform program mid-flight', to: '/case-study/ge-aerospace' },
+      { label: 'Cutting dropped trade data by 100% at Topstep', to: '/case-study/topstep' },
     ],
   },
   {
@@ -88,8 +96,8 @@ export const roles = [
 
 // Titles and dates are from LinkedIn (read 2026-11-16).
 export const sideProjects = [
-  { name: 'Ariso', role: 'Founding experience designer', when: 'July 2025 to present', href: 'https://ariso.ai/' },
-  { name: 'SciSummary', role: 'Founding experience designer', when: 'November 2023 to present', href: 'https://scisummary.com/' },
+  { name: 'Ariso', role: 'Founding experience designer', when: 'July 2025 to present', href: ARISO_URL, preview: PREVIEWS.ariso },
+  { name: 'SciSummary', role: 'Founding experience designer', when: 'November 2023 to present', href: SCISUMMARY_URL, preview: PREVIEWS.scisummary },
   { name: 'Helix Booking', role: 'Founder and lead designer', when: 'June 2019 to present', to: '/case-study/helix-booking' },
   { name: 'Memorisely', role: 'UX bootcamp teacher', when: 'October 2021 to October 2026' },
 ];

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
 import ControlledGif from '../atoms/ControlledGif';
-import Button from '../Button';
+import ReadStudy from '../ReadStudy';
 import { Reveal, chipClass } from './Blocks';
 import { Stage, Swap } from '../sketch/Sketch';
 
@@ -228,18 +228,7 @@ export function ReadFullCard({ to, title, image }) {
           <p className="m-0 font-merriweather font-light text-lg leading-snug text-surface-foreground100-light dark:text-surface-foreground100-dark">
             {title}
           </p>
-          <Button as="span" className="mt-3 w-full justify-center">
-            Read full case study
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              aria-hidden="true"
-              className="w-4 h-4 transition-transform duration-300 group-hover/read:translate-x-1"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 12h16m-6-6 6 6-6 6" />
-            </svg>
-          </Button>
+          <ReadStudy inside className="mt-3 w-full justify-center" />
         </div>
       </Slide>
     </Link>

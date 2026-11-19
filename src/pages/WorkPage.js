@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import ReadStudy from '../components/ReadStudy';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ReactComponent as HeroDoodle } from '../assets/doodle.svg';
 import { ReactComponent as StarSvg } from '../assets/Star.svg';
@@ -32,12 +33,6 @@ const ordered = [
 const ChevronLeft = (props) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" {...props}>
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-  </svg>
-);
-
-const ChevronRight = (props) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
   </svg>
 );
 
@@ -81,13 +76,8 @@ function WorkCard({ study, first = false }) {
             <li key={t} className={chipClass}>{t}</li>
           ))}
         </ul>
-        <span
-          className="mt-4 sm:mt-auto pt-2 inline-flex items-center gap-1 text-sm font-inter font-medium underline underline-offset-2
-            text-surface-foreground200-light dark:text-surface-foreground200-dark
-            group-hover:text-surface-foreground100-light dark:group-hover:text-surface-foreground100-dark"
-        >
-          Read the case study
-          <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+        <span className="mt-4 sm:mt-auto pt-2">
+          <ReadStudy inside />
         </span>
       </div>
     </Link>

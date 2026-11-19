@@ -1,3 +1,5 @@
+import { PREVIEWS } from '../links';
+
 // Case study page content. Source of truth is Portfolio/CaseStudy/*.md;
 // this file is the site-ready cut of those drafts. Anything marked
 // TODO(Erica) there is left out here rather than guessed.
@@ -23,6 +25,7 @@ const img = (name) => `/images/case-studies/${name}.webp`;
 export const caseStudies = [
   {
     slug: 'yum-pos',
+    homeSection: 'case-studies',
     title: 'Speeding up the drive thru',
     linkLabel: 'Read the drive thru case study',
     tagline: 'KFC and Taco Bell. One flexible flow that follows how customers actually order.',
@@ -216,11 +219,25 @@ export const caseStudies = [
 
   {
     slug: 'menu-management',
+    homeSection: 'case-studies',
     title: 'Simplifying schemas in menus',
     // What the link on the home card says, so it names the study it opens.
     linkLabel: 'Read the menu case study',
     tagline: "Yum's Menu Management tool, rebuilt around the people who publish menus instead of the API.",
     hero: { src: img('menu-management-final-ui-tree-grid'), alt: 'Menu Management with the tree grid and action panel' },
+    // Erica, 2026-11-18: the same logos as the home card pop out around this
+    // study's blue note in the nav fan on hover. Then she asked for the menu
+    // screenshot on the note too. Same picture as the home card's blue sticky.
+    // `title` is a shorter name for the note, so the words fit above the picture.
+    note: {
+      title: 'Simplifying menus',
+      image: img('menu-management-final-ui-screen'),
+      brands: [
+        { name: 'Yum', src: '/images/case-studies/brands/yum.webp', spot: 'top' }, // TODO(Erica): cut out of your mock. Send the real logo file.
+        { name: 'KFC', src: '/images/case-studies/brands/kfc.webp', spot: 'left' },
+        { name: 'Pizza Hut', src: '/images/case-studies/brands/pizza-hut.webp', spot: 'right' },
+      ],
+    },
     meta: {
       role: 'Principal UX Designer. I led the UX transformation, ran the research, and facilitated the design studio with API engineers, product owners, and developers.',
       company: 'Yum Brands',
@@ -373,6 +390,13 @@ export const caseStudies = [
         blocks: [
           { type: 'figure', src: img('menu-management-final-ui-tree-grid'), alt: 'Menu Management final UI with the tree grid and action panel', caption: 'The final screen, with the tree grid and the action panel.' },
           { type: 'p', text: "A working menu you can search, expand, and edit in place. It's built on the three ideas from the studio, plus diffing." },
+          // Erica, 2026-11-18: a version of the Figma prototype a reader can click
+          // around in. Built from the "handoff - Dynamic Action Panel (DAP)" file.
+          // TODO(Erica): confirm this can be public, and reword the caption.
+          {
+            type: 'prototype',
+            caption: 'A working version of the action panel flow from my handoff file. The menu items are made up and nothing is saved.',
+          },
           { type: 'heading', text: 'Visualize relationships' },
           {
             type: 'p',
@@ -443,6 +467,7 @@ export const caseStudies = [
 
   {
     slug: 'helix-booking',
+    linkLabel: 'Read the Helix Booking case study',
     title: 'Making booking a breeze',
     tagline: 'Helix Booking. A native iOS and Android booking app I started with two developers.',
     hero: { src: img('helix-app-screens-strip'), alt: 'Helix Booking app screens' },
@@ -519,8 +544,16 @@ export const caseStudies = [
   // studies) doesn't change.
   {
     slug: 'yum-ux-leadership',
+    linkLabel: 'Read the Yum leadership case study',
+    homeSection: 'leadership',
     title: 'Leading UX at Yum Brands',
     tagline: 'How I set the direction for design, built the way the team worked, and took research into stores.',
+    // Erica, 2026-11-18: the Yum logo pops out of this study's yellow note in the nav fan on hover.
+    note: {
+      brands: [
+        { name: 'Yum', src: '/images/case-studies/brands/yum.webp', spot: 'top' }, // TODO(Erica): cut out of your mock. Send the real logo file.
+      ],
+    },
     meta: {
       // TODO(Erica): exact starting title, and how long until the promotion.
       role: 'Joined as a senior designer, promoted to UX Manager and Principal Product Designer. I led the design strategy for Byte, the way the team worked, and the plan for field research across four brands.',
@@ -750,8 +783,445 @@ export const caseStudies = [
       'Owned the plan for Project Keystone, a field study in stores across four brands.',
     ],
   },
+  // Topstep. Source: CaseStudy/topstep.md, drafted 2026-11-19 from Erica's
+  // Claude doc "Cutting dropped trade data by 100% at Topstep". The words are
+  // hers. No hero and no pictures: the doc's three "Visual:" notes (a header,
+  // the cross-pod framework, outcome cards) don't exist yet. The four diagrams
+  // are redrawn in components/caseStudy/Diagrams.js.
+  // The 100% and "zero" stay: Erica, 2026-11-19, "Yes, keep it".
+  // The end date is April 2026 (Erica, same day). The phases diagram stops in
+  // February; what came after is not said on the page.
+  // The team of 6 were Topstep engineers (Erica, same day).
+  // TODO(Erica), listed in the markdown: whether this much about Topstep can
+  // be public. Not pushed.
+  {
+    slug: 'topstep',
+    homeSection: 'leadership',
+    title: 'Cutting dropped trade data by 100% at Topstep',
+    tagline: 'From daily trade loss to zero dropped trades.',
+    linkLabel: 'Read the Topstep case study',
+    meta: {
+      role: 'Product leader, leading an engineering team of 6. My focus was strategy, alignment, prioritization, and delivery.',
+      company: 'Topstep, through CGI',
+      years: 'October 2025 to April 2026',
+      team: 'Six Topstep engineers. I worked across the org with designers, product, and platform teams',
+      tags: ['Product leadership', 'Program delivery', 'Data platform', 'Migration'],
+    },
+    // Every line is cut from the sections below.
+    brief: [
+      { label: 'The problem', text: 'Trade data was getting lost or delayed between systems. Account status, payouts, dashboards and notifications all depend on it, and the team was backfilling missing trades by hand every day.' },
+      { label: 'My role', text: 'Product leader on an engineering team of 6. Strategy, alignment, prioritization, and delivery.' },
+      { label: 'The first big call', text: 'Migrate trade sync first, the hardest and most business-critical workflow, with old and new running side by side and feature flags to roll back.' },
+      { label: 'What changed', text: 'Trade sync moved to production and dropped trades went to zero. The next phase is a proposed direction from discovery.' },
+    ],
+    summary:
+      "Topstep's trade data was getting lost between systems. I was the product leader on an engineering team of 6. I worked across the org with designers, product, and platform teams to understand the issue. Then I ran it as a product program, built around what traders need to trust.",
+    sections: [
+      {
+        heading: 'The problem',
+        blocks: [
+          { type: 'p', text: 'Trade data was getting lost or delayed as it moved between systems. Traders count on that data for almost everything they see:' },
+          { type: 'list', items: ['Account status and progression', 'Payout eligibility and calculations', 'Dashboards and notifications'] },
+          { type: 'p', text: "When the data is off, a trader's account can look wrong. Their payout can be wrong too. The team was also checking for missing trades and backfilling them by hand every day. We had to make it reliable on a live product where real money was on the line." },
+          { type: 'diagram', name: 'trade-break', caption: 'The break sat between the trade and everything a trader checks after it.' },
+        ],
+      },
+      {
+        heading: 'How I framed it',
+        blocks: [
+          { type: 'p', text: 'I started with the trader. I framed the work around the experiences at risk, so every technical decision pointed back to something a trader would feel.' },
+          {
+            type: 'list',
+            items: [
+              'Payout accuracy and account trust became the outcomes we worked toward.',
+              'I tied product priorities to engineering dependencies and operational risk.',
+              'Stakeholders got one shared way to talk about what mattered most.',
+            ],
+          },
+          { type: 'diagram', name: 'impact-map', caption: 'One issue in the data showed up in three places for the trader before it reached the business.' },
+        ],
+      },
+      {
+        heading: 'The first big call',
+        blocks: [
+          { type: 'p', text: 'We migrated trade sync first. It was the highest-volume, most business-critical workflow.' },
+          {
+            type: 'points',
+            items: [
+              { title: 'Why:', text: 'Trade data loss was ongoing. Waiting cost traders and the business.' },
+              { title: 'Trade-off:', text: 'Taking on the hardest workflow first put more pressure on delivery.' },
+              { title: 'Safety net:', text: 'We ran old and new side by side, monitored both, and used feature flags so we could validate and roll back.' },
+            ],
+          },
+          { type: 'diagram', name: 'migration-phases', caption: 'We built the foundation first so the hardest workflow could go next.' },
+        ],
+      },
+      {
+        heading: 'Getting everyone on the same page',
+        blocks: [
+          { type: 'p', text: 'I helped product, engineering, operations, and leadership agree on the work and its risks.' },
+          // TODO(Erica): the doc wants your cross-pod framework drawn here. Send it and it goes in.
+          {
+            type: 'list',
+            items: [
+              'I organized priorities, dependencies, and rollout decisions around outcomes.',
+              'I protected the critical path from competing requests. That meant saying no to some loud voices in the room.',
+              'I built a cross-pod framework to keep teams in sync. I reused it later on another engagement.',
+            ],
+          },
+        ],
+      },
+      {
+        heading: 'Looking at the whole system',
+        blocks: [
+          { type: 'p', text: 'After the first migration, we stepped back and asked how trade data should move between systems.' },
+          {
+            type: 'list',
+            items: [
+              'We separated raw data replication from meaningful business events.',
+              'We set a direction for clearer data ownership and less duplication.',
+              'We put payout eligibility first, then dashboards and notifications.',
+            ],
+          },
+          { type: 'p', text: 'This was discovery and planning for the next phase. It is a proposed direction and I show it that way.' },
+          { type: 'diagram', name: 'data-ownership', caption: 'The proposed side is a direction from discovery.' },
+        ],
+      },
+      {
+        heading: 'What changed',
+        blocks: [
+          {
+            type: 'list',
+            items: [
+              'The critical trade sync workflow moved to production, and dropped trades went to zero.',
+              'Monitoring gave the team better visibility into how data moves.',
+              'The team has a foundation for recovery and more modernization.',
+            ],
+          },
+          { type: 'heading', text: 'What I took from it' },
+          { type: 'p', text: 'Trust gets designed across the whole system. The interface is one piece. Who owns the data, how failures recover, and how teams make decisions all shape what the trader experiences.' },
+        ],
+      },
+    ],
+    // TODO(Erica): cut from the text above. Reword as you like.
+    highlights: [
+      'Led an engineering team of 6 through a migration on a live trading product.',
+      'Took the hardest workflow first, with old and new running side by side.',
+      'Trade sync moved to production and dropped trades went to zero.',
+    ],
+  },
+  // The aerospace program. Source: CaseStudy/ge-aerospace.md, which is Erica's
+  // working draft of 2026-11-19, word for word.
+  //
+  // NOT CLEARED FOR PUBLIC USE. Her draft says so, and Canon says the work is
+  // under CMMC and client confidentiality. This repo is public, so do not push
+  // this entry until she says it is cleared.
+  //
+  // The client is named: Erica, 2026-11-19, "Name GE Aerospace". Her employer
+  // is not named. Naming the client is not the same as clearing the content.
+  // Left off, as the markdown lists: every line her
+  // draft marks "(confirm)", the "direction changed" section, the numbers from
+  // her notes, and nine of the eleven visuals, which need her material.
+  // TODO(Erica): exact title, start date (her draft says
+  // July 2026, Canon says 2025), and everything on her "Before publishing" list.
+  {
+    slug: 'ge-aerospace',
+    homeSection: 'leadership',
+    title: 'Taking over an enterprise AI platform program mid-flight',
+    tagline: "I made the work visible, cut what didn't serve the vision, reorganized the team into pods, and gave stakeholders a plan with a fallback.",
+    linkLabel: 'Read the GE Aerospace case study',
+    meta: {
+      role: 'Program lead and product consultant. My focus was visibility, prioritization, team structure, and stakeholder expectations.',
+      company: 'GE Aerospace',
+      // Erica, 2026-11-19, asked July 2026 or 2025: "GE is ongoing". So no start
+      // date is shown. TODO(Erica): the start date, when you want one here.
+      years: 'Ongoing',
+      team: 'One platform team spread across government and commercial environments, plus a strategy group and an internal customer team',
+      tags: ['Program leadership', 'Team structure', 'Prioritization', 'AI platform'],
+    },
+    // Every line is cut from the sections below.
+    brief: [
+      { label: 'The situation', text: 'I joined as the previous program lead was rolling off. Several workstreams ran at once, there was no intake process, and the roadmap had never been signed off.' },
+      { label: 'My role', text: 'Program lead and product consultant. Within weeks I was running day-to-day delivery for the team behind an internal AI assistant platform.' },
+      { label: 'The setting', text: 'Government cloud, export-controlled data, and strict rules on tooling.' },
+      { label: 'What I did', text: 'Made the work visible, stopped what did not map to the vision, rebuilt the roadmap, reorganized the team into pods, and paired the plan with a fallback and a date to decide.' },
+      { label: 'Where it stands', text: 'The engagement is ongoing, so delivery outcomes are not claimed yet.' },
+    ],
+    summary:
+      "I joined as the previous program lead was rolling off. Within weeks I was running day-to-day delivery for the team behind an internal AI assistant platform. I made the work visible, cut what didn't serve the vision, reorganized the team into pods, and gave stakeholders a plan with a fallback.",
+    sections: [
+      {
+        heading: 'The situation',
+        blocks: [
+          { type: 'p', text: 'The previous lead had done good work, but most of the context lived in her head. The handoff was fast and heavy. Here is what I picked up:' },
+          {
+            type: 'points',
+            items: [
+              { title: 'Several workstreams at once.', text: 'The platform strategy group, the government team, the commercial team, and the first internal customer integration.' },
+              { title: 'No intake process.', text: 'Requests came in from every direction. The loudest voice in the room set the priority.' },
+              { title: 'Unwritten commitments.', text: 'Other teams were holding us to promises that had been made out loud and never recorded.' },
+              { title: 'A roadmap nobody had signed off on.', text: 'Its estimates were set without planning sessions.' },
+              { title: 'A stretched sponsor.', text: 'The client lead was pulled in many directions and hard to reach.' },
+            ],
+          },
+          { type: 'p', text: 'The challenge was to get a clear picture and a workable plan without stopping delivery.' },
+          { type: 'diagram', name: 'request-map', caption: 'Before: every request went straight to the team.' },
+        ],
+      },
+      {
+        heading: '1. Made the work visible first',
+        blocks: [
+          { type: 'p', text: "I couldn't prioritize what I couldn't see, so I started there." },
+          // TODO(Erica): your draft calls the task-to-vision table the strongest artifact. A scrubbed copy goes here.
+          {
+            type: 'list',
+            items: [
+              "Interviewed every person on the team. I asked what they work on, where the work comes from, and who it's for.",
+              'Built one table that mapped every task to the product vision.',
+              'Listed every active initiative in one place and took the full list to the sponsor to show the load.',
+              'Set up one shared board as the source of truth, in a tool the client had already approved.',
+              'Kept a visible list of everything waiting on the sponsor, so approvals stopped stalling.',
+            ],
+          },
+        ],
+      },
+      {
+        heading: '2. Cut, then rebuilt the plan',
+        blocks: [
+          {
+            type: 'list',
+            items: [
+              "Work that didn't map to the vision was stopped.",
+              'I declined to reuse the inherited roadmap. The team rebuilt it through a short, tightly scoped strategy sprint.',
+              'That sprint produced a capability map of the two existing products, a reference architecture, and a now / next / later roadmap.',
+              'With the technical lead, we reframed the cloud migration as a platform effort. The goal became one platform that other teams build on.',
+              'For unwritten commitments, I asked where and when each one was agreed. If nobody could show it, we renegotiated.',
+              'Started an intake process so new requests get triaged before they reach the team.',
+            ],
+          },
+        ],
+      },
+      {
+        heading: '3. Restructured the team around the work',
+        blocks: [
+          // TODO(Erica): the cross-pod framework drawing goes here, in the same style as on the Topstep study.
+          {
+            type: 'list',
+            items: [
+              'Merged the government and commercial teams into one group and cancelled the duplicate meetings.',
+              "Opened recurring meetings by asking whether they were still useful. The ones that weren't moved to async updates.",
+              'Reorganized the team into smaller pods, using the cross-pod framework I first built on a previous engagement.',
+              "Chose pod leaders for their questioning and product mindset, and I've been coaching them since.",
+            ],
+          },
+          { type: 'p', text: 'The sponsor stepped back from managing the team. The team now makes day-to-day decisions and escalates only the big ones.' },
+        ],
+      },
+      {
+        heading: '4. Set expectations and kept resetting them',
+        blocks: [
+          // Left off until confirmed: stepping in to lead the platform roadmap presentation for senior leadership.
+          {
+            type: 'list',
+            items: [
+              'Ran a roadmap session where every pod made commitments.',
+              'Paired the main delivery plan with a smaller fallback and a dated checkpoint to choose between them.',
+              'When a customer team grew frustrated about turnaround, I made the active work visible to their manager and our sponsor. I treated the relationship as one to win.',
+              'Told stakeholders plainly that we would keep re-checking timelines as we learned more.',
+            ],
+          },
+          { type: 'diagram', name: 'decision-card', caption: 'How the roadmap handled risk.' },
+          { type: 'heading', text: 'A hard moment' },
+          { type: 'p', text: 'A senior engineer disagreed with a timeline commitment and felt left out of the decision. I owned my part in rushing it. I asked him to document the risks, took the relevant ones to the business, and changed how I bring him into decisions. The team kept moving while we worked through it.' },
+        ],
+      },
+      {
+        heading: 'What changed',
+        blocks: [
+          {
+            type: 'list',
+            items: [
+              'The team can see all of its work in one place, mapped to the vision.',
+              'Off-vision work stopped.',
+              'Pods have named leaders and their own commitments.',
+              'The team runs day to day, and the sponsor handles the big decisions.',
+              'The roadmap has a fallback and a date to decide.',
+            ],
+          },
+          { type: 'p', text: 'The engagement is ongoing, so delivery outcomes are not claimed yet.' },
+          { type: 'heading', text: "What I'd tell another program lead" },
+          { type: 'p', text: 'I start by making the work visible. Once everyone can see the same picture, the hard conversations about priorities get easier.' },
+        ],
+      },
+    ],
+    // From the three outcome cards her draft asks for: Visibility, Structure, A plan with a fallback.
+    highlights: [
+      'Visibility: all of the work in one place, mapped to the vision.',
+      'Structure: pods with named leaders and their own commitments.',
+      'A plan with a fallback, and a date to decide.',
+    ],
+  },
+  // Leadership at CGI. Source: CaseStudy/cgi-consulting.md, first draft
+  // 2026-11-19. Erica asked for one study that combines GE, Topstep, the
+  // company-wide training and the upskilling in her practice.
+  //
+  // NOT CLEARED FOR PUBLIC USE: it leans on the GE Aerospace study and on
+  // internal training material. This repo is public, so do not push it yet.
+  //
+  // The client parts are lines from her two studies. The training part is from
+  // AI meeting summaries in her Notion, so each line there is hers to check.
+  // TODO(Erica), all in the markdown: the format and reach of the practice
+  // training (she gave the four topics), whether you wrote both workshops
+  // yourself, the 43, how many sessions, the title and tagline (both mine).
+  {
+    slug: 'cgi-leadership',
+    homeSection: 'leadership',
+    title: 'Leading product work at CGI',
+    tagline: 'Two client programs, two workshops for the whole company, and the people I coach.',
+    meta: {
+      role: 'Principal Product Consultant. I lead client programs, teach inside the company, and coach product people.',
+      company: 'CGI, which bought Callibrity. Clients: GE Aerospace and Topstep',
+      years: 'June 2025 to present',
+      team: 'Four direct reports. On client work, six Topstep engineers, then one platform team at GE Aerospace',
+      tags: ['Leadership', 'Consulting', 'Training', 'Program delivery'],
+    },
+    related: { label: 'The two client case studies', slugs: ['ge-aerospace', 'topstep'] },
+    brief: [
+      { label: 'My role', text: 'Principal Product Consultant, with four direct reports.' },
+      { label: 'Client programs', text: 'At Topstep I led an engineering team of 6 through a migration, and dropped trades went to zero. At GE Aerospace I took over a platform program and still run it.' },
+      { label: 'Company training', text: 'I wrote and taught two workshops, Discovery and Land and Expand. By July 2026, 43 people had completed both.' },
+      { label: 'Who I worked with', text: 'Ryan Wilson, my director. I worked closely with him to drive his vision and enable the team.' },
+      { label: 'What ties it together', text: 'The hard part of this work is usually communication, clarity, and expectations. So that is what I spend my time on.' },
+    ],
+    summary:
+      "I'm a Principal Product Consultant at CGI, with four direct reports. In this role I lead in three places. On client work, I ran programs at Topstep and GE Aerospace. Inside the company, I wrote and taught two workshops that every salaried employee is asked to take. And I coach the product people around me.",
+    sections: [
+      {
+        heading: '1. Leading client programs',
+        blocks: [
+          { type: 'heading', text: 'GE Aerospace' },
+          { type: 'p', text: 'I joined as the previous program lead was rolling off. Within weeks I was running day-to-day delivery for the team behind an internal AI assistant platform.' },
+          {
+            type: 'list',
+            items: [
+              'I interviewed every person on the team and mapped every task to the product vision.',
+              "Work that didn't map to the vision was stopped, and the team rebuilt the roadmap.",
+              "I reorganized the team into pods, chose pod leaders, and I've been coaching them since.",
+              'I paired the delivery plan with a smaller fallback and a date to choose between them.',
+            ],
+          },
+          { type: 'p', text: 'The engagement is ongoing, so delivery outcomes are not claimed yet.' },
+          { type: 'heading', text: 'Topstep' },
+          { type: 'p', text: "Topstep's trade data was getting lost between systems. I was the product leader on an engineering team of 6." },
+          {
+            type: 'list',
+            items: [
+              'I framed the work around what a trader would feel: account status, payouts, dashboards.',
+              'We migrated trade sync first, the hardest workflow, with old and new running side by side.',
+              'I protected the critical path from competing requests.',
+              'Trade sync moved to production, and dropped trades went to zero.',
+            ],
+          },
+          { type: 'heading', text: 'One framework, two clients' },
+          // TODO(Erica): the cross-pod framework drawing goes here once you send it.
+          { type: 'p', text: 'At Topstep I built a cross-pod framework to keep teams in sync. At GE Aerospace I used it again to reorganize the team into pods.' },
+        ],
+      },
+      {
+        heading: '2. Training the whole company',
+        blocks: [
+          { type: 'p', text: 'I wrote and taught two workshops, Discovery and Land and Expand. Both are for everyone, engineers included.' },
+          { type: 'p', text: 'The Discovery workshop came out of resistance I saw when I asked people to do things outside their role. People heard "discovery" and thought meetings and delay.' },
+          { type: 'heading', text: 'Discovery' },
+          {
+            type: 'points',
+            items: [
+              { title: 'It is ongoing.', text: 'Discovery clarifies the work. It does not delay it.' },
+              { title: 'Everyone takes part.', text: 'Engineers may write PRDs. A non-technical view can surface a technical opportunity.' },
+              { title: 'Problems, not symptoms.', text: 'Check that a task addresses a real problem before doing it.' },
+              { title: 'Open questions.', text: '"How was the make-a-payment experience?" and not "Did you like it?"' },
+              { title: 'Practice silence.', text: "Pause three to six seconds after a question and don't fill the space." },
+              { title: "Undocumented discovery didn't happen.", text: 'AI writes the first draft now, so the job is checking it.' },
+            ],
+          },
+          { type: 'p', text: 'Attendees add the kinds of deliverables they use to a shared database, so the list grows with each session.' },
+          { type: 'heading', text: 'Land and Expand' },
+          {
+            type: 'points',
+            items: [
+              { title: 'It is not pitching.', text: 'It is understanding the client well and finding ways to help more. Expansion is a byproduct of good consulting.' },
+              { title: 'Contractor or consultant.', text: 'A contractor waits for defined work. A consultant sees decisions and problems coming. The group votes on statements, with edge cases on purpose.' },
+              { title: 'Bring options.', text: '"I don\'t know what to work on next, let me ask my PO" becomes bringing options and a recommendation.' },
+              { title: 'Trust is built in small moments.', text: "Attendees say how they earned a client's trust without naming their title." },
+              { title: 'It is a long game.', text: "It doesn't happen in big dramatic instances." },
+            ],
+          },
+          { type: 'heading', text: 'How I ran it' },
+          {
+            type: 'list',
+            items: [
+              'Small sessions, with each workshop taught many times.',
+              'A tracker of who has completed what, so I could see who still needed a session.',
+              'By July 2026, 43 people had completed both.',
+            ],
+          },
+        ],
+      },
+      {
+        heading: '3. Growing product people',
+        blocks: [
+          // The four topics are Erica's words, 2026-11-19: "how to use AI in product,
+          // how to act like a consultant and not contractor, how to go above and
+          // beyond, accessibility training".
+          // She ran it as group sessions, separate from the Land and Expand
+          // workshop (her answers, same day).
+          // TODO(Erica): who it was for, how many people, how often, and what changed.
+          { type: 'p', text: 'I train the product people in my practice in group sessions. These are separate from the two company workshops. There are four topics:' },
+          {
+            type: 'list',
+            items: [
+              'How to use AI in product work',
+              'How to act like a consultant and not a contractor',
+              'How to go above and beyond',
+              'Accessibility',
+            ],
+          },
+          { type: 'p', text: "I have four direct reports at CGI. At GE Aerospace I chose pod leaders for their questioning and product mindset, and I've been coaching them since." },
+          { type: 'p', text: 'Both workshops make the same point about growth: these skills matter more as a consultant becomes more senior.' },
+        ],
+      },
+      // Erica, 2026-11-19: "i should mention Ryan Wilson as my director i worked
+      // closely with him to drive his vision and enable the team. Link his
+      // portfolio https://ryangwilson.com/ he was a partner in the CGI leadership".
+      {
+        heading: 'Who I worked with',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Ryan Wilson was my director and my partner in this work. I worked closely with him to drive his vision and enable the team.',
+            link: { label: "Ryan's portfolio", href: 'https://ryangwilson.com/', preview: PREVIEWS.ryan },
+          },
+        ],
+      },
+      {
+        heading: 'What I took from it',
+        blocks: [
+          { type: 'p', text: 'The biggest problems I see across industries are communication, clarity, and expectations. Technology comes after that. It is true on a client program and it is what I teach.' },
+        ],
+      },
+    ],
+    // TODO(Erica): cut from the text above. Reword as you like.
+    highlights: [
+      'Led programs at two clients, and reused my own framework at the second.',
+      'Wrote and taught two workshops for the whole company.',
+      'Trained the product practice on AI, consulting and accessibility, with four direct reports.',
+    ],
+  },
 ];
 
+// `homeSection` on a study is the id of the home page section its card is in
+// (`leadership` or `case-studies`). The Home link at the top of the study
+// goes back there. A study with none, like Helix Booking, goes to the top.
 export const getCaseStudy = (slug) => caseStudies.find((s) => s.slug === slug);
 
 export const nextCaseStudy = (slug) => {

@@ -140,7 +140,236 @@ function KeystonePhases() {
   );
 }
 
-const DIAGRAMS = { workstreams: Workstreams, workflow: Workflow, keystone: KeystonePhases };
+// The next four come from Erica's doc "Cutting dropped trade data by 100% at
+// Topstep" (see CaseStudy/topstep.md). Same rule: the words are hers.
+const BAD = '#dc2626';
+const bad = { stroke: BAD, strokeWidth: 1.5 };
+
+function Arrow({ id, color = INK, opacity = 0.55 }) {
+  return (
+    <marker id={id} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill={color} fillOpacity={opacity} />
+    </marker>
+  );
+}
+
+function TradeBreak() {
+  const W = 180, H = 52, rowA = 110, rowB = 206, bx = 252;
+  const C = [124, 380, 636];
+  const top = ['Trade', 'Account status', 'Payout'];
+  const risks = ['Missing data', 'Inaccurate status', 'Payout risk'];
+
+  return (
+    <svg viewBox="0 0 760 256" role="img" aria-label="When trade data drops, status and payouts go wrong. Data is lost or delayed between the trade and the account status. That leads to missing data, then an inaccurate status, then payout risk." fontSize="13" fill={INK}>
+      <defs>
+        <Arrow id="tb-arrow" />
+        <Arrow id="tb-arrow-bad" color={BAD} opacity={1} />
+      </defs>
+      <text x="24" y="34" fontSize="15" fontWeight="600">When trade data drops, status and payouts go wrong</text>
+      <g fill="none" {...edge}>
+        <path d={`M${C[1] + W / 2} ${rowA}H${C[2] - W / 2}`} markerEnd="url(#tb-arrow)" />
+        {C.map((c) => <path key={c} d={`M${c} ${rowA + H / 2}V${rowB - H / 2}`} strokeDasharray="4 4" />)}
+      </g>
+      <g fill="none" stroke={BAD} strokeWidth="2">
+        <path d={`M${C[0] + W / 2} ${rowA}H${C[1] - W / 2}`} strokeDasharray="6 5" />
+        <path d={`M${bx - 7} ${rowA - 7}L${bx + 7} ${rowA + 7}M${bx + 7} ${rowA - 7}L${bx - 7} ${rowA + 7}`} />
+      </g>
+      <g fill="none" {...bad}>
+        <path d={`M${C[0] + W / 2} ${rowB}H${C[1] - W / 2}`} markerEnd="url(#tb-arrow-bad)" />
+        <path d={`M${C[1] + W / 2} ${rowB}H${C[2] - W / 2}`} markerEnd="url(#tb-arrow-bad)" />
+      </g>
+      {C.map((c, i) => (
+        <g key={top[i]}>
+          <rect x={c - W / 2} y={rowA - H / 2} width={W} height={H} rx="8" fill="none" {...edge} />
+          <text x={c} y={rowA + 4} textAnchor="middle" fontWeight="600">{top[i]}</text>
+          <rect x={c - W / 2} y={rowB - H / 2} width={W} height={H} rx="8" fill={BAD} fillOpacity="0.1" {...bad} />
+          <text x={c} y={rowB + 4} textAnchor="middle">{risks[i]}</text>
+        </g>
+      ))}
+      <text x={bx} y={rowA - 38} textAnchor="middle" fontSize="11.5" fillOpacity="0.65">data lost or delayed here</text>
+    </svg>
+  );
+}
+
+function ImpactMap() {
+  const cw = 208, xa = 24, xb = 264, xc = 504, y0 = 90, tall = 188;
+  const R = [116, 184, 252];
+  const trader = [['Account status looks wrong'], ['Payout can be wrong'], ['Dashboards and', 'notifications fall behind']];
+  const business = ['Trader trust at risk', 'Payout risk', 'Manual backfill every day'];
+
+  return (
+    <svg viewBox="0 0 760 302" role="img" aria-label="One data issue reaches the trader, then the business. System issue: trade data lost or delayed between systems. Trader impact: account status looks wrong, payout can be wrong, dashboards and notifications fall behind. Business impact: trader trust at risk, payout risk, manual backfill every day." fontSize="13" fill={INK}>
+      <defs><Arrow id="im-arrow" /></defs>
+      <text x="24" y="34" fontSize="15" fontWeight="600">One data issue reaches the trader, then the business</text>
+      {[['System issue', xa], ['Trader impact', xb], ['Business impact', xc]].map(([label, x]) => (
+        <text key={label} x={x} y="74" fontSize="11.5" fillOpacity="0.65">{label}</text>
+      ))}
+      <g fill="none" {...edge}>
+        {R.map((y) => (
+          <g key={y}>
+            <path d={`M${xa + cw} ${y}H${xb}`} markerEnd="url(#im-arrow)" />
+            <path d={`M${xb + cw} ${y}H${xc}`} markerEnd="url(#im-arrow)" />
+          </g>
+        ))}
+      </g>
+      <rect x={xa} y={y0} width={cw} height={tall} rx="8" fill={ACCENT} fillOpacity="0.12" {...hot} />
+      {['Trade data lost', 'or delayed', 'between systems'].map((line, i) => (
+        <text key={line} x={xa + cw / 2} y={R[1] - 14 + i * 18} textAnchor="middle" fontWeight="600">{line}</text>
+      ))}
+      {trader.map((lines, i) => (
+        <g key={lines[0]}>
+          <rect x={xb} y={R[i] - 26} width={cw} height="52" rx="8" fill="none" {...edge} />
+          {lines.map((line, l) => (
+            <text key={line} x={xb + cw / 2} y={R[i] + (lines.length === 1 ? 4 : -4 + l * 16)} textAnchor="middle">{line}</text>
+          ))}
+        </g>
+      ))}
+      <rect x={xc} y={y0} width={cw} height={tall} rx="8" fill="none" {...edge} />
+      {business.map((line, i) => (
+        <text key={line} x={xc + cw / 2} y={R[i] + 4} textAnchor="middle">{line}</text>
+      ))}
+    </svg>
+  );
+}
+
+function MigrationPhases() {
+  const bw = 216, y0 = 56, bh = 96;
+  const phases = [
+    { x: 24, name: 'Foundation', dates: 'Oct to Nov 2025', line: 'Standards, tracing, safety nets' },
+    { x: 264, name: 'Trade sync migration', dates: 'Dec 2025 to Jan 2026', line: 'Live in production in January', hot: true },
+    { x: 504, name: 'Stabilize and expand', dates: 'Jan to Feb 2026', line: 'Balance updates, more workflows' },
+  ];
+
+  return (
+    <svg viewBox="0 0 760 176" role="img" aria-label={`Foundation first, then the hardest workflow. ${phases.map((p) => `${p.name}, ${p.dates}: ${p.line}`).join('. ')}.`} fontSize="13" fill={INK}>
+      <defs><Arrow id="mp-arrow" /></defs>
+      <text x="24" y="34" fontSize="15" fontWeight="600">Foundation first, then the hardest workflow</text>
+      <g fill="none" {...edge}>
+        <path d={`M${phases[0].x + bw} ${y0 + bh / 2}H${phases[1].x}`} markerEnd="url(#mp-arrow)" />
+        <path d={`M${phases[1].x + bw} ${y0 + bh / 2}H${phases[2].x}`} markerEnd="url(#mp-arrow)" />
+      </g>
+      {phases.map((p) => (
+        <g key={p.name}>
+          <rect x={p.x} y={y0} width={bw} height={bh} rx="8" fill={p.hot ? ACCENT : 'none'} fillOpacity={p.hot ? 0.12 : 1} {...(p.hot ? hot : edge)} />
+          <text x={p.x + 16} y={y0 + 28} fontWeight="600">{p.name}</text>
+          <text x={p.x + 16} y={y0 + 48} fontSize="11.5" fillOpacity="0.65">{p.dates}</text>
+          <text x={p.x + 16} y={y0 + 74} fontSize="11.5">{p.line}</text>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+function DataOwnership() {
+  const pw = 332, y0 = 56, ph = 180, bw = 132, bh = 64, by = 120;
+  const panels = [
+    { x: 24, name: 'Before', link: 'raw data replication', a: 'holds trade data', b: 'holds a copy', foot: 'Same data in two places' },
+    { x: 404, name: 'Proposed', link: 'business events', a: 'owns trade data', b: 'reacts to events', foot: 'Payouts first, then dashboards', hot: true },
+  ];
+
+  return (
+    <svg viewBox="0 0 760 260" role="img" aria-label="Proposed: one owner for trade data, events for everything else. Before: the trading system holds trade data and sends raw data replication downstream, which holds a copy, so the same data is in two places. Proposed: the trading system owns trade data and sends business events downstream, which reacts to events. Payouts first, then dashboards." fontSize="13" fill={INK}>
+      <defs><Arrow id="do-arrow" /></defs>
+      <text x="24" y="34" fontSize="15" fontWeight="600">Proposed: one owner for trade data, events for everything else</text>
+      {panels.map((p) => (
+        <g key={p.name}>
+          <rect x={p.x} y={y0} width={pw} height={ph} rx="8" fill={p.hot ? ACCENT : 'none'} fillOpacity={p.hot ? 0.08 : 1} {...(p.hot ? hot : edge)} />
+          <text x={p.x + 16} y={y0 + 24} fontWeight="600">{p.name}</text>
+          <rect x={p.x + 16} y={by} width={bw} height={bh} rx="8" fill="none" {...edge} />
+          <rect x={p.x + pw - 16 - bw} y={by} width={bw} height={bh} rx="8" fill="none" {...edge} />
+          <path d={`M${p.x + 16 + bw} ${by + bh / 2}H${p.x + pw - 16 - bw}`} fill="none" {...edge} markerEnd="url(#do-arrow)" />
+          <text x={p.x + pw / 2} y={by - 10} textAnchor="middle" fontSize="11.5" fillOpacity="0.65">{p.link}</text>
+          <text x={p.x + 82} y={by + 28} textAnchor="middle" fontWeight="600">Trading system</text>
+          <text x={p.x + 82} y={by + 46} textAnchor="middle" fontSize="11.5" fillOpacity="0.65">{p.a}</text>
+          <text x={p.x + pw - 82} y={by + 28} textAnchor="middle" fontWeight="600">Downstream</text>
+          <text x={p.x + pw - 82} y={by + 46} textAnchor="middle" fontSize="11.5" fillOpacity="0.65">{p.b}</text>
+          <text x={p.x + pw / 2} y={y0 + ph - 16} textAnchor="middle" fontSize="11.5" fillOpacity="0.65">{p.foot}</text>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+// The next two are for the aerospace program study (CaseStudy/ge-aerospace.md).
+// Erica's draft describes eleven visuals. These are the two that can be drawn
+// from her words alone, with nothing made up.
+function RequestMap() {
+  const W = 168, H = 48, cx = 380, cy = 178;
+  // Where each source sits, and where its arrow lands on the team box.
+  const sources = [
+    { name: 'Sponsor', x: 116, y: 96, to: [cx - 96, cy - 18] },
+    { name: 'Customer team', x: 116, y: 250, to: [cx - 96, cy + 18] },
+    { name: 'Leadership', x: 380, y: 74, to: [cx, cy - 40] },
+    { name: 'Security', x: 644, y: 96, to: [cx + 96, cy - 18] },
+    { name: 'Other internal teams', x: 644, y: 250, to: [cx + 96, cy + 18] },
+  ];
+  const from = (s) => (s.x === cx ? [s.x, s.y + H / 2] : [s.x + (s.x < cx ? W / 2 : -W / 2), s.y]);
+
+  return (
+    <svg viewBox="0 0 760 300" role="img" aria-label="Requests came in from every direction: the sponsor, the customer team, leadership, security and other internal teams all sent work straight to the team. There was no intake process." fontSize="13" fill={INK}>
+      <defs><Arrow id="rm-arrow" /></defs>
+      <text x="24" y="34" fontSize="15" fontWeight="600">Requests came in from every direction</text>
+      <g fill="none" {...edge}>
+        {sources.map((s) => {
+          const [x1, y1] = from(s);
+          return <path key={s.name} d={`M${x1} ${y1}L${s.to[0]} ${s.to[1]}`} markerEnd="url(#rm-arrow)" />;
+        })}
+      </g>
+      {sources.map((s) => (
+        <g key={s.name}>
+          <rect x={s.x - W / 2} y={s.y - H / 2} width={W} height={H} rx="8" fill="none" {...edge} />
+          <text x={s.x} y={s.y + 4} textAnchor="middle">{s.name}</text>
+        </g>
+      ))}
+      <rect x={cx - 96} y={cy - 40} width="192" height="80" rx="8" fill={ACCENT} fillOpacity="0.12" {...hot} />
+      <text x={cx} y={cy - 2} textAnchor="middle" fontWeight="600">The team</text>
+      <text x={cx} y={cy + 18} textAnchor="middle" fontSize="11.5" fillOpacity="0.65">no intake process</text>
+    </svg>
+  );
+}
+
+function DecisionCard() {
+  const bw = 296, bh = 64, xa = 24, xc = 440;
+  const plans = [
+    { y: 60, name: 'Plan A', line: 'The full delivery' },
+    { y: 148, name: 'Plan B', line: 'The smaller fallback' },
+  ];
+  const mid = 136;
+
+  return (
+    <svg viewBox="0 0 760 236" role="img" aria-label="A main plan, a fallback, and a date to decide. Plan A is the full delivery. Plan B is the smaller fallback. A checkpoint is the date that decides between them." fontSize="13" fill={INK}>
+      <defs><Arrow id="dc-arrow" /></defs>
+      <text x="24" y="34" fontSize="15" fontWeight="600">A main plan, a fallback, and a date to decide</text>
+      <g fill="none" {...edge}>
+        {plans.map((p) => (
+          <path key={p.name} d={`M${xa + bw} ${p.y + bh / 2}H${xa + bw + 60}V${mid}H${xc}`} markerEnd="url(#dc-arrow)" />
+        ))}
+      </g>
+      {plans.map((p) => (
+        <g key={p.name}>
+          <rect x={xa} y={p.y} width={bw} height={bh} rx="8" fill="none" {...edge} />
+          <text x={xa + 16} y={p.y + 27} fontWeight="600">{p.name}</text>
+          <text x={xa + 16} y={p.y + 47} fontSize="11.5" fillOpacity="0.65">{p.line}</text>
+        </g>
+      ))}
+      <rect x={xc} y={mid - 44} width={bw} height="88" rx="8" fill={ACCENT} fillOpacity="0.12" {...hot} />
+      <text x={xc + 16} y={mid - 10} fontWeight="600">Checkpoint</text>
+      <text x={xc + 16} y={mid + 12} fontSize="11.5">The date that decides between them</text>
+    </svg>
+  );
+}
+
+const DIAGRAMS = {
+  'request-map': RequestMap,
+  'decision-card': DecisionCard,
+  workstreams: Workstreams,
+  workflow: Workflow,
+  keystone: KeystonePhases,
+  'trade-break': TradeBreak,
+  'impact-map': ImpactMap,
+  'migration-phases': MigrationPhases,
+  'data-ownership': DataOwnership,
+};
 
 // Scrolls sideways on a phone so the words stay big enough to read.
 export default function Diagram({ name, caption }) {

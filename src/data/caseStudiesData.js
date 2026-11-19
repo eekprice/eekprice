@@ -37,7 +37,9 @@ const studies = [
   {
     title: "Speeding up the drive thru",
     stickers: [
-      { image: '/images/case-studies/brands/kfc.webp', name: 'KFC', className: 'w-16 lg:w-20 right-4 top-1 lg:right-[24%] lg:top-3', rotate: -8 },
+      { image: '/images/case-studies/brands/kfc.webp', name: 'KFC', className: 'w-16 lg:w-20 right-4 top-1 lg:right-[38%] lg:top-3', rotate: -8 },
+      // KFC sits between the title and the link. At 24% from the right it covered
+      // the link once the label got longer ("Read the drive thru case study").
       { image: '/images/case-studies/brands/taco-bell.webp', name: 'Taco Bell', className: 'w-9 lg:w-11 left-[9%] -bottom-3 lg:left-auto lg:bottom-auto lg:-right-8 lg:top-12', rotate: 8 },
     ],
     // On desktop, hovering the card slides this green sticky out from behind
@@ -72,9 +74,21 @@ const studies = [
   {
     title: "Simplifying schemas in menus",
     stickers: [
-      { emoji: '🍕', className: 'left-[22%] bottom-3 lg:left-[31%] lg:bottom-5', rotate: 14 },
-      { emoji: '👍', className: 'right-[9%] bottom-7 lg:right-[14%] lg:bottom-9', rotate: -9 },
+      // Erica, 2026-11-18: the Pizza Hut, Yum and KFC logos float in like the
+      // drive thru card's. They took the place of the pizza and thumbs up emoji.
+      { image: '/images/case-studies/brands/kfc.webp', name: 'KFC', className: 'w-16 lg:w-20 left-[9%] -bottom-3 lg:left-auto lg:bottom-auto lg:-right-10 lg:top-14', rotate: 8 },
+      // Erica, 2026-11-18: "switch up the KFC placement". KFC and Pizza Hut traded
+      // places, so this card is not laid out like the drive thru one: Pizza Hut is
+      // between the title and the link, KFC hangs off the right edge.
+      // On a phone Pizza Hut sits by the link, because this title runs the full width.
+      // TODO(Erica): this Yum logo was cut out of your mock. Send the real file.
+      { image: '/images/case-studies/brands/yum.webp', name: 'Yum', className: 'w-9 lg:w-11 right-[34%] -bottom-3 lg:right-[24%] lg:bottom-auto lg:-top-5', rotate: 6 },
+      { image: '/images/case-studies/brands/pizza-hut.webp', name: 'Pizza Hut', className: 'w-10 lg:w-12 right-4 top-12 lg:right-[40%] lg:top-1', rotate: -8 },
     ],
+    // Erica, 2026-11-18: the same sticky as the drive thru card. Blue, like this
+    // study's note in the nav fan, with the final screen on it.
+    // The sticky's words are shorter than the study's title so they fit above the picture.
+    peek: { title: 'Simplifying menus', color: 'blue', image: '/images/case-studies/menu-management-final-ui-screen.webp' },
     order: 1,
     published: true,
     href: '/case-study/menu-management',

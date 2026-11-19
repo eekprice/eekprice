@@ -5,11 +5,14 @@ import { cursorSay } from '../CursorTag';
 import { cursorLines, heroComments } from '../../data/home';
 import Button from '../Button';
 
-// The work starts at the first section under the hero. If the page is still
-// holding the sections back, a wheel event tells it to show them, then we scroll.
+// Erica, 2026-11-19: the hero button says "Jump to UX Case Studies", so it
+// goes to the Product Design Case Studies section. It used to say "See My
+// Work" and go to the first section, Leadership Experience. If the page is
+// still holding the sections back, a wheel event tells it to show them first.
+const TARGET = 'case-studies';
 const seeWork = () => {
-  const go = () => document.getElementById('leadership')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  if (document.getElementById('leadership')) return go();
+  const go = () => document.getElementById(TARGET)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (document.getElementById(TARGET)) return go();
   window.dispatchEvent(new Event('wheel'));
   setTimeout(go, 120);
 };
@@ -113,7 +116,7 @@ const PersonalityScene = ({ revealDelay = 4000, onRevealed }) => {
         style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.5s 0.9s', pointerEvents: isVisible ? 'auto' : 'none' }}
       >
         <Button onClick={seeWork}>
-          See my work
+          Jump to UX Case Studies
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v14m-6-6 6 6 6-6" />
           </svg>

@@ -1,5 +1,6 @@
 import React from 'react';
-import { ARISO_URL, SCISUMMARY_URL } from '../../data/links';
+import { ARISO_URL, SCISUMMARY_URL, PREVIEWS } from '../../data/links';
+import Link from '../ExternalLink';
 
 // Copy is Erica's, from the Figma hero (Tailwind Portfolio, node 158:1376),
 // with em dashes and exclamation points swapped for periods and commas per
@@ -11,11 +12,8 @@ import { ARISO_URL, SCISUMMARY_URL } from '../../data/links';
 
 const p = 'text-sm lg:text-base font-inter font-normal text-surface-foreground300-light dark:text-surface-foreground300-dark leading-relaxed';
 
-const link = 'underline underline-offset-2 decoration-1 hover:decoration-2';
-
-const Link = ({ href, children }) => (
-  <a href={href} target="_blank" rel="noopener noreferrer" className={link}>{children}</a>
-);
+// Every link here leaves the site, so each one is an ExternalLink: a new-tab
+// icon, and for Ariso and SciSummary a picture of the page on hover.
 
 // `preview` is what a pin shows before it is opened: the first words of the
 // comment. `body` is the whole thing. `link` is optional: a page on the site
@@ -26,7 +24,7 @@ export const aboutComments = [
     preview: "I've worn many hats in my career.",
     // The side projects page is a placeholder for now (pages/SideProjectsPage.js).
     // TODO(Erica): the label is a placeholder in your voice. Change the words here.
-    link: { to: '/side-projects', label: 'My side projects' },
+    link: { to: '/side-projects', label: 'My Side Projects' },
     body: (
       <p>
         I've worn many hats in my career. I'm a{' '}
@@ -49,7 +47,7 @@ export const aboutComments = [
     preview: "When I'm not building tech...",
     // The About page is the hobbies page, so this is the comment that points to it.
     // TODO(Erica): the label is a placeholder in your voice. Change the words here.
-    link: { to: '/about', label: 'More about me' },
+    link: { to: '/about', label: 'More About Me' },
     body: (
       <p>
         When I'm not building tech, you can find me experimenting with coffee art, enjoying adventures with my high school sweetheart (now husband), or brainstorming new ideas with my son. Life is one big, creative playground, and I wouldn't have it any other way.
@@ -72,7 +70,7 @@ function AboutMeSection() {
           I'm bubbly, energetic, and always curious. I thrive on variety and excitement, which is why I'm never bored.
           By day, I'm a product consultant leading an AWS data migration and shaping AI product strategy for a global aerospace company.
           By night, I'm the Founding Experience Designer at{' '}
-          <Link href={ARISO_URL}>Ariso</Link>, <Link href={SCISUMMARY_URL}>SciSummary</Link>, and Helix.
+          <Link href={ARISO_URL} preview={PREVIEWS.ariso}>Ariso</Link>, <Link href={SCISUMMARY_URL} preview={PREVIEWS.scisummary}>SciSummary</Link>, and Helix.
         </p>
       </div>
     </div>

@@ -12,6 +12,7 @@ import Button from '../components/Button';
 import { caseStudies } from '../data/caseStudiesData';
 import { deliveryCards, leadershipCards, sectionTitles } from '../data/home';
 import ExperienceCard from '../components/ExperienceCard';
+import { getCaseStudy } from '../data/caseStudies';
 import HeroSectionMobile from '../components/section/HeroSectionMobile.js';
 import EmergencyStop from '../components/EmergencyStop';
 import { useIsMobile } from '../hooks/useMediaQuery';
@@ -191,9 +192,13 @@ function Home() {
                 ))}
                 {supportingRoles.length > 0 && (
                   <div className="grid gap-4 sm:grid-cols-2">
-                    {supportingRoles.map((card) => (
-                      <ExperienceCard key={card.where} card={card} />
-                    ))}
+                    {supportingRoles.map((card) => {
+                      // A role's case studies are drawn inside its card.
+                      const studies = (card.studies || [])
+                        .map(({ slug, label }) => ({ study: getCaseStudy(slug), label }))
+                        .filter((s) => s.study);
+                      return <ExperienceCard key={card.where} card={card} studies={studies} />;
+                    })}
                   </div>
                 )}
               </div>

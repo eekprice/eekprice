@@ -5,8 +5,10 @@
 // At Yum! Brands", which is a past role. Swap these two lines to change it.
 export const hero = {
   greeting: "I'm Erica",
-  title: 'Principal Product Designer',
-  subline: 'Founding designer at two AI startups',
+  // Erica, 2026-11-18: "change my title to product Design leader".
+  title: 'Product Design Leader',
+  // Erica, 2026-11-18: "tagline should be founding designer and Product consultant".
+  subline: 'Founding designer and product consultant',
 };
 
 export const sectionTitles = {
@@ -50,6 +52,12 @@ export const leadershipCards = [
     // green one. Erica asked for it back on 2026-11-16. Same yellow as this
     // study's note in the nav fan.
     peek: { title: 'Leading UX at Yum Brands', color: 'yellow' },
+    // Erica, 2026-11-18: the Yum logo on this card too. It pops in with the
+    // sticky, on the card's top right corner.
+    // TODO(Erica): this Yum logo was cut out of your mock. Send the real file.
+    stickers: [
+      { image: '/images/case-studies/brands/yum.webp', name: 'Yum', className: 'w-12 lg:w-14 right-5 -top-5 lg:right-8 lg:-top-6', rotate: 6 },
+    ],
   },
   // Erica, in chat, 2026-11-16: "im a principal product consultant at CGI where I
   // worked with Topstep and GE Aerospace. working on their data platforms."
@@ -66,6 +74,19 @@ export const leadershipCards = [
     reports: '4 direct reports',
     role: 'Principal Product Consultant',
     text: 'I consult with large organizations to build new products from zero and improve enterprise systems. I worked with Topstep and GE Aerospace on their data platforms.',
+    // The leadership write-up for this role (CaseStudy/cgi-consulting.md, drafted
+    // 2026-11-19). Not cleared for public use yet.
+    href: '/case-study/cgi-leadership',
+    // Erica, 2026-11-19: "put the two case studies here", with the space to the
+    // right of this card marked, then "should be one container actually". So
+    // the role and its two studies are one card: the role on the left, two link
+    // tiles on the right (StudyLinks in ExperienceCard.js). `label` is the small line over the study's title.
+    // The GE Aerospace study is not cleared for public use yet. Do not push.
+    // GE Aerospace first (Erica, same day: "GE should be on the top").
+    studies: [
+      { slug: 'ge-aerospace', label: 'GE Aerospace' },
+      { slug: 'topstep', label: 'Topstep' },
+    ],
   },
   // GE Aerospace as its own supporting card. Erica, 2026-11-18: build the card,
   // keep it off the site until she gives facts she is cleared to share (Canon

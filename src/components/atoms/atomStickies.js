@@ -9,8 +9,8 @@ function Stickie({ text }) {
       
       {/* Foreground sticky layer where the text is displayed */}
       <div className="relative w-full h-full bg-highlight-backgroundSticky-light dark:bg-highlight-backgroundSticky-dark p-4 shadow-lg top-8 transition-transform duration-300 group-hover:-translate-y-2 rounded-md">
-        {/* Handwriting, per the design system: a few words on a note are set in font-hand. */}
-        <span className="font-hand text-lg leading-6 font-medium text-highlight-foregroundSticky-light dark:text-highlight-foregroundSticky-dark">{text}</span>
+        {/* Erica, 2026-11-18: sticky notes are set in Inter, not the handwriting font, so the site is not showing three typefaces at once. */}
+        <span className="font-inter text-base leading-5 font-semibold text-highlight-foregroundSticky-light dark:text-highlight-foregroundSticky-dark">{text}</span>
       </div>
     </div>
   );

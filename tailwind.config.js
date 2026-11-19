@@ -11,8 +11,9 @@ module.exports = {
       fontFamily: {
         merriweather: ['Merriweather', 'serif'],
         inter: ['Inter', 'sans-serif'],
-        // Handwriting: sticky notes, annotations, placeholders. Twelve words at most.
-        hand: ['"Shantell Sans"', '"Bradley Hand"', '"Segoe Print"', 'cursive'],
+        // Was handwriting (Shantell Sans). Erica, 2026-11-18: two typefaces only,
+        // so `font-hand` is Inter now. The class is kept so nothing has to be renamed.
+        hand: ['Inter', 'sans-serif'],
       },
       colors: {
         backdrop: {

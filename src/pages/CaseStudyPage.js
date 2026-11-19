@@ -6,6 +6,7 @@ import { ReactComponent as ArrowSvg } from '../assets/Arrow.svg';
 import { ReactComponent as StarSvg } from '../assets/Star.svg';
 import { ReactComponent as StarsSvg } from '../assets/Stars.svg';
 import { getCaseStudy, nextCaseStudy } from '../data/caseStudies';
+import ReadStudy, { ArrowRight } from '../components/ReadStudy';
 import { Block, OutlinedBlock, Reveal, Stickies, bodyClass, chipClass } from '../components/caseStudy/Blocks';
 import Overview, { StoryGrid } from '../components/caseStudy/Overview';
 import { Stage, Swap, Underline } from '../components/sketch/Sketch';
@@ -16,12 +17,6 @@ import FloatingNav from '../components/FloatingNav';
 const ChevronLeft = (props) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" {...props}>
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-  </svg>
-);
-
-const ChevronRight = (props) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
   </svg>
 );
 
@@ -132,7 +127,7 @@ function RelatedStudies({ related }) {
               <span className="min-w-0 flex-1 font-merriweather text-sm lg:text-base leading-snug text-surface-foreground100-light dark:text-surface-foreground100-dark">
                 {s.title}
               </span>
-              <ChevronRight className="shrink-0 w-4 h-4 text-surface-foreground400-light dark:text-surface-foreground400-dark transition-transform group-hover:translate-x-1" />
+              <span className="shrink-0 text-surface-foreground400-light dark:text-surface-foreground400-dark"><ArrowRight /></span>
             </Link>
           ))}
         </div>
@@ -165,14 +160,16 @@ function CaseStudyPage() {
         />
 
         <header className="relative max-w-[760px] mx-auto px-4 lg:px-0 pt-8 lg:pt-14 pb-6">
+          {/* Erica, 2026-11-19: back goes to the home page and says Home. It used to go to Past Work.
+              It lands on the section the study's card is in (`homeSection`). */}
           <Link
-            to="/work"
+            to={study.homeSection ? `/#${study.homeSection}` : '/'}
             className="inline-flex items-center gap-1 text-sm font-inter underline underline-offset-2
               text-surface-foreground200-light dark:text-surface-foreground200-dark
               hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark"
           >
             <ChevronLeft className="w-4 h-4" />
-            Past Work
+            Home
           </Link>
 
           <motion.div
@@ -283,9 +280,11 @@ function CaseStudyPage() {
               <p className="text-xs uppercase tracking-wide font-inter font-medium text-surface-foreground400-light dark:text-surface-foreground400-dark">
                 Next case study
               </p>
-              <p className="mt-1 flex items-center justify-between gap-3 font-merriweather text-xl lg:text-2xl text-surface-foreground100-light dark:text-surface-foreground100-dark">
+              <p className="mt-1 font-merriweather text-xl lg:text-2xl text-surface-foreground100-light dark:text-surface-foreground100-dark">
                 {next.title}
-                <ChevronRight className="w-5 h-5 shrink-0 transition-transform group-hover:translate-x-1" />
+              </p>
+              <p className="m-0 mt-3">
+                <ReadStudy inside />
               </p>
             </Link>
           </Reveal>

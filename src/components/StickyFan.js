@@ -128,7 +128,7 @@ function StickyFan({ id, open, studies, onClose, onAll, onExited }) {
                     to={`/case-study/${study.slug}`}
                     onClick={() => onClose()}
                     className={`group relative block w-36 h-36 p-4 rounded-md shadow-lg -translate-x-1/2 -translate-y-1/2
-                      font-hand text-base leading-5 font-medium
+                      font-inter text-[15px] leading-5 font-semibold
                       transition-[transform,box-shadow] duration-300 ease-out
                       motion-safe:hover:-translate-y-[calc(50%+8px)] motion-safe:hover:rotate-2 hover:shadow-xl
                       ${focusRingClass} ${note.paper}`}
@@ -141,14 +141,14 @@ function StickyFan({ id, open, studies, onClose, onAll, onExited }) {
                       exit={{ opacity: 0, transition: { duration: 0.08 } }}
                       transition={{ duration: 0.2, delay: reduce ? 0 : 0.1 + i * 0.06 }}
                     >
-                      {study.title}
+                      {study.note?.title || study.title}
                     </motion.span>
                     {/* A picture of the work, always on the note. It fades in with the name. */}
                     {study.note?.image && (
                       <motion.img
                         src={study.note.image}
                         alt=""
-                        className="absolute inset-x-2 bottom-2 w-[calc(100%-16px)] h-auto pointer-events-none"
+                        className="absolute inset-x-2 bottom-2 w-[calc(100%-16px)] h-auto max-h-[76px] object-cover object-left-top rounded-sm pointer-events-none"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0, transition: { duration: 0.08 } }}

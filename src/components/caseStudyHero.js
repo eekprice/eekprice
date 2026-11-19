@@ -24,13 +24,13 @@ const WireBox = ({ at, className }) => (
 );
 
 // A logo used as a sticker, in the same spots as the emoji ones. It pops in
-// just after the sticky: when the card is the one most in view (`show`), or on
-// hover. The thin white edge keeps dark logo type readable on the dark card.
+// just after the sticky, while the card is the active one (`show`): the one
+// under the mouse, or else the one most in view. Only one card is active at a time. The thin white edge keeps dark logo type readable on the dark card.
 // Logos wait for the sticky to be most of the way out, then pop in one after
 // the other. Going away, they leave at once.
 const LOGOS_AFTER = 350; // ms
 
-const LogoSticker = ({ sticker, show, order = 0 }) => (
+export const LogoSticker = ({ sticker, show, order = 0 }) => (
   <img
     src={sticker.image}
     alt=""
@@ -41,14 +41,15 @@ const LogoSticker = ({ sticker, show, order = 0 }) => (
       motion-reduce:transition-opacity
       ${show
         ? 'opacity-100 scale-100 [transition-delay:var(--after-sticky)]'
-        : 'opacity-0 scale-50 group-hover/card:opacity-100 group-hover/card:scale-100 group-hover/card:[transition-delay:var(--after-sticky)]'}
+        : 'opacity-0 scale-50'}
       ${sticker.className}`}
     style={{ '--tw-rotate': `${sticker.rotate || 0}deg`, '--after-sticky': `${LOGOS_AFTER + order * 120}ms` }}
   />
 );
 
 // The sticky that slides out from behind the card's left edge, up by the
-// title, while this card is the one most in view (`out`), or on hover. It goes to the same place as that link, so it is kept out of the
+// title, while this card is the active one (`out`): hovered, or else the one
+// most in view. Only one sticky is out at a time. It goes to the same place as that link, so it is kept out of the
 // tab order and hidden from screen readers. Desktop only: there is no room
 // beside the card on a phone.
 // The sticky's paper. Same colors as the notes in the nav fan (StickyFan.js).
@@ -61,14 +62,14 @@ const PEEK_PAPER = {
 
 export const Peek = ({ peek, href, out }) => {
   const paper = `hidden lg:block absolute left-2 top-3 z-0 w-36 h-36 p-4 rounded-md shadow-lg
-    ${PEEK_PAPER[peek.color] || PEEK_PAPER.green} font-hand text-base leading-5 font-medium
+    ${PEEK_PAPER[peek.color] || PEEK_PAPER.green} font-inter text-[15px] leading-5 font-semibold
     transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]
-    ${out ? '-translate-x-[138px] -rotate-[8deg]' : '-rotate-3 group-hover/card:-translate-x-[138px] group-hover/card:-rotate-[8deg]'}
+    ${out ? '-translate-x-[138px] -rotate-[8deg]' : '-rotate-3'}
     hover:shadow-xl hover:-translate-y-1 motion-reduce:transition-none`;
   const inside = (
     <>
       {peek.title}
-      {peek.image && <img src={peek.image} alt="" className="absolute inset-x-2 bottom-2 w-[calc(100%-16px)] h-auto" />}
+      {peek.image && <img src={peek.image} alt="" className="absolute inset-x-2 bottom-2 w-[calc(100%-16px)] h-auto max-h-[76px] object-cover object-left-top rounded-sm" />}
     </>
   );
   return href ? (
@@ -78,8 +79,9 @@ export const Peek = ({ peek, href, out }) => {
   );
 };
 
-// `mostInView` is true while this card has more of itself on screen than any
-// other card (Home.js works that out from `data-in-view-key`).
+// `mostInView` is true while this card is the active one: under the mouse, or
+// else with more of itself on screen than any other card (Home.js works that
+// out from `data-in-view-key` with useMostInView).
 const CaseStudyHero = ({ title, slides, href, stickers = [], slideHeight, peek, mostInView = false }) => {
   const hasSlides = slides.length > 0;
   const hold = hasSlides ? HOLD.slides : HOLD.empty;

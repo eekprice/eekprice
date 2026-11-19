@@ -1,15 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import CaseStudyPreview from './CaseStudySlides';
 import { WireBlock } from '../sketch/Sketch';
 import { ReadFullCard } from '../caseStudy/Overview';
 import { getCaseStudy } from '../../data/caseStudies';
-
-const ChevronIcon = (props) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" {...props}>
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-  </svg>
-);
+import ReadStudy from '../ReadStudy';
 
 // A work card: title top-left, optional slide strip, optional link.
 // With no slides it shows a wireframe of the strip (design system: wire
@@ -44,16 +38,7 @@ const CaseStudyContainer = ({ title, slides = [], href, slideHeight, sketchAt = 
           )}
         </div>
         {href && (
-          <Link
-            to={href}
-            className="mt-1 lg:mt-0 inline-flex items-center gap-1 shrink-0
-              text-sm font-inter font-medium underline underline-offset-2
-              text-surface-foreground200-light dark:text-surface-foreground200-dark
-              hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark"
-          >
-            {study?.linkLabel || 'Read full study'}
-            <ChevronIcon className="w-4 h-4" />
-          </Link>
+          <ReadStudy to={href} about={title} className="mt-2 lg:mt-0 self-start shrink-0" />
         )}
       </div>
 

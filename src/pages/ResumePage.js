@@ -7,6 +7,7 @@ import { Reveal, chipClass } from '../components/caseStudy/Blocks';
 import { Underline } from '../components/sketch/Sketch';
 import Stamp from '../components/sketch/Stamp';
 import Button from '../components/Button';
+import ExternalLink from '../components/ExternalLink';
 import FloatingNav from '../components/FloatingNav';
 import { MAILTO } from '../data/links';
 import { education, intro, roles, sideProjects, skills } from '../data/resume';
@@ -108,7 +109,7 @@ function ResumePage() {
               {intro}
             </p>
             <p className="mt-4">
-              <Button as="a" href={MAILTO} variant="outline" size="sm">Email me</Button>
+              <Button as="a" href={MAILTO} variant="outline" size="sm">Email Me</Button>
             </p>
           </motion.div>
         </header>
@@ -135,7 +136,7 @@ function ResumePage() {
                     ) : !p.href ? (
                       <span className={`font-medium ${ink}`}>{p.name}</span>
                     ) : (
-                      <a href={p.href} target="_blank" rel="noopener noreferrer" className={`${linkClass} lg:text-base font-medium`}>{p.name}</a>
+                      <ExternalLink href={p.href} preview={p.preview} className={`font-inter text-sm lg:text-base font-medium ${ink} hover:text-primary-foreground-light dark:hover:text-primary-foreground-dark`}>{p.name}</ExternalLink>
                     )}
                     {'. '}
                     {p.role}

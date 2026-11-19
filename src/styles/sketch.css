@@ -7,6 +7,11 @@
    Motion runs under an ancestor with the class is-in. With reduced motion on,
    everything sits in its finished state. */
 
+/* Erica, 2026-11-18: no handwriting font, the site uses two typefaces only.
+   tokens.css is generated and still names Shantell Sans, so the override is here.
+   Every sk- class that asks for the hand font gets Inter. */
+:root { --font-hand: var(--font-inter, Inter, sans-serif); }
+
 /* ---------- Canvas ---------- */
 
 .sk-canvas {
@@ -396,6 +401,16 @@ a.sk-sticky:focus-visible, button.sk-sticky:focus-visible { outline: none; box-s
 .sk-button--secondary:hover { background: var(--primary-hover); }
 .sk-button--outline, .sk-button--ghost, .sk-button--link { background: transparent; color: var(--surface-foreground100); }
 .sk-button--outline:hover, .sk-button--ghost:hover { background: var(--surface-background200); box-shadow: none; }
+/* The resting outline of an outline button. Erica asked for it softer three
+   times on 2026-11-19, so it is the card border color itself (gray-200 in
+   light, slate-600 in dark). */
+:root { --sk-outline-soft: var(--surface-outline); }
+/* Erica, 2026-11-19: the outline was "grabbing too much attention". The loop is
+   a soft grey pencil line at rest and goes to full ink on hover or focus. */
+.sk-button--outline .sk-frame--loop .sk-ink { stroke: var(--sk-outline-soft); stroke-width: var(--stroke-hairline, 1px); transition: stroke var(--duration-fast, 150ms); }
+.sk-button--outline:hover .sk-frame--loop .sk-ink,
+.sk-button--outline:focus-visible .sk-frame--loop .sk-ink,
+a:hover .sk-button--outline .sk-frame--loop .sk-ink { stroke: var(--marker-ink); }
 .sk-button--ghost:hover { translate: none; }
 .sk-button--link { height: auto; padding: 0; border-radius: var(--radius-base); text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
 .sk-button--link:hover { translate: none; box-shadow: none; text-decoration-thickness: 2px; }
