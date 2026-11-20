@@ -1,7 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import SideProjectsButton from './SideProjectsButton';
+// Side Projects is off for now (Erica, 2026-11-19: "i do eventually want to
+// have it but not right now"). To bring it back, uncomment this import and the
+// button further down.
+// import SideProjectsButton from './SideProjectsButton';
 import AtomContact from './atoms/atomContact';
 import AtomResume from './atoms/atomResume';
 import Stickies from './atoms/atomStickies.js';
@@ -222,7 +225,8 @@ function Nav({ showHome = false }) {
               onExited={fanExited}
             />
           </div>
-          <SideProjectsButton />
+          {/* Off for now, see the note at the import. */}
+          {/* <SideProjectsButton /> */}
         </div>
 
         <span className="hidden lg:inline-flex">

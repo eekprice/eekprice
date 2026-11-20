@@ -10,9 +10,10 @@ import KindConnections from '../components/KindConnections';
 import StillHere from '../components/StillHere';
 import Button from '../components/Button';
 import { caseStudies } from '../data/caseStudiesData';
-import { deliveryCards, leadershipCards, sectionTitles } from '../data/home';
+import { leadershipCards, sectionTitles } from '../data/home';
 import ExperienceCard from '../components/ExperienceCard';
 import { getCaseStudy } from '../data/caseStudies';
+import { useHeroCopy } from '../data/heroCopy';
 import HeroSectionMobile from '../components/section/HeroSectionMobile.js';
 import EmergencyStop from '../components/EmergencyStop';
 import { useIsMobile } from '../hooks/useMediaQuery';
@@ -142,6 +143,9 @@ function Home() {
   const designStudies = publishedStudies;
   const shownRoles = leadershipCards.filter((card) => !card.hidden);
   const featuredRoles = shownRoles.filter((card) => card.size !== 'small');
+  // Home is the IC version: small role cards side by side. A copy of Home can
+  // ask for the big featured card with `featuredLeadership` (data/leadership.js).
+  const compactLeadership = !useHeroCopy().featuredLeadership;
   const supportingRoles = shownRoles.filter((card) => card.size === 'small');
   // The card with the most of itself on screen. Its sticky is the one that's out.
   const cardInView = useMostInView('[data-in-view-key]', { ready: showSections });
@@ -186,6 +190,20 @@ function Home() {
             <section id="leadership" className="relative max-w-[800px] mx-auto px-4 pt-10 pb-6 scroll-mt-24">
               <SectionHeading>{sectionTitles.leadership}</SectionHeading>
               {/* The featured card first, then the smaller supporting ones in a row. */}
+              {compactLeadership ? (
+                // Home, the IC version: every role is a small card and they sit
+                // side by side (Erica, 2026-11-19: the leadership content was
+                // too big, and should sit alongside the CGI card).
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {/* No case study rows here (Erica, 2026-11-19). Each role's own
+                      case study links its client or product studies at the top. */}
+                  {/* The current role first: Principal Product Consultant, then
+                      Yum (Erica, 2026-11-19). */}
+                  {[...supportingRoles, ...featuredRoles].map((card) => (
+                    <ExperienceCard key={card.where} card={card} compact />
+                  ))}
+                </div>
+              ) : (
               <div className="relative space-y-6">
                 {featuredRoles.map((card) => (
                   <ExperienceCard key={card.role} card={card} mostInView={cardInView === card.role} />
@@ -202,6 +220,7 @@ function Home() {
                   </div>
                 )}
               </div>
+              )}
             </section>
           )}
 
@@ -231,7 +250,9 @@ function Home() {
             </p>
           </section>
 
-          {/* Program and delivery */}
+          {/* Program and Delivery Lead is off for now (Erica, 2026-11-19: "remove
+              program delivery lead too"). Kept here so it can come back: uncomment
+              this block and put deliveryCards back in the import at the top.
           <section id="delivery" className="relative max-w-[800px] mx-auto px-4 pt-10 pb-6 scroll-mt-24">
             <SectionHeading>{sectionTitles.delivery}</SectionHeading>
             <div className="relative space-y-6">
@@ -247,6 +268,7 @@ function Home() {
               ))}
             </div>
           </section>
+          */}
 
           <div className="h-8 lg:h-12" />
 

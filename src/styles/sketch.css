@@ -568,3 +568,16 @@ textarea.sk-input-group__control { min-height: 76px; padding: var(--space-3); re
   .sk-spinner .sk-ink { animation: none !important; }
   .sk-input-group:focus-within > .sk-frame .sk-draw { animation: none !important; }
 }
+
+/* A stage that fills its grid cell passes that height on to the card inside,
+   so cards in one row end at the same line (the role cards on Home). */
+.sk-stage.h-full > .sk-swap {
+  height: 100%;
+}
+
+/* The menu prototype's checkbox (MenuPrototype.js): a small pop when ticked. */
+@keyframes proto-pop {
+  0% { transform: scale(0.8); }
+  60% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}

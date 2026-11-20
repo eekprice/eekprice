@@ -8,7 +8,6 @@ import { ReactComponent as StarsSvg } from '../assets/Stars.svg';
 import { getCaseStudy, nextCaseStudy } from '../data/caseStudies';
 import ReadStudy, { ArrowRight } from '../components/ReadStudy';
 import { Block, OutlinedBlock, Reveal, Stickies, bodyClass, chipClass } from '../components/caseStudy/Blocks';
-import Overview, { StoryGrid } from '../components/caseStudy/Overview';
 import { Stage, Swap, Underline } from '../components/sketch/Sketch';
 import Stamp from '../components/sketch/Stamp';
 import { ease } from '../components/sketch/motion';
@@ -144,8 +143,32 @@ function CaseStudyPage() {
   if (!study) return <Navigate to="/" replace />;
 
   const next = nextCaseStudy(slug);
-  // Cards at the top take the hero image's place.
-  const hasCards = Boolean(study.overview || study.slides || study.related);
+  // The summary cards (a study's `slides` and `overview`) are for the home
+  // strip only. They are not repeated on the study's page (Erica, 2026-11-19:
+  // "they only show on the main page. if they clicked to the case study they
+  // want to read"). Only the small related-study links still sit on top.
+  const hasCards = Boolean(!study.overview && !study.slides && study.related);
+
+  const nextCard = next && (
+    <Reveal className="mt-16">
+      <Link
+        to={`/case-study/${next.slug}`}
+        className="group block rounded-lg border border-surface-outline-light dark:border-surface-outline-dark
+          bg-surface-background100-light dark:bg-surface-background100-dark p-4 lg:p-5 shadow-md
+          hover:shadow-lg transition-shadow"
+      >
+        <p className="text-xs uppercase tracking-wide font-inter font-medium text-surface-foreground400-light dark:text-surface-foreground400-dark">
+          Next case study
+        </p>
+        <p className="mt-1 font-merriweather text-xl lg:text-2xl text-surface-foreground100-light dark:text-surface-foreground100-dark">
+          {next.title}
+        </p>
+        <p className="m-0 mt-3">
+          <ReadStudy inside />
+        </p>
+      </Link>
+    </Reveal>
+  );
 
   return (
     // Same dot grid canvas as the rest of the site. The write-up is finished
@@ -230,9 +253,6 @@ function CaseStudyPage() {
         </header>
       </div>
 
-      {/* High-level view first: the overview cards (or the story cards), then the write-up. */}
-      {study.overview && <Overview overview={study.overview} />}
-      {!study.overview && study.slides && <StoryGrid slides={study.slides} />}
       {!study.overview && !study.slides && study.related && <RelatedStudies related={study.related} />}
 
       <main className={`max-w-[760px] mx-auto px-4 lg:px-0 pb-12 ${hasCards ? 'pt-8' : ''}`}>
@@ -247,7 +267,8 @@ function CaseStudyPage() {
               <img
                 src={study.hero.src}
                 alt={study.hero.alt}
-                className="block w-full h-auto rounded-lg border border-surface-outline-light dark:border-surface-outline-dark shadow-lg"
+                // No outline or drop shadow (Erica, 2026-11-19), like the figures in the write-up.
+                className="block w-full h-auto rounded-lg"
               />
             </Swap>
           </Stage>
@@ -269,29 +290,11 @@ function CaseStudyPage() {
           <Stickies items={study.highlights} />
         </section>
 
-        {next && (
-          <Reveal className="mt-16">
-            <Link
-              to={`/case-study/${next.slug}`}
-              className="group block rounded-lg border border-surface-outline-light dark:border-surface-outline-dark
-                bg-surface-background100-light dark:bg-surface-background100-dark p-4 lg:p-5 shadow-md
-                hover:shadow-lg transition-shadow"
-            >
-              <p className="text-xs uppercase tracking-wide font-inter font-medium text-surface-foreground400-light dark:text-surface-foreground400-dark">
-                Next case study
-              </p>
-              <p className="mt-1 font-merriweather text-xl lg:text-2xl text-surface-foreground100-light dark:text-surface-foreground100-dark">
-                {next.title}
-              </p>
-              <p className="m-0 mt-3">
-                <ReadStudy inside />
-              </p>
-            </Link>
-          </Reveal>
-        )}
+        {nextCard}
 
         <div className="h-40 lg:h-48" />
       </main>
+
 
       <FloatingNav show showHome />
     </div>

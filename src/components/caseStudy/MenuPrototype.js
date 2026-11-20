@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, Reorder, motion, useDragControls, useReducedMotion } from 'framer-motion';
 
 // A working version of the action panel from Erica's Figma file
 // "handoff - Dynamic Action Panel (DAP)" (key c9Z6zBIcGyB1VWPtbh9WPJ).
@@ -45,23 +46,80 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 // not built.
 
 const TREE = [
-  { id: 'b1', type: 'Bundle', name: 'Family Meal Deal', code: '1234', price: ['Label', '$0.00'], children: [] },
+  // Erica, 2026-11-19: every bundle and choice opens to something. The rows
+  // under Family Meal Deal, Drink, Cheese Pizza, Medium and Crust are made up,
+  // like the rest of this pizza menu.
+  {
+    id: 'b1', type: 'Bundle', name: 'Family Meal Deal', code: '1234', price: ['Label', '$0.00'],
+    children: [
+      {
+        id: 'c3', type: 'Choice', name: 'Pizzas', meta: ['Count', '2'], code: '234310', price: ['Upcharge', '$0.00'],
+        children: [
+          { id: 'p3', type: 'Product', name: 'Cheese Pizza', code: '3224', children: [] },
+          { id: 'p4', type: 'Product', name: 'Veggie Pizza', code: '3226', children: [] },
+        ],
+      },
+      {
+        id: 'c4', type: 'Choice', name: 'Sides', meta: ['Count', '1'], code: '234311', price: ['Upcharge', '$0.00'],
+        children: [
+          { id: 'p5', type: 'Product', name: 'Garlic Bread', code: '4410', children: [] },
+          { id: 'p6', type: 'Product', name: 'Wings', code: '4412', children: [] },
+        ],
+      },
+      {
+        id: 'c5', type: 'Choice', name: 'Drink', meta: ['Count', '1'], code: '234312', price: ['Upcharge', '$0.00'],
+        children: [
+          { id: 'p7', type: 'Product', name: '2 Liter Soda', code: '5102', children: [] },
+        ],
+      },
+    ],
+  },
   {
     id: 'b2', type: 'Bundle', name: 'Pizza Combo', code: '1235', price: ['Price', '$0.00'],
     children: [
-      { id: 'c1', type: 'Choice', name: 'Drink', meta: ['Count', '1'], code: '234322', price: ['Upcharge', '$0.00'], children: [] },
+      {
+        id: 'c1', type: 'Choice', name: 'Drink', meta: ['Count', '1'], code: '234322', price: ['Upcharge', '$0.00'],
+        children: [
+          {
+            id: 'p8', type: 'Product', name: 'Fountain Drink', code: '5100',
+            children: [
+              { id: 'v3', type: 'Variant', name: 'Small', meta: ['Count', '1'], code: '510001', price: ['Price', '$0.00'], children: [] },
+              { id: 'v4', type: 'Variant', name: 'Large', meta: ['Count', '1'], code: '510002', price: ['Price', '$0.00'], children: [] },
+            ],
+          },
+          { id: 'p9', type: 'Product', name: 'Bottled Water', code: '5104', children: [] },
+        ],
+      },
       {
         id: 'c2', type: 'Choice', name: 'Pizza', code: '234322', price: ['Upcharge', '$0.00'],
         children: [
-          { id: 'p1', type: 'Product', name: 'Cheese Pizza', code: '3224', children: [] },
+          {
+            id: 'p1', type: 'Product', name: 'Cheese Pizza', code: '3224',
+            children: [
+              { id: 'v5', type: 'Variant', name: 'Medium', meta: ['Count', '1'], code: '322401', price: ['Price', '$0.00'], children: [] },
+              { id: 'v6', type: 'Variant', name: 'Large', meta: ['Count', '1'], code: '322402', price: ['Price', '$0.00'], children: [] },
+            ],
+          },
           {
             id: 'p2', type: 'Product', name: 'Pepperoni Pizza', code: '23432',
             children: [
-              { id: 'v1', type: 'Variant', name: 'Medium', meta: ['Count', '1'], code: '234322', price: ['Price', '$0.00'], children: [] },
+              {
+                id: 'v1', type: 'Variant', name: 'Medium', meta: ['Count', '1'], code: '234322', price: ['Price', '$0.00'],
+                children: [
+                  { id: 's3', type: 'Slot', name: 'Crust', code: '234330', price: ['Price', '$0.00'], children: [] },
+                  { id: 's4', type: 'Slot', name: 'Toppings', code: '234331', price: ['Range 1-2', '$0.00'], children: [] },
+                ],
+              },
               {
                 id: 'v2', type: 'Variant', name: 'Large', meta: ['Count', '0'], code: '45r43', price: ['Price', '$0.00'],
                 children: [
-                  { id: 's1', type: 'Slot', name: 'Crust', code: '234322', price: ['Price', '$0.00'], children: [] },
+                  {
+                    id: 's1', type: 'Slot', name: 'Crust', code: '234322', price: ['Price', '$0.00'],
+                    children: [
+                      { id: 'm3', type: 'Modifier', name: 'Thin Crust', code: '234340', children: [] },
+                      { id: 'm4', type: 'Modifier', name: 'Hand Tossed', code: '234341', children: [] },
+                    ],
+                  },
                   {
                     id: 's2', type: 'Slot', name: 'Toppings', code: '234322', price: ['Range 1-2', '$0.00'],
                     children: [
@@ -119,6 +177,7 @@ const GUIDE = {
   review: 'These are your changes in plain words. Take any of them back, or publish.',
   published: 'Published. The marks are gone because the changes are part of the menu now. Nothing was really saved.',
   elsewhere: "In the product that opens another screen. It's not part of this prototype.",
+  config: 'This is the configuration drawer. Change the settings, drag the lines into order, then apply them to the grid.',
 };
 
 // "Either price or named price": a number becomes dollars, anything else is
@@ -143,7 +202,9 @@ function flatten(nodes, open, live, edits, depth = 0, parents = [], out = []) {
       ...node,
       depth,
       parents,
-      canOpen: node.type !== 'Weight',
+      // A row with nothing under it has no arrow. It gets one as soon as
+      // something is added to it.
+      canOpen: children.length > 0,
       removed: edits.removed.includes(node.id),
       basePrices,
       prices: edits.prices[node.id] || basePrices,
@@ -151,6 +212,9 @@ function flatten(nodes, open, live, edits, depth = 0, parents = [], out = []) {
       // A category from an edit sits beside the row's own Count or Value.
       category: edits.meta[node.id] || live.meta[node.id] || null,
       categoryMarked: Boolean(edits.meta[node.id]),
+      // What the configuration drawer set on this row, as [label, value].
+      config: edits.config[node.id]?.tag || live.config[node.id]?.tag || null,
+      configMarked: Boolean(edits.config[node.id]),
     });
     if ((!open || open.has(node.id)) && children.length) {
       flatten(children, open, live, edits, depth + 1, [...parents, node], out);
@@ -159,7 +223,7 @@ function flatten(nodes, open, live, edits, depth = 0, parents = [], out = []) {
   return out;
 }
 
-const NO_EDITS = { added: {}, removed: [], prices: {}, meta: {} };
+const NO_EDITS = { added: {}, removed: [], prices: {}, meta: {}, config: {} };
 
 // Published rows lose their marks.
 const settle = (row) => ({ ...row, added: false, marked: false, children: row.children ? row.children.map(settle) : undefined });
@@ -175,6 +239,7 @@ function merge(live, edits) {
     removed: [...live.removed, ...edits.removed],
     prices: { ...live.prices, ...edits.prices },
     meta: { ...live.meta, ...edits.meta },
+    config: { ...live.config, ...edits.config },
   };
 }
 
@@ -229,6 +294,21 @@ function listChanges(edits, all) {
       },
     });
   });
+  Object.entries(edits.config).forEach(([id, config]) => {
+    const row = all.get(id);
+    if (!row) return;
+    items.push({
+      key: `config-${id}`,
+      tag: 'Changed',
+      text: `Configuration of ${label(row)}${within(row)}`,
+      detail: config.text,
+      revert: (e) => {
+        const next = { ...e.config };
+        delete next[id];
+        return { ...e, config: next };
+      },
+    });
+  });
   Object.entries(edits.meta).forEach(([id, meta]) => {
     const row = all.get(id);
     if (!row) return;
@@ -247,8 +327,34 @@ function listChanges(edits, all) {
   return items;
 }
 
+// Motion. Rows unfold a touch slower than they fold, the way a list feels
+// right: opening is something to watch, closing should get out of the way.
+const EASE = [0.22, 1, 0.36, 1];
+const unfold = { height: { duration: 0.24, ease: EASE }, opacity: { duration: 0.2, delay: 0.04 } };
+const fold = { height: { duration: 0.18, ease: EASE }, opacity: { duration: 0.1 } };
+const slide = { duration: 0.28, ease: EASE };
+// One screen leaves to the side and the next comes in from it.
+const swap = (reduce, x) => ({
+  initial: reduce ? false : { opacity: 0, x },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.22, ease: EASE } },
+  exit: reduce ? { opacity: 0, transition: { duration: 0 } } : { opacity: 0, x, transition: { duration: 0.14 } },
+});
+
+// True from 768px, where the panel sits beside the tree.
+function useWide() {
+  const query = '(min-width: 768px)';
+  const [wide, setWide] = useState(() => typeof window !== 'undefined' && window.matchMedia(query).matches);
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    const update = () => setWide(media.matches);
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
+  return wide;
+}
+
 const Chevron = ({ open }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" className={`w-3.5 h-3.5 transition-transform ${open ? 'rotate-90' : ''}`}>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" className={`w-3.5 h-3.5 transition-transform duration-200 ease-out motion-reduce:transition-none ${open ? 'rotate-90' : ''}`}>
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 6l6 6-6 6" />
   </svg>
 );
@@ -262,20 +368,34 @@ const selectClass =
   'mt-0.5 w-full cursor-pointer border-0 border-b border-slate-400 bg-transparent py-1 text-sm text-slate-800 outline-none focus:border-blue-600 disabled:text-slate-400';
 const section = 'mt-4 border-t border-slate-200 pt-3';
 
+// The row's checkbox. A real checkbox for the keyboard and screen readers,
+// drawn as a box that fills blue and draws its tick, with a small pop.
+const Tick = ({ checked, onChange, label }) => (
+  <label className="relative grid h-4 w-4 shrink-0 cursor-pointer place-items-center">
+    <input type="checkbox" checked={checked} onChange={onChange} aria-label={label} className="peer sr-only" />
+    <span
+      aria-hidden="true"
+      className="absolute inset-0 rounded-[3px] border-[1.5px] border-slate-400 bg-white
+        transition-[background-color,border-color,transform] duration-200 ease-out
+        peer-hover:border-blue-500 peer-checked:border-blue-600 peer-checked:bg-blue-600
+        peer-active:scale-90 peer-checked:animate-[proto-pop_220ms_ease-out]
+        peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-blue-700
+        motion-reduce:transition-none motion-reduce:animate-none"
+    />
+    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" className="relative h-3 w-3 text-white [stroke-dasharray:14] [stroke-dashoffset:14] transition-[stroke-dashoffset] duration-200 ease-out delay-75 peer-checked:[stroke-dashoffset:0] motion-reduce:transition-none">
+      <path d="M3 8.5l3.2 3.2L13 4.8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  </label>
+);
+
 function Row({ row, isOpen, checked, onToggle, onCheck, showStart }) {
-  const tone = row.removed ? 'bg-red-50' : row.added ? 'bg-green-50' : checked ? 'bg-blue-50' : 'bg-white';
+  const tone = row.removed ? 'bg-red-50' : row.added ? 'bg-green-50' : checked ? 'bg-blue-50' : 'bg-white hover:bg-slate-50';
   const sign = row.removed ? '−' : row.added ? '+' : '';
   return (
-    <div className={`flex items-stretch border-b border-slate-200 text-[13px] text-slate-800 ${tone}`}>
+    <div className={`flex items-stretch border-b border-slate-200 text-[13px] text-slate-800 transition-colors duration-200 ${tone}`}>
       <div className="flex flex-1 min-w-0 items-center gap-1.5 py-1.5 pr-2" style={{ paddingLeft: `calc(8px + ${row.depth} * var(--indent))` }}>
         <span className={`w-3 shrink-0 font-semibold ${row.removed ? 'text-red-600' : 'text-green-600'}`} aria-hidden="true">{sign}</span>
-        <input
-          type="checkbox"
-          checked={checked}
-          onChange={() => onCheck(row)}
-          aria-label={`Select ${row.type} ${row.name}`}
-          className="h-4 w-4 shrink-0 accent-blue-600 cursor-pointer"
-        />
+        <Tick checked={checked} onChange={() => onCheck(row)} label={`Select ${row.type} ${row.name}`} />
         {row.canOpen ? (
           <button
             type="button"
@@ -302,7 +422,11 @@ function Row({ row, isOpen, checked, onToggle, onCheck, showStart }) {
             onClick={() => onCheck(row)}
             tabIndex={-1}
             aria-hidden="true"
-            className={`block max-w-full truncate text-left underline decoration-slate-400 underline-offset-2 hover:decoration-blue-600 hover:text-blue-700 ${row.removed ? 'line-through decoration-red-500' : ''}`}
+            // A removed row's name is struck through in red (Erica, 2026-11-19).
+            // It drops the underline: two lines in two colors can't share one name.
+            className={`block max-w-full truncate text-left ${row.removed
+              ? 'line-through decoration-red-600 decoration-2'
+              : 'underline decoration-slate-400 underline-offset-2 hover:decoration-blue-600 hover:text-blue-700'}`}
           >
             {row.name}
           </button>
@@ -313,8 +437,14 @@ function Row({ row, isOpen, checked, onToggle, onCheck, showStart }) {
             <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-blue-600" />
           </span>
         )}
-        {(row.category || row.meta) && (
+        {(row.category || row.meta || row.config) && (
           <span className="ml-auto flex shrink-0 items-center gap-2 pl-2 text-right">
+            {row.config && (
+              <span className={`hidden sm:block ${row.configMarked ? 'rounded bg-amber-100 px-1.5' : ''}`}>
+                <span className="block text-[10px] leading-3 text-slate-500">{row.config[0]}</span>
+                <span className="block">{row.config[1]}</span>
+              </span>
+            )}
             {row.category && (
               <span className={row.categoryMarked ? 'rounded bg-amber-100 px-1.5' : ''}>
                 <span className="block text-[10px] leading-3 text-slate-500">{row.category[0]}</span>
@@ -331,7 +461,7 @@ function Row({ row, isOpen, checked, onToggle, onCheck, showStart }) {
         )}
       </div>
       <div className="hidden sm:flex w-[84px] shrink-0 items-center border-l border-slate-200 px-2 text-slate-700">{row.code}</div>
-      <div className={`flex w-[92px] shrink-0 flex-col items-end justify-center gap-0.5 border-l border-slate-200 px-2 py-1 ${row.marked ? 'bg-amber-100' : ''}`}>
+      <div className={`flex w-[92px] shrink-0 flex-col items-end justify-center gap-0.5 border-l border-slate-200 px-2 py-1 transition-colors duration-300 ${row.marked ? 'bg-amber-100' : ''}`}>
         {row.prices.map(([label, value]) => (
           <span key={label} className="text-right">
             <span className="block text-[10px] leading-3 text-slate-500">{label}</span>
@@ -489,7 +619,7 @@ function PanelFooter({ autoSelect, setAutoSelect, canApply, onApply, onCancel })
 // open another screen in the product.
 
 // "Item Level Bundle".
-function BundlePanel({ row, footer, onDraft, onApply, onElsewhere }) {
+function BundlePanel({ row, footer, onDraft, onApply, onElsewhere, onConfig }) {
   const [remove, setRemove] = useState(false);
   const [categories, setCategories] = useState([]);
   const [price, setPrice] = useState('');
@@ -528,7 +658,7 @@ function BundlePanel({ row, footer, onDraft, onApply, onElsewhere }) {
             <Picker id="proto-bundle-choice" label="Add choices" placeholder="Choose a choice" options={CHOICE_OPTIONS} picked={choices} onChange={setChoices} />
           </div>
           <div className={section}>
-            <ConfigButton onClick={onElsewhere}>Choice configurations</ConfigButton>
+            <ConfigButton onClick={() => onConfig('choice')}>Choice configurations</ConfigButton>
             <DefinitionLink onClick={onElsewhere}>Open choice definition</DefinitionLink>
           </div>
         </>
@@ -539,7 +669,7 @@ function BundlePanel({ row, footer, onDraft, onApply, onElsewhere }) {
 }
 
 // "Item Level Choices". "Add product variants" is from Flows frame 6.
-function ChoicePanel({ row, footer, onDraft, onApply, onElsewhere }) {
+function ChoicePanel({ row, footer, onDraft, onApply, onElsewhere, onConfig }) {
   const [products, setProducts] = useState([]);
   const [remove, setRemove] = useState(false);
   const bundle = [...row.parents].reverse().find((p) => p.type === 'Bundle');
@@ -580,11 +710,11 @@ function ChoicePanel({ row, footer, onDraft, onApply, onElsewhere }) {
             />
           </div>
           <div className={section}>
-            <ConfigButton onClick={onElsewhere}>Choice definition config</ConfigButton>
+            <ConfigButton onClick={() => onConfig('choice')}>Choice definition config</ConfigButton>
             <Caution>adding product variants will affect all choices within the menu across different instances of this bundle.</Caution>
           </div>
           <div className={section}>
-            <ConfigButton onClick={onElsewhere}>Bundle choice config</ConfigButton>
+            <ConfigButton onClick={() => onConfig('choice')}>Bundle choice config</ConfigButton>
             <DefinitionLink onClick={onElsewhere}>Open choice definition</DefinitionLink>
           </div>
         </>
@@ -618,7 +748,7 @@ function ProductPanel({ footer, onDraft, onApply, onElsewhere }) {
 
 // "Item Level Slot". "Add modifiers" is from the final screen at the top of
 // the solution section.
-function SlotPanel({ row, footer, onDraft, onApply, onElsewhere }) {
+function SlotPanel({ row, footer, onDraft, onApply, onElsewhere, onConfig }) {
   const [modifiers, setModifiers] = useState([]);
   const [remove, setRemove] = useState(false);
   const [price, setPrice] = useState('');
@@ -669,7 +799,7 @@ function SlotPanel({ row, footer, onDraft, onApply, onElsewhere }) {
           </div>
 
           <div className={section}>
-            <ConfigButton onClick={onElsewhere}>Modifier weight config</ConfigButton>
+            <ConfigButton onClick={() => onConfig('weights')}>Modifier weight config</ConfigButton>
             <Caution>introducing modifier weights will trigger changes across all instances of slot at the organizational level.</Caution>
           </div>
 
@@ -733,7 +863,7 @@ function SlotPanel({ row, footer, onDraft, onApply, onElsewhere }) {
 }
 
 // "Item Level Slot Modifier".
-function ModifierPanel({ row, footer, onDraft, onApply, onElsewhere }) {
+function ModifierPanel({ row, footer, onDraft, onApply, onElsewhere, onConfig }) {
   const [remove, setRemove] = useState(false);
   const [weights, setWeights] = useState([]);
   const [priceAll, setPriceAll] = useState(false);
@@ -823,7 +953,7 @@ function ModifierPanel({ row, footer, onDraft, onApply, onElsewhere }) {
           )}
 
           <div className={section}>
-            <ConfigButton onClick={onElsewhere}>Modifier weight config</ConfigButton>
+            <ConfigButton onClick={() => onConfig('weights')}>Modifier weight config</ConfigButton>
             <Caution>introducing modifier weights will trigger changes across all instances of slot at the organizational level.</Caution>
             <DefinitionLink onClick={onElsewhere}>Open modifier definition</DefinitionLink>
           </div>
@@ -922,6 +1052,321 @@ function MultiPanel({ count, footer, onDraft, onApply }) {
   );
 }
 
+
+// ---------------------------------------------------------------------------
+// The configuration drawer, from the Figma page "Configuration Drawer"
+// (captures in CaseStudy/assets/figma-dap/config-drawer/). It slides in over
+// the grid from the right. Two kinds:
+//   choice    "Choice Default": for each choice, show hierarchy, min and max,
+//             and a list of default products with a variant and an upcharge.
+//             The defaults can be added, copied, removed and dragged into order.
+//   weights   "Modifier Weights Configuration": for a slot, its modifiers and
+//             the weights each one offers. For one modifier, just its weights.
+// "Apply configurations to data grid" stages the change on the row, marked,
+// like any other edit. Nothing is saved.
+const WEIGHT_NAMES = ['Light', 'Regular', 'Extra'];
+const VARIANT_NAMES = ['Medium', 'Large'];
+const solidBtn = `rounded bg-blue-600 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-white hover:bg-blue-700 ${ring}`;
+
+const GripIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="h-4 w-4">
+    <circle cx="9" cy="6" r="1.6" /><circle cx="15" cy="6" r="1.6" />
+    <circle cx="9" cy="12" r="1.6" /><circle cx="15" cy="12" r="1.6" />
+    <circle cx="9" cy="18" r="1.6" /><circle cx="15" cy="18" r="1.6" />
+  </svg>
+);
+const CopyIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" className="h-4 w-4">
+    <rect x="8" y="8" width="11" height="12" rx="1.5" strokeWidth={2} />
+    <path strokeLinecap="round" strokeWidth={2} d="M16 8V5.5A1.5 1.5 0 0014.5 4h-8A1.5 1.5 0 005 5.5v10A1.5 1.5 0 006.5 17H8" />
+  </svg>
+);
+const TrashIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" className="h-4 w-4">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12" />
+  </svg>
+);
+
+const Field = ({ label, children, className = '' }) => (
+  <label className={`block min-w-0 ${className}`}>
+    <span className={fieldLabel}>{label}</span>
+    {children}
+  </label>
+);
+
+// One line in a drawer list. It can be dragged by its grip to change the
+// order, and it rises in when it is added.
+function DrawerLine({ item, reduce, children, onCopy, onRemove, name }) {
+  const controls = useDragControls();
+  return (
+    <Reorder.Item
+      value={item}
+      dragListener={false}
+      dragControls={controls}
+      initial={reduce ? false : { opacity: 0, y: -6 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={reduce ? { opacity: 0 } : { opacity: 0, height: 0, marginTop: 0 }}
+      transition={{ duration: 0.2, ease: EASE }}
+      whileDrag={{ scale: 1.01, boxShadow: '0 6px 16px rgb(15 23 42 / 0.14)' }}
+      className="mt-2 flex list-none flex-wrap items-end gap-2 rounded-md border border-slate-200 bg-white px-2 py-2 sm:flex-nowrap"
+    >
+      <button
+        type="button"
+        onPointerDown={(e) => controls.start(e)}
+        aria-label={`Drag ${name} to reorder`}
+        className={`mb-1 grid h-6 w-5 shrink-0 cursor-grab touch-none place-items-center rounded text-slate-400 hover:text-slate-600 active:cursor-grabbing ${ring}`}
+      >
+        <GripIcon />
+      </button>
+      {children}
+      <span className="mb-0.5 flex shrink-0">
+        <IconButton label={`Copy ${name}`} onClick={onCopy}><CopyIcon /></IconButton>
+        <IconButton label={`Remove ${name}`} onClick={onRemove}><TrashIcon /></IconButton>
+      </span>
+    </Reorder.Item>
+  );
+}
+
+function ChoiceSection({ section, value, onChange, reduce, nextKey }) {
+  const set = (patch) => onChange({ ...value, ...patch });
+  const setLine = (key, patch) => set({ lines: value.lines.map((l) => (l.key === key ? { ...l, ...patch } : l)) });
+  return (
+    <section className="border-b border-slate-200 py-4 first:pt-0 last:border-b-0">
+      <h5 className="m-0 text-sm font-medium text-slate-900">{section.name} in {section.parent}</h5>
+      <div className="mt-3 flex flex-wrap items-end gap-x-6 gap-y-3">
+        <div>
+          <span className={fieldLabel}>Show hierarchy</span>
+          <label className="mt-1 flex cursor-pointer items-center gap-2 text-xs text-slate-700">
+            Off
+            <input type="checkbox" role="switch" checked={value.hierarchy} onChange={(e) => set({ hierarchy: e.target.checked })} className="h-4 w-4 accent-blue-600 cursor-pointer" />
+            On
+          </label>
+        </div>
+        <Field label="Min" className="w-16">
+          <input type="text" inputMode="numeric" value={value.min} onChange={(e) => set({ min: e.target.value })} className={selectClass.replace('cursor-pointer ', '')} />
+        </Field>
+        <Field label="Max" className="w-16">
+          <input type="text" inputMode="numeric" value={value.max} onChange={(e) => set({ max: e.target.value })} className={selectClass.replace('cursor-pointer ', '')} />
+        </Field>
+      </div>
+
+      <Reorder.Group axis="y" values={value.lines} onReorder={(lines) => set({ lines })} className="m-0 mt-2 list-none p-0">
+        <AnimatePresence initial={false}>
+          {value.lines.map((line) => (
+            <DrawerLine
+              key={line.key}
+              item={line}
+              reduce={reduce}
+              name={line.product || 'default'}
+              onCopy={() => set({ lines: [...value.lines, { ...line, key: nextKey() }] })}
+              onRemove={() => set({ lines: value.lines.filter((l) => l.key !== line.key) })}
+            >
+              <Field label="Select products" className="min-w-[40%] flex-1">
+                <select value={line.product} onChange={(e) => setLine(line.key, { product: e.target.value })} className={selectClass}>
+                  <option value="">Value</option>
+                  {section.products.map((o) => <option key={o} value={o}>{o}</option>)}
+                </select>
+              </Field>
+              <Field label="Select variants" className="min-w-[30%] flex-1">
+                <select value={line.variant} onChange={(e) => setLine(line.key, { variant: e.target.value })} className={selectClass}>
+                  <option value="">Value</option>
+                  {VARIANT_NAMES.map((o) => <option key={o} value={o}>{o}</option>)}
+                </select>
+              </Field>
+              <div className="w-16 shrink-0">
+                <span className={fieldLabel}>Upcharge</span>
+                <PriceInput value={line.upcharge} onChange={(v) => setLine(line.key, { upcharge: v })} label="Upcharge" placeholder="0.00" />
+              </div>
+            </DrawerLine>
+          ))}
+        </AnimatePresence>
+      </Reorder.Group>
+      <div className="mt-3 flex justify-end">
+        <button type="button" onClick={() => set({ lines: [...value.lines, { key: nextKey(), product: '', variant: '', upcharge: '' }] })} className={outlineBtn}>
+          Add a default
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function WeightsSection({ section, value, onChange, reduce, nextKey }) {
+  const set = (patch) => onChange({ ...value, ...patch });
+  const setLine = (key, patch) => set({ lines: value.lines.map((l) => (l.key === key ? { ...l, ...patch } : l)) });
+  // One modifier on its own: just the weights it offers.
+  if (section.single) {
+    const line = value.lines[0];
+    return (
+      <section className="py-1">
+        <h5 className="m-0 text-sm font-medium text-slate-900">{section.name}</h5>
+        <div className="mt-3">
+          <Picker id={`proto-cfg-${section.id}`} label="Select weights" placeholder="Choose a weight" options={WEIGHT_NAMES} picked={line.weights} onChange={(weights) => setLine(line.key, { weights })} />
+        </div>
+      </section>
+    );
+  }
+  return (
+    <section className="border-b border-slate-200 py-4 first:pt-0 last:border-b-0">
+      <h5 className="m-0 text-sm font-medium text-slate-900">{section.name}</h5>
+      <Reorder.Group axis="y" values={value.lines} onReorder={(lines) => set({ lines })} className="m-0 mt-1 list-none p-0">
+        <AnimatePresence initial={false}>
+          {value.lines.map((line) => (
+            <DrawerLine
+              key={line.key}
+              item={line}
+              reduce={reduce}
+              name={line.modifier || 'modifier'}
+              onCopy={() => set({ lines: [...value.lines, { ...line, key: nextKey() }] })}
+              onRemove={() => set({ lines: value.lines.filter((l) => l.key !== line.key) })}
+            >
+              <Field label="Select modifier" className="w-[38%] shrink-0">
+                <select value={line.modifier} onChange={(e) => setLine(line.key, { modifier: e.target.value })} className={selectClass}>
+                  <option value="">Value</option>
+                  {section.modifiers.map((o) => <option key={o} value={o}>{o}</option>)}
+                </select>
+              </Field>
+              <div className="min-w-0 flex-1">
+                <Picker id={`proto-cfg-${section.id}-${line.key}`} label="Select weights" placeholder="Choose a weight" options={WEIGHT_NAMES} picked={line.weights} onChange={(weights) => setLine(line.key, { weights })} />
+              </div>
+            </DrawerLine>
+          ))}
+        </AnimatePresence>
+      </Reorder.Group>
+      <div className="mt-3 flex justify-end">
+        <button type="button" onClick={() => set({ lines: [...value.lines, { key: nextKey(), modifier: '', weights: [] }] })} className={outlineBtn}>
+          Add new modifier
+        </button>
+      </div>
+    </section>
+  );
+}
+
+// What the drawer starts with, from the rows in the tree.
+function drawerSections(kind, row, all) {
+  const kids = (id) => all.filter((r) => r.parents.length && r.parents[r.parents.length - 1].id === id && !r.removed);
+  const names = (list, extra) => [...new Set([...list.map((r) => r.name), ...extra])];
+  if (kind === 'choice') {
+    const choices = row.type === 'Choice' ? [row] : kids(row.id).filter((r) => r.type === 'Choice');
+    return choices.map((choice) => {
+      const products = kids(choice.id);
+      return {
+        id: choice.id,
+        name: choice.name,
+        parent: choice.parents.length ? choice.parents[choice.parents.length - 1].name : 'the menu',
+        products: names(products, PRODUCT_OPTIONS.map((o) => o.split(' | ')[0])),
+        start: {
+          hierarchy: true,
+          min: '1',
+          max: choice.meta ? choice.meta[1] : '1',
+          lines: products.slice(0, 2).map((product, i) => ({ key: `${choice.id}-${i}`, product: product.name, variant: '', upcharge: '' })),
+        },
+      };
+    });
+  }
+  if (row.type === 'Modifier') {
+    return [{
+      id: row.id, name: row.name, single: true,
+      start: { lines: [{ key: `${row.id}-0`, modifier: row.name, weights: kids(row.id).map((w) => w.name) }] },
+    }];
+  }
+  const modifiers = kids(row.id);
+  return [{
+    id: row.id,
+    name: row.name,
+    modifiers: names(modifiers, MODIFIER_OPTIONS.map((o) => o.split(' | ')[0])),
+    start: { lines: modifiers.map((m, i) => ({ key: `${row.id}-${i}`, modifier: m.name, weights: kids(m.id).map((w) => w.name) })) },
+  }];
+}
+
+// The words a section's settings come to, for the tag on the row and the
+// line in the review.
+function summarize(kind, section, value) {
+  if (kind === 'choice') {
+    const set = value.lines.filter((l) => l.product);
+    const count = `${set.length} ${set.length === 1 ? 'default' : 'defaults'}`;
+    return { tag: ['Defaults', String(set.length)], text: `${count}, min ${value.min || 0}, max ${value.max || 0}, hierarchy ${value.hierarchy ? 'on' : 'off'}` };
+  }
+  const weights = value.lines.reduce((n, l) => n + l.weights.length, 0);
+  const text = section.single
+    ? value.lines[0].weights.join(', ') || 'no weights'
+    : value.lines.filter((l) => l.modifier).map((l) => `${l.modifier}: ${l.weights.join(', ') || 'no weights'}`).join('; ') || 'no modifiers';
+  return { tag: ['Weights', String(weights)], text };
+}
+
+function ConfigDrawer({ kind, sections, reduce, onCancel, onApply }) {
+  const [values, setValues] = useState(() => Object.fromEntries(sections.map((sec) => [sec.id, sec.start])));
+  const keys = useRef(0);
+  const nextKey = () => { keys.current += 1; return `new-${keys.current}`; };
+  const headingRef = useRef(null);
+  useEffect(() => { headingRef.current?.focus(); }, []);
+  const Section = kind === 'choice' ? ChoiceSection : WeightsSection;
+  const title = kind === 'choice' ? 'Choice Default' : 'Modifier Weights Configuration';
+  return (
+    <motion.div
+      className="absolute inset-0 z-20 flex justify-end"
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 1, transition: { duration: reduce ? 0 : 0.26 } }}
+      onKeyDown={(e) => { if (e.key === 'Escape') onCancel(); }}
+    >
+      {/* The grid dims behind the drawer. A press on it closes the drawer. */}
+      <motion.div
+        aria-hidden="true"
+        onClick={onCancel}
+        className="absolute inset-0 bg-slate-900/40"
+        initial={reduce ? false : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.22 }}
+      />
+      <motion.div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        // No taller than a screen, so Apply is in reach when the tree is long.
+        className="relative flex h-[640px] max-h-full w-full max-w-[540px] flex-col self-start rounded-bl-lg bg-white shadow-xl"
+        initial={reduce ? false : { x: '100%' }}
+        animate={{ x: 0 }}
+        exit={reduce ? { opacity: 0 } : { x: '100%' }}
+        transition={{ duration: 0.3, ease: EASE }}
+      >
+        <div className="border-b border-slate-200 px-4 py-3">
+          <h4 ref={headingRef} tabIndex={-1} className="m-0 text-lg leading-6 text-slate-900 outline-none">{title}</h4>
+          {kind === 'weights' && (
+            <p className="m-0 mt-1 text-[11px] leading-4 text-slate-600">
+              Caution: introducing modifier weights will trigger changes across all instances of slot at the organizational level.
+            </p>
+          )}
+        </div>
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+          {sections.length ? sections.map((sec) => (
+            <Section
+              key={sec.id}
+              section={sec}
+              value={values[sec.id]}
+              onChange={(v) => setValues({ ...values, [sec.id]: v })}
+              reduce={reduce}
+              nextKey={nextKey}
+            />
+          )) : (
+            <p className="m-0 text-sm text-slate-600">There are no choices in this bundle to configure yet. Add one from the panel first.</p>
+          )}
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 px-4 py-3">
+          <button type="button" onClick={onCancel} className={outlineBtn}>Cancel</button>
+          <button
+            type="button"
+            disabled={!sections.length}
+            onClick={() => onApply(Object.fromEntries(sections.map((sec) => [sec.id, summarize(kind, sec, values[sec.id])])))}
+            className={`${solidBtn} disabled:bg-slate-300`}
+          >
+            Apply configurations to data grid
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 const PANELS = {
   Bundle: BundlePanel,
   Choice: ChoicePanel,
@@ -998,11 +1443,24 @@ function MenuPrototype({ caption }) {
   const [reviewing, setReviewing] = useState(false);
   const [published, setPublished] = useState(false);
   const [note, setNote] = useState(null); // 'elsewhere'
+  // The configuration drawer: which kind, and the row it was opened from.
+  const [drawer, setDrawer] = useState(null);
   const frameRef = useRef(null);
   const panelRef = useRef(null);
   const nextId = useRef(0);
 
   const rows = useMemo(() => flatten(TREE, open, live, edits), [open, live, edits]);
+  const reduce = useReducedMotion();
+  const wide = useWide();
+  // The rows that were not showing a moment ago, in order, so they can come
+  // in one after the other.
+  const shown = useRef(null);
+  const fresh = useMemo(() => {
+    const before = shown.current;
+    const ids = rows.map((r) => r.id);
+    shown.current = new Set(ids);
+    return before ? ids.filter((id) => !before.has(id)) : [];
+  }, [rows]);
   const changes = useMemo(() => {
     const all = new Map(flatten(TREE, null, live, edits).map((r) => [r.id, r]));
     return listChanges(edits, all);
@@ -1018,7 +1476,9 @@ function MenuPrototype({ caption }) {
 
   const guide = note
     ? GUIDE[note]
-    : reviewing
+    : drawer
+      ? GUIDE.config
+      : reviewing
       ? GUIDE.review
       : hasDraft
         ? one?.type === 'Modifier' ? GUIDE.draftModifier : GUIDE.draft
@@ -1038,6 +1498,11 @@ function MenuPrototype({ caption }) {
     else next.add(id);
     setOpen(next);
   };
+
+  // Every row that has something under it, staged and published rows included.
+  const openable = useMemo(() => flatten(TREE, null, live, edits).filter((r) => r.canOpen).map((r) => r.id), [live, edits]);
+  const allOpen = openable.every((id) => open.has(id));
+  const toggleAll = () => setOpen(new Set(allOpen ? [] : openable));
 
   const clearSelection = () => {
     setSelected([]);
@@ -1084,6 +1549,7 @@ function MenuPrototype({ caption }) {
       removed: remove ? [...edits.removed, ...ids.filter((id) => !edits.removed.includes(id))] : edits.removed,
       prices: { ...edits.prices },
       meta: { ...edits.meta },
+      config: edits.config,
     };
     if (fresh.length) next.added[one.id] = [...(next.added[one.id] || []), ...fresh];
     ids.forEach((id) => {
@@ -1127,6 +1593,21 @@ function MenuPrototype({ caption }) {
     setReviewing(false);
     setPublished(false);
     setNote(null);
+    setDrawer(null);
+  };
+
+  const openConfig = (kind) => {
+    if (!one) return;
+    const all = flatten(TREE, null, live, edits);
+    setDrawer({ kind, sections: drawerSections(kind, all.find((r) => r.id === one.id) || one, all) });
+    setNote(null);
+    toTop();
+  };
+  // Each section's settings are staged on its own row.
+  const applyConfig = (byRow) => {
+    setEdits({ ...edits, config: { ...edits.config, ...byRow } });
+    setDrawer(null);
+    clearSelection();
   };
 
   const footer = { autoSelect, setAutoSelect, onCancel: clearSelection };
@@ -1183,7 +1664,19 @@ function MenuPrototype({ caption }) {
         </p>
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-slate-300 bg-white font-inter text-slate-800">
+      <div className={`relative overflow-hidden rounded-lg border border-slate-300 bg-white font-inter text-slate-800 ${drawer ? 'min-h-[520px]' : ''}`}>
+        <AnimatePresence>
+          {drawer && (
+            <ConfigDrawer
+              key="drawer"
+              kind={drawer.kind}
+              sections={drawer.sections}
+              reduce={reduce}
+              onCancel={() => setDrawer(null)}
+              onApply={applyConfig}
+            />
+          )}
+        </AnimatePresence>
         {/* The page header, as in the handoff frames. */}
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-3 py-2.5">
           <div className="min-w-0">
@@ -1203,7 +1696,10 @@ function MenuPrototype({ caption }) {
           </div>
         </div>
 
+        {/* The tree and the review screen trade places with a short slide. */}
+        <AnimatePresence mode="wait" initial={false}>
         {reviewing ? (
+          <motion.div key="review" {...swap(reduce, 16)}>
           <Review
             items={changes}
             onRevert={(item) => setEdits(item.revert(edits))}
@@ -1211,8 +1707,9 @@ function MenuPrototype({ caption }) {
             onPublish={publish}
             onBack={() => setReviewing(false)}
           />
+          </motion.div>
         ) : (
-        <div className="md:flex">
+        <motion.div key="tree" className="md:flex" {...swap(reduce, -16)}>
           <div className="min-w-0 flex-1 [--indent:8px] sm:[--indent:14px]">
             <div className="flex border-b border-slate-300 bg-slate-50 text-xs font-semibold text-slate-700">
               <div className="flex flex-1 items-center gap-2 px-3 py-2">
@@ -1231,49 +1728,92 @@ function MenuPrototype({ caption }) {
                     <span className="sr-only">, clear</span>
                   </button>
                 )}
+                <button
+                  type="button"
+                  onClick={toggleAll}
+                  className={`ml-auto rounded px-1.5 py-0.5 text-[11px] font-semibold text-blue-600 hover:bg-blue-50 ${ring}`}
+                >
+                  {allOpen ? 'Close all' : 'Open all'}
+                </button>
               </div>
               <div className="hidden sm:block w-[84px] shrink-0 border-l border-slate-200 px-2 py-2">Item code</div>
               <div className="w-[92px] shrink-0 border-l border-slate-200 px-2 py-2 text-right">Price</div>
             </div>
-            {rows.map((row) => (
-              <Row
-                key={row.id}
-                row={row}
-                isOpen={open.has(row.id)}
-                checked={selected.includes(row.id)}
-                onToggle={toggle}
-                onCheck={check}
-                showStart={row.start && !staged && !published && !selected.length}
-              />
-            ))}
+            {/* Rows unfold when their parent opens and fold away when it closes.
+                Rows that arrive together come in one after the other. */}
+            <AnimatePresence initial={false}>
+              {rows.map((row) => {
+                const order = fresh.indexOf(row.id);
+                return (
+                  <motion.div
+                    key={row.id}
+                    className="overflow-hidden"
+                    initial={reduce ? false : { height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1, transition: { ...unfold, delay: reduce ? 0 : Math.min(Math.max(order, 0), 8) * 0.025 } }}
+                    exit={reduce ? { opacity: 0, transition: { duration: 0 } } : { height: 0, opacity: 0, transition: fold }}
+                  >
+                    <Row
+                      row={row}
+                      isOpen={open.has(row.id)}
+                      checked={selected.includes(row.id)}
+                      onToggle={toggle}
+                      onCheck={check}
+                      showStart={row.start && !staged && !published && !selected.length}
+                    />
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
           </div>
 
-          {picked.length > 0 && (
-            <aside
-              ref={panelRef}
-              aria-label="Action panel"
-              className="border-t border-slate-300 bg-white p-3 md:w-[236px] md:shrink-0 md:border-l md:border-t-0"
-            >
-              {/* On a phone the panel is under the tree and the line above the
-                  frame has scrolled away, so the next step is said again here. */}
-              <p className="m-0 mb-3 rounded bg-blue-50 px-2 py-1.5 text-xs leading-5 text-slate-700 md:hidden">{guide}</p>
-              {many ? (
-                <MultiPanel key={selected.join('-')} count={picked.length} footer={footer} onDraft={setHasDraft} onApply={apply} />
-              ) : Panel ? (
-                <Panel key={one.id} row={one} footer={footer} onDraft={setHasDraft} onApply={apply} onElsewhere={elsewhere} />
-              ) : (
-                <>
-                  <Title>{one.type} actions</Title>
-                  <p className="m-0 mt-2 text-xs leading-5 text-slate-600">
-                    This {one.type.toLowerCase()} is marked to be removed. Review &amp; publish is where you can take that back.
-                  </p>
-                  <button type="button" onClick={clearSelection} className={`${outlineBtn} mt-3 w-full`}>Close</button>
-                </>
-              )}
-            </aside>
-          )}
-        </div>
+          {/* The action panel slides in from the right beside the tree, or
+              opens under it on a phone. Its contents rise in when the
+              selection changes. */}
+          <AnimatePresence initial={false}>
+            {picked.length > 0 && (
+              <motion.div
+                key="panel"
+                className="overflow-hidden md:shrink-0"
+                initial={reduce ? false : wide ? { width: 0, opacity: 0 } : { height: 0, opacity: 0 }}
+                animate={wide ? { width: 236, height: 'auto', opacity: 1 } : { width: 'auto', height: 'auto', opacity: 1 }}
+                exit={reduce ? { opacity: 0, transition: { duration: 0 } } : wide ? { width: 0, opacity: 0 } : { height: 0, opacity: 0 }}
+                transition={slide}
+              >
+                <aside
+                  ref={panelRef}
+                  aria-label="Action panel"
+                  className="h-full border-t border-slate-300 bg-white p-3 md:w-[236px] md:border-l md:border-t-0"
+                >
+                  <motion.div
+                    key={selected.join('-')}
+                    initial={reduce ? false : { opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.22, ease: EASE, delay: 0.05 }}
+                  >
+                    {/* On a phone the panel is under the tree and the line above the
+                        frame has scrolled away, so the next step is said again here. */}
+                    <p className="m-0 mb-3 rounded bg-blue-50 px-2 py-1.5 text-xs leading-5 text-slate-700 md:hidden">{guide}</p>
+                    {many ? (
+                      <MultiPanel key={selected.join('-')} count={picked.length} footer={footer} onDraft={setHasDraft} onApply={apply} />
+                    ) : Panel ? (
+                      <Panel key={one.id} row={one} footer={footer} onDraft={setHasDraft} onApply={apply} onElsewhere={elsewhere} onConfig={openConfig} />
+                    ) : (
+                      <>
+                        <Title>{one.type} actions</Title>
+                        <p className="m-0 mt-2 text-xs leading-5 text-slate-600">
+                          This {one.type.toLowerCase()} is marked to be removed. Review &amp; publish is where you can take that back.
+                        </p>
+                        <button type="button" onClick={clearSelection} className={`${outlineBtn} mt-3 w-full`}>Close</button>
+                      </>
+                    )}
+                  </motion.div>
+                </aside>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
         )}
+        </AnimatePresence>
       </div>
 
       {caption && (

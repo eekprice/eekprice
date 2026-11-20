@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { EmojiSticker } from './SectionHeading';
 import CaseStudyContainer from './atomCaseStudy/CaseStudyTitle';
 import { Frame, Stage, Swap, WireImage } from './sketch/Sketch';
@@ -36,7 +36,10 @@ export const LogoSticker = ({ sticker, show, order = 0 }) => (
     alt=""
     aria-hidden="true"
     className={`absolute z-10 h-auto pointer-events-none select-none
-      [filter:drop-shadow(0_0_1px_rgb(255_255_255))_drop-shadow(0_0_1px_rgb(255_255_255))_drop-shadow(0_3px_4px_rgb(15_23_42/0.3))]
+      ${sticker.shot
+        // A screenshot, not a logo: a small print with a white edge.
+        ? 'rounded-md border-4 border-white shadow-lg'
+        : '[filter:drop-shadow(0_0_1px_rgb(255_255_255))_drop-shadow(0_0_1px_rgb(255_255_255))_drop-shadow(0_3px_4px_rgb(15_23_42/0.3))]'}
       transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]
       motion-reduce:transition-opacity
       ${show
@@ -83,7 +86,16 @@ export const Peek = ({ peek, href, out }) => {
 // else with more of itself on screen than any other card (Home.js works that
 // out from `data-in-view-key` with useMostInView).
 const CaseStudyHero = ({ title, slides, href, stickers = [], slideHeight, peek, mostInView = false }) => {
+  const navigate = useNavigate();
   const hasSlides = slides.length > 0;
+  // The whole card goes to the case study (Erica, 2026-11-19). Links and
+  // buttons inside it keep their own job, and so does a slide that is cut off
+  // at the edge of the strip, which comes into view first.
+  const openStudy = (e) => {
+    if (!href || e.defaultPrevented || e.target.closest('a, button, [data-no-open]')) return;
+    if (window.getSelection?.()?.toString()) return;
+    navigate(href);
+  };
   const hold = hasSlides ? HOLD.slides : HOLD.empty;
 
   const wire = (
@@ -107,9 +119,15 @@ const CaseStudyHero = ({ title, slides, href, stickers = [], slideHeight, peek, 
       <Swap at={SKETCH_AT} hold={hold} wire={wire}>
         <div className="relative group/card" data-in-view-key={title}>
         {peek && <Peek peek={peek} href={href} out={mostInView} />}
-        <div className="relative z-[1] border border-surface-outline-light dark:border-surface-outline-dark
+        {/* A mouse convenience only: the Read Case Study link inside is the
+            real link, for the keyboard and screen readers. */}
+        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+        <div
+          onClick={openStudy}
+          className={`relative z-[1] border border-surface-outline-light dark:border-surface-outline-dark
           bg-surface-background100-light dark:bg-surface-background100-dark
-          rounded-md shadow-sm text-surface-foreground100-light dark:text-surface-foreground100-dark"
+          rounded-md shadow-sm text-surface-foreground100-light dark:text-surface-foreground100-dark
+          ${href ? 'cursor-pointer transition-colors hover:border-primary-outline-light dark:hover:border-primary-outline-dark' : ''}`}
         >
           <CaseStudyContainer
             title={title}
@@ -118,6 +136,8 @@ const CaseStudyHero = ({ title, slides, href, stickers = [], slideHeight, peek, 
             slideHeight={slideHeight}
             sketchAt={SKETCH_AT + hold}
           />
+          {/* Logos float around the card's header, each in its own spot
+              (`className` on the sticker in data/caseStudiesData.js). */}
           {stickers.map((sticker, i) =>
             sticker.image ? (
               <LogoSticker key={sticker.name} sticker={sticker} show={mostInView} order={i} />

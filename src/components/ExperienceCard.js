@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ReadStudy from './ReadStudy';
 import { Reveal, chipClass } from './caseStudy/Blocks';
 import { Peek, LogoSticker } from './caseStudyHero';
@@ -47,14 +47,14 @@ const featuredWire = (
 
 // A supporting card: the role's lines, and one box for each case study beside
 // them (under them on a phone).
-const smallWire = (count) => (
-  <div className={`sk-wire sk-framed h-full ${count ? 'sm:!grid sm:grid-cols-2 sm:gap-4' : ''}`}>
+const smallWire = (count, stacked) => (
+  <div className={`sk-wire sk-framed h-full ${count && !stacked ? 'sm:!grid sm:grid-cols-2 sm:gap-4' : ''}`}>
     <Frame tone="pencil" />
     <div className="flex flex-col gap-3">
       <Squiggle width="40%" delay={200} />
       <Squiggle width="70%" delay={300} />
-      <Squiggle width="92%" delay={420} />
-      <Squiggle width="60%" delay={520} />
+      {!stacked && <Squiggle width="92%" delay={420} />}
+      <Squiggle width={stacked ? '30%' : '60%'} delay={520} />
     </div>
     {count > 0 && (
       <div className="flex flex-col gap-3 min-h-[120px]">
@@ -75,11 +75,13 @@ const titleClass =
 // Erica, 2026-11-19: the role and its studies are one container. The rows
 // fill the card's height with no gap between them, they are white like the
 // card, and a line under each row but the last divides them.
-function StudyLinks({ studies }) {
+// `stacked` puts the rows under the role, for a card that is half the width.
+function StudyLinks({ studies, stacked = false }) {
   return (
     <ul
-      className="h-full flex flex-col list-none p-0 m-0
-        border-t sm:border-t-0 sm:border-l border-surface-outline-light dark:border-surface-outline-dark"
+      className={`flex flex-col list-none p-0 m-0 border-t
+        ${stacked ? 'flex-1' : 'h-full sm:border-t-0 sm:border-l'}
+        border-surface-outline-light dark:border-surface-outline-dark`}
     >
       {studies.map(({ study, label }, i) => (
         <li
@@ -115,7 +117,22 @@ function StudyLinks({ studies }) {
 // hover, the same way the drive thru card does.
 // `studies` is a list of { study, label } for a small card: they are drawn
 // inside the card, in a second column.
-function ExperienceCard({ card, mostInView = false, studies = [] }) {
+// `compact` draws any card as a small one that is half the section's width,
+// with its studies under the role. Home uses it so the roles sit side by side
+// (Erica, 2026-11-19); /leadership keeps the big featured card.
+function ExperienceCard({ card, mostInView = false, studies = [], compact = false }) {
+  const navigate = useNavigate();
+  // The whole card goes to the role's case study, not just the button (Erica,
+  // 2026-11-19). Links and buttons inside keep their own job. A mouse
+  // convenience: the Read Case Study link is the real link for the keyboard.
+  const openStudy = (e) => {
+    if (!card.href || e.defaultPrevented || e.target.closest('a, button')) return;
+    if (window.getSelection?.()?.toString()) return;
+    navigate(card.href);
+  };
+  const clickable = card.href
+    ? 'cursor-pointer transition-colors hover:border-primary-outline-light dark:hover:border-primary-outline-dark'
+    : '';
   if (card.soon) {
     return (
       <Reveal>
@@ -129,21 +146,37 @@ function ExperienceCard({ card, mostInView = false, studies = [] }) {
   }
 
   // A supporting role: the same card with less in it, and a smaller title.
-  if (card.size === 'small') {
+  if (card.size === 'small' || compact) {
     const hasStudies = studies.length > 0;
+    const wide = hasStudies && !compact;
     return (
-      <Stage className={`h-full ${hasStudies ? 'sm:col-span-2' : ''}`}>
-        <Swap at={SKETCH_AT} hold={HOLD} wire={smallWire(studies.length)}>
+      <Stage className={`h-full ${wide ? 'sm:col-span-2' : ''}`}>
+        <Swap at={SKETCH_AT} hold={HOLD} wire={smallWire(studies.length, compact)}>
+        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
         <article
+          onClick={openStudy}
           className={`h-full rounded-lg border border-surface-outline-light dark:border-surface-outline-dark
-            bg-surface-background100-light dark:bg-surface-background100-dark
-            ${hasStudies ? 'grid sm:grid-cols-2 overflow-hidden' : 'p-4'}`}
+            bg-surface-background100-light dark:bg-surface-background100-dark ${clickable}
+            ${wide ? 'grid sm:grid-cols-2 overflow-hidden' : ''}
+            ${compact ? 'flex flex-col overflow-hidden' : ''}
+            ${!hasStudies && !compact ? 'p-4' : ''}`}
         >
-          <div className={hasStudies ? 'p-4' : ''}>
+          <div className={`${hasStudies || compact ? 'p-4' : ''} ${compact && !hasStudies ? 'flex-1 flex flex-col' : ''}`}>
             <p className={eyebrowClass}>{card.where}</p>
             <h3 className="mt-1 font-merriweather font-light text-lg leading-snug text-surface-foreground100-light dark:text-surface-foreground100-dark">
               {card.role}
             </h3>
+            {compact ? (
+              // Home: no sentence. Direct reports and the button share the
+              // last line (Erica, 2026-11-19: these cards looked too busy).
+              <p className="m-0 mt-auto pt-4 flex flex-wrap items-center justify-between gap-3">
+                <span className="font-inter text-sm text-surface-foreground300-light dark:text-surface-foreground300-dark">
+                  {card.reports}
+                </span>
+                {card.href && <ReadStudy to={card.href} about={card.role} />}
+              </p>
+            ) : (
+              <>
             {card.reports && (
               <p className="m-0 mt-1 font-inter text-xs font-medium text-surface-foreground300-light dark:text-surface-foreground300-dark">
                 {card.reports}
@@ -157,8 +190,10 @@ function ExperienceCard({ card, mostInView = false, studies = [] }) {
                 <ReadStudy to={card.href} about={card.role} />
               </p>
             )}
+              </>
+            )}
           </div>
-          {hasStudies && <StudyLinks studies={studies} />}
+          {hasStudies && <StudyLinks studies={studies} stacked={compact} />}
         </article>
         </Swap>
       </Stage>
@@ -170,9 +205,11 @@ function ExperienceCard({ card, mostInView = false, studies = [] }) {
       <Swap at={SKETCH_AT} hold={HOLD} wire={featuredWire}>
       <div className="relative group/card" data-in-view-key={card.role}>
       {card.peek && <Peek peek={card.peek} href={card.href} out={mostInView} />}
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
       <article
-        className="relative z-[1] group/exp rounded-lg border border-surface-outline-light dark:border-surface-outline-dark
-          bg-surface-background100-light dark:bg-surface-background100-dark p-5 lg:p-6"
+        onClick={openStudy}
+        className={`relative z-[1] group/exp rounded-lg border border-surface-outline-light dark:border-surface-outline-dark
+          bg-surface-background100-light dark:bg-surface-background100-dark p-5 lg:p-6 ${clickable}`}
       >
         <p className={eyebrowClass}>{card.where}</p>
         <h3 className={titleClass}>{card.role}</h3>

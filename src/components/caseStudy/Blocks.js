@@ -4,6 +4,7 @@ import { land } from '../sketch/motion';
 import Diagram from './Diagrams';
 import ExternalLink from '../ExternalLink';
 import MenuPrototype from './MenuPrototype';
+import ControlledGif from '../atoms/ControlledGif';
 
 // Building blocks for a case study page, styled like the rest of the site:
 // Merriweather body, outlined "selected" boxes, sticky notes, quote callouts.
@@ -128,6 +129,30 @@ export function Figure({ src, alt, caption, invert = false }) {
           decoding="async"
           className={`w-full h-auto rounded-lg ${invert ? 'dark:invert' : ''}`}
         />
+        {caption && (
+          <figcaption className="mt-2 text-sm font-inter text-surface-foreground400-light dark:text-surface-foreground400-dark">
+            {caption}
+          </figcaption>
+        )}
+      </figure>
+    </Reveal>
+  );
+}
+
+// A screen recording in the write-up. It shows a still frame and a play
+// button, and plays on a tap, so it does not run while someone is reading.
+// `ratio` is the recording's width / height. Shown whole, on black, no wider
+// than `maxWidth` (the recording's own width) so it is not blown up.
+export function Clip({ src, poster, alt, caption, ratio = 16 / 9, maxWidth }) {
+  return (
+    <Reveal>
+      <figure className="my-2">
+        <div
+          className="relative w-full overflow-hidden rounded-lg bg-black"
+          style={{ aspectRatio: `${ratio}`, maxWidth: maxWidth ? `${maxWidth}px` : undefined }}
+        >
+          <ControlledGif src={src} poster={poster} alt={alt} className="w-full h-full object-contain" />
+        </div>
         {caption && (
           <figcaption className="mt-2 text-sm font-inter text-surface-foreground400-light dark:text-surface-foreground400-dark">
             {caption}
@@ -366,6 +391,8 @@ export function Block({ block }) {
       return <Subheading text={block.text} />;
     case 'figure':
       return <Figure src={block.src} alt={block.alt} caption={block.caption} invert={block.invert} />;
+    case 'clip':
+      return <Clip src={block.src} poster={block.poster} alt={block.alt} caption={block.caption} ratio={block.ratio} maxWidth={block.maxWidth} />;
     case 'quote':
       return <Quote text={block.text} who={block.who} person={block.person} />;
     case 'quotes':

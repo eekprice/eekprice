@@ -153,12 +153,70 @@ export function ResearchCard({ research, step }) {
 // on the card, whole, with no box: the photo collages are cut-out PNGs. Set
 // `framed: true` for a plain screenshot, which fills the space inside a
 // hairline box so its white edges don't melt into the card.
+// A screenshot shown whole, with one part circled in red marker and a short
+// note beside the circle (Erica, 2026-11-19: show the full screen, circle the
+// action panel, add a note). `image.ratio` is the picture's width / height:
+// the box takes the biggest size of that shape that fits the card, whatever
+// the card's own shape, so the circle always lands on the same part.
+// `image.mark` is { left, top, width, height } in percent of the picture, and
+// `note` the words.
+function MarkedImage({ image }) {
+  const { mark, ratio } = image;
+  return (
+    // Picture on the left, the note on the right (Erica drew this on a
+    // screenshot, 2026-11-19). On a phone the note goes under the picture.
+    <div className="absolute inset-0 flex flex-col sm:flex-row gap-3 sm:gap-5 sm:items-center">
+      <div className="relative flex-1 min-w-0 min-h-0 sm:h-full">
+        <div className="absolute inset-0 flex items-center justify-start" style={{ containerType: 'size' }}>
+          <div
+            className="relative"
+            style={{ width: `min(100cqw, calc(100cqh * ${ratio}))`, aspectRatio: `${ratio}` }}
+          >
+            <img
+              src={image.src}
+              alt={image.alt}
+              loading="lazy"
+              decoding="async"
+              className={`block w-full h-full rounded-md border ${hairline}`}
+            />
+            <svg
+              viewBox="0 0 200 80"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+              focusable="false"
+              className="absolute overflow-visible pointer-events-none"
+              style={{ left: `${mark.left}%`, top: `${mark.top}%`, width: `${mark.width}%`, height: `${mark.height}%` }}
+            >
+              <path
+                // The box is stretched to the panel's shape, so the line keeps its
+                // own width. No draw-on: dashes and a stretched path don't mix.
+                className="sk-ink sk-ink--red"
+                vectorEffect="non-scaling-stroke"
+                d="M118 7 C 70 3, 14 12, 8 38 C 3 62, 52 76, 104 75 C 156 74, 196 62, 193 38 C 190 14, 140 6, 92 8 C 78 8.6, 66 10.4, 56 13"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      {mark.note && (
+        <p className="m-0 sm:w-[30%] shrink-0 text-sm sm:text-base leading-snug font-medium">
+          {/* A small red ring, so the words read as the label for the circle. */}
+          <span aria-hidden="true" className="inline-block w-2.5 h-2.5 mr-1.5 rounded-full border-2 border-red-600 align-baseline" />
+          {mark.note}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export function ArtCard({ title, step, image, caption, children }) {
   return (
     <Slide className={`${pad} flex flex-col`}>
       <Label step={step}>{title}</Label>
       <div className="relative flex-1 min-h-0 mt-3">
-        {image ? (
+        {image?.mark ? (
+          <MarkedImage image={image} />
+        ) : image ? (
           <img
             src={image.src}
             alt={image.alt}

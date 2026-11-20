@@ -36,11 +36,17 @@ const cardClass = `flex flex-col justify-between h-full p-4
 const studies = [
   {
     title: "Speeding up the drive thru",
+    // Logo spots on both cards are the ones Erica picked on 2026-11-19, from two
+    // screenshots of the wide layout: "i like the placement here". Leave them.
+    // The same spots apply from 640px up (her next note: at a narrower window
+    // the logos were at the bottom of the card and should be up by the title).
+    // Between 640px and 1024px the ones off the right edge hang out 12px, not
+    // 40px, because there is less room beside the card. Phones keep their own spots.
     stickers: [
-      { image: '/images/case-studies/brands/kfc.webp', name: 'KFC', className: 'w-16 lg:w-20 right-4 top-1 lg:right-[38%] lg:top-3', rotate: -8 },
+      { image: '/images/case-studies/brands/kfc.webp', name: 'KFC', className: 'w-16 lg:w-20 right-4 -top-6 sm:right-[38%] sm:top-3', rotate: -8 },
       // KFC sits between the title and the link. At 24% from the right it covered
       // the link once the label got longer ("Read the drive thru case study").
-      { image: '/images/case-studies/brands/taco-bell.webp', name: 'Taco Bell', className: 'w-9 lg:w-11 left-[9%] -bottom-3 lg:left-auto lg:bottom-auto lg:-right-8 lg:top-12', rotate: 8 },
+      { image: '/images/case-studies/brands/taco-bell.webp', name: 'Taco Bell', className: 'w-9 lg:w-11 left-[9%] -bottom-3 sm:left-auto sm:bottom-auto sm:-right-3 sm:top-12 lg:-right-8', rotate: 8 },
     ],
     // On desktop, hovering the card slides this green sticky out from behind
     // its left edge, up by the title. It links to the study. It also comes
@@ -76,14 +82,14 @@ const studies = [
     stickers: [
       // Erica, 2026-11-18: the Pizza Hut, Yum and KFC logos float in like the
       // drive thru card's. They took the place of the pizza and thumbs up emoji.
-      { image: '/images/case-studies/brands/kfc.webp', name: 'KFC', className: 'w-16 lg:w-20 left-[9%] -bottom-3 lg:left-auto lg:bottom-auto lg:-right-10 lg:top-14', rotate: 8 },
+      { image: '/images/case-studies/brands/kfc.webp', name: 'KFC', className: 'w-16 lg:w-20 left-[9%] -bottom-3 sm:left-auto sm:bottom-auto sm:-right-3 sm:top-14 lg:-right-10', rotate: 8 },
       // Erica, 2026-11-18: "switch up the KFC placement". KFC and Pizza Hut traded
       // places, so this card is not laid out like the drive thru one: Pizza Hut is
       // between the title and the link, KFC hangs off the right edge.
       // On a phone Pizza Hut sits by the link, because this title runs the full width.
       // TODO(Erica): this Yum logo was cut out of your mock. Send the real file.
-      { image: '/images/case-studies/brands/yum.webp', name: 'Yum', className: 'w-9 lg:w-11 right-[34%] -bottom-3 lg:right-[24%] lg:bottom-auto lg:-top-5', rotate: 6 },
-      { image: '/images/case-studies/brands/pizza-hut.webp', name: 'Pizza Hut', className: 'w-10 lg:w-12 right-4 top-12 lg:right-[40%] lg:top-1', rotate: -8 },
+      { image: '/images/case-studies/brands/yum.webp', name: 'Yum', className: 'w-9 lg:w-11 right-[34%] -bottom-3 sm:right-[24%] sm:bottom-auto sm:-top-5', rotate: 6 },
+      { image: '/images/case-studies/brands/pizza-hut.webp', name: 'Pizza Hut', className: 'w-10 lg:w-12 right-4 -top-4 sm:right-[40%] sm:top-1', rotate: -8 },
     ],
     // Erica, 2026-11-18: the same sticky as the drive thru card. Blue, like this
     // study's note in the nav fan, with the final screen on it.

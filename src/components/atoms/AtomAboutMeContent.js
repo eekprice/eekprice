@@ -25,18 +25,21 @@ export const aboutComments = [
     preview: "I've worn many hats in my career.",
     // The side projects page is a placeholder for now (pages/SideProjectsPage.js).
     // TODO(Erica): the label is a placeholder in your voice. Change the words here.
-    link: { to: '/side-projects', label: 'My Side Projects' },
+    // Off for now with the nav's Side Projects button (Erica, 2026-11-19).
+    // Uncomment to bring it back.
+    // link: { to: '/side-projects', label: 'My Side Projects' },
     body: (
       <p>
         I've worn many hats in my career. I'm a{' '}
         <Link href="https://openaccess.cms-conferences.org/publications/book/978-1-964867-19-9/article/978-1-964867-19-9_22">published author in the AHFE journal</Link>,
         retired <Link href="https://www.memorisely.com/">teacher at Memorisely</Link>,
-        the{' '}
+        a{' '}
         {/* The Figma said "co-founder" of both. LinkedIn, her named source, says
             Founding Experience Designer at SciSummary and Founder of Helix Booking,
             and so do the about box and the resume page. Changed 2026-11-18 so the
             roles agree. TODO(Erica): confirm. */}
-        <Link href={SCISUMMARY_URL}>founding designer at SciSummary</Link>,
+        {/* Erica, 2026-11-19: "for the side project bubble im a founding designer at ariso". */}
+        <Link href={ARISO_URL}>founding designer at Ariso</Link> and <Link href={SCISUMMARY_URL}>SciSummary</Link>,
         the founder of Helix Booking, a conference speaker, and{' '}
         <Link href="https://podcasts.apple.com/us/podcast/the-forward-slash-podcast/id1744372906?i=1000679262388">guest on the Forward Slash podcast</Link>,
         where I shared insights on UX and design leadership. Before diving into the world of UX, I brought characters to life as a performer at Disney, a role that probably explains my Energizer Bunny energy.

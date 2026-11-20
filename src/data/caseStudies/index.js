@@ -147,6 +147,20 @@ export const caseStudies = [
             type: 'p',
             text: 'A real bucket order sounds like this: extra crispy, half original half spicy, three sides, two sauces, ten pieces, swap a thigh for a leg. The system wanted those in a fixed order. Team members had to hold the whole thing in their head and enter it the way the device wanted. New team members didn\'t know the menu well enough to do that with confidence.',
           },
+          // The old POS screen recording (Erica's GIF, 2026-11-16). It was a card
+          // in the grid at the top of this page until the grid came off on
+          // 2026-11-19. She said yes to this spot: after the bucket order
+          // paragraph, before the old terminal picture. Tap to play.
+          // TODO(Erica): the caption is a first pass.
+          {
+            type: 'clip',
+            src: '/images/case-studies/kfc-pos-old-screen-recording.gif',
+            poster: '/images/case-studies/kfc-pos-old-screen-recording-poster.webp',
+            alt: 'Screen recording of the old KFC POS. A Famous Bowl in the order is opened on a separate modifier screen and the cheese is removed. An error says an item must be highlighted to make a substitution. After going back to the menu and into the modifiers again, the bowl becomes a Spicy Bowl.',
+            caption: 'The old screen. Changing one item meant leaving the order, and an error on the way.',
+            ratio: 604 / 418,
+            maxWidth: 604,
+          },
           { type: 'figure', src: img('kfc-pos-legacy-par-terminal-and-flow'), alt: 'The legacy PAR terminal and the old modification flow', caption: 'The old terminal and the fixed flow it forced.' },
         ],
       },
@@ -306,7 +320,16 @@ export const caseStudies = [
         wide: true,
         span: 4,
         title: 'What we built',
-        image: { src: img('menu-management-final-ui-screen'), alt: 'Menu Management with the tree grid and the action panel', position: 'object-left-top', framed: true },
+        // Erica, 2026-11-19: show the whole screen so the full Dynamic Action
+        // Panel is in view, circle the panel, and note that it was Figma inspired.
+        // `ratio` is the picture's width / height (1200 x 802). `mark` is where
+        // the panel sits, in percent of the picture.
+        image: {
+          src: img('menu-management-final-ui-screen'),
+          alt: 'Menu Management: the tree grid on the left and the Dynamic Action Panel on the right, circled',
+          ratio: 1200 / 802,
+          mark: { left: 83.5, top: 27, width: 17.5, height: 74, note: 'Figma inspired Dynamic Action Panel' },
+        },
       },
       // Nathan's quote from the 2023 Framer page, where his Teams card sits
       // under it. Trimmed to two of its sentences; the full quote is in the

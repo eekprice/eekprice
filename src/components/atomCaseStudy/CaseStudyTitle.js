@@ -26,7 +26,7 @@ const CaseStudyContainer = ({ title, slides = [], href, slideHeight, sketchAt = 
 
   return (
     <div className="p-3 lg:p-4">
-      <div className="flex flex-col gap-1 lg:flex-row lg:items-start lg:justify-between">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h3 className="font-merriweather text-lg lg:text-xl font-normal text-surface-foreground100-light dark:text-surface-foreground100-dark">
             {title}
@@ -37,14 +37,16 @@ const CaseStudyContainer = ({ title, slides = [], href, slideHeight, sketchAt = 
             </p>
           )}
         </div>
+        {/* On the right at every size (Erica, 2026-11-19). On a phone it sits
+            under the title, still on the right. */}
         {href && (
-          <ReadStudy to={href} about={title} className="mt-2 lg:mt-0 self-start shrink-0" />
+          <ReadStudy to={href} about={title} className="mt-2 sm:mt-0 self-end sm:self-start shrink-0" />
         )}
       </div>
 
       {hasSlides ? (
         <div className="mt-3">
-          <CaseStudyPreview slides={strip} heightClass={slideHeight} />
+          <CaseStudyPreview slides={strip} heightClass={slideHeight} label={title} />
         </div>
       ) : (
         // No slides yet, so the card shows its wireframe: three pencil blocks
