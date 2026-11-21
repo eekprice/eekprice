@@ -581,7 +581,7 @@ export const caseStudies = [
   },
   // Grier Forensics, through Bitovi, 2020. Source: CaseStudy/grier-forensics.md,
   // drafted 2026-11-21 from Assets/grier/ and Erica's answers in chat. Title is
-  // hers ("AI forensics before AI"). It sits above the credit limit study in
+  // hers. It sits above the credit limit study in
   // the older section of Past Work (her ask), so it comes first in this list.
   // Erica confirmed on 2026-11-21 that the screens are sample data and that
   // the storyboard and journey map can be public.
@@ -593,7 +593,9 @@ export const caseStudies = [
     older: true,
     workLogo: { icon: 'search' },
     linkLabel: 'Read the AI forensics case study',
-    title: 'AI forensics before AI',
+    // 2026-11-21: Erica asked for a more interesting title than "AI forensics
+    // before AI", gave her own wording, then took this shorter version of it.
+    title: 'Connecting forensic cases with AI before it was popular',
     tagline: 'Screens that show how one forensic case connects to another. Six weeks, 2020.',
     hero: { src: img('grier-related-cases-tablets'), alt: 'Two tablets showing the related cases screen, as a diagram of links and as a table', position: 'center' },
     meta: {
