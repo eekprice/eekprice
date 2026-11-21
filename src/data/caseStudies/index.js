@@ -25,7 +25,8 @@ const img = (name) => `/images/case-studies/${name}.webp`;
 export const caseStudies = [
   {
     slug: 'yum-pos',
-    // The strip under the role box. Each line is cut from this study's own copy.
+    // Unused since 2026-11-21: Erica didn't like the result strip. "In short"
+    // (`highlights`) is the summary at the top now.
     results: [
       { value: '35+', label: 'studies' },
       { value: '200+', label: 'participants' },
@@ -203,8 +204,14 @@ export const caseStudies = [
             type: 'note',
             text: "Some ideas didn't survive testing. A folder-style drill-down was cleaner but there wasn't enough screen for it. Icon-only modifiers looked good but nobody was sure people could rely on them without text.",
           },
-          { type: 'figure', src: img('kfc-pos-figma-wireframe-board'), alt: 'The Figma board for the POS flows', caption: 'The Figma board. Every flow, every state.' },
-          { type: 'figure', src: img('kfc-pos-modifier-panel-wireframe'), alt: 'Modifier panel wireframe', caption: 'The modifier panel: quantity, recipe, actions, all in one place.' },
+          // Side by side at one height (Erica, 2026-11-21).
+          {
+            type: 'figures',
+            items: [
+              { src: img('kfc-pos-figma-wireframe-board'), alt: 'The Figma board for the POS flows', caption: 'The Figma board. Every flow, every state.', ratio: 1910 / 2000 },
+              { src: img('kfc-pos-modifier-panel-wireframe'), alt: 'Modifier panel wireframe', caption: 'The modifier panel: quantity, recipe, actions, all in one place.', ratio: 1280 / 2000 },
+            ],
+          },
           {
             type: 'p',
             text: "I scoped an MVP from the user journeys and ops findings, wrote the hand-off documentation, and worked with the UI designer to apply each brand's look on top of the shared patterns. I also proposed the UX metrics to track after launch so the team could iterate on data.",
@@ -246,7 +253,8 @@ export const caseStudies = [
 
   {
     slug: 'menu-management',
-    // The strip under the role box. Each line is cut from this study's own copy.
+    // Unused since 2026-11-21: Erica didn't like the result strip. "In short"
+    // (`highlights`) is the summary at the top now.
     results: [
       { value: 'Tree view', label: 'shows how menu items relate' },
       { value: 'Action panel', label: 'only the actions for what you selected' },
@@ -605,7 +613,8 @@ export const caseStudies = [
   // 2020, the files run December 2020 to January 2021).
   {
     slug: 'grier-forensics',
-    // The strip under the role box. Each line is cut from this study's own copy.
+    // Unused since 2026-11-21: Erica didn't like the result strip. "In short"
+    // (`highlights`) is the summary at the top now.
     results: [
       { value: '6 weeks', label: 'from interviews to a tested prototype' },
       { value: '17 features', label: 'in the MVP, with 16 more phased for later' },
@@ -1011,7 +1020,8 @@ export const caseStudies = [
   // studies) doesn't change.
   {
     slug: 'yum-ux-leadership',
-    // The strip under the role box. Each line is cut from this study's own copy.
+    // Unused since 2026-11-21: Erica didn't like the result strip. "In short"
+    // (`highlights`) is the summary at the top now.
     results: [
       { value: '6', label: 'direct reports' },
       { value: '1 quarter', label: 'design involved ahead of implementation' },
@@ -1271,7 +1281,8 @@ export const caseStudies = [
   // be public. Not pushed.
   {
     slug: 'topstep',
-    // The strip under the role box. Each line is cut from this study's own copy.
+    // Unused since 2026-11-21: Erica didn't like the result strip. "In short"
+    // (`highlights`) is the summary at the top now.
     results: [
       { value: '0', label: 'dropped trades after the migration' },
       { value: '6', label: 'Topstep engineers on the team' },
@@ -1422,7 +1433,8 @@ export const caseStudies = [
   // July 2026, Canon says 2025), and everything on her "Before publishing" list.
   {
     slug: 'aerospace-program',
-    // The strip under the role box. Each line is cut from this study's own copy.
+    // Unused since 2026-11-21: Erica didn't like the result strip. "In short"
+    // (`highlights`) is the summary at the top now.
     results: [
       { value: 'Visible', label: 'all of the work in one place, mapped to the vision' },
       { value: 'Pods', label: 'named leaders with their own commitments' },
@@ -1591,7 +1603,8 @@ export const caseStudies = [
   // yourself, the 43, how many sessions, the title and tagline (both mine).
   {
     slug: 'cgi-leadership',
-    // The strip under the role box. Each line is cut from this study's own copy.
+    // Unused since 2026-11-21: Erica didn't like the result strip. "In short"
+    // (`highlights`) is the summary at the top now.
     results: [
       { value: '2', label: 'workshops written and taught for the whole company' },
       { value: '43', label: 'people completed both by July 2026' },

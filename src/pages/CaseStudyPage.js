@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { ReactComponent as HeroDoodle } from '../assets/doodle.svg';
-import { ReactComponent as ArrowSvg } from '../assets/Arrow.svg';
 import { ReactComponent as StarSvg } from '../assets/Star.svg';
 import { ReactComponent as StarsSvg } from '../assets/Stars.svg';
 import { getCaseStudy, nextCaseStudy } from '../data/caseStudies';
@@ -65,37 +64,9 @@ function Brief({ items }) {
   );
 }
 
-// Three things to take away, right under the role box, for a reader who
-// scans before reading. `results` on the study is a list of { value, label }:
-// a number or a word or two, then one short line about it. Every one is cut
-// from the study's own copy, so change that first. A study with nothing to
-// stand behind has no `results` and gets no strip.
-function Results({ items }) {
-  return (
-    <Reveal className="mt-6">
-      <dl
-        aria-label="Results"
-        className="m-0 grid sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x
-          divide-surface-outline-light dark:divide-surface-outline-dark"
-      >
-        {items.map((item) => (
-          <div key={item.label} className="flex flex-col-reverse justify-end py-3 sm:py-0 sm:px-5 first:pt-0 last:pb-0 sm:first:pl-0 sm:last:pr-0">
-            <dt className="mt-1 font-inter text-sm leading-snug text-surface-foreground200-light dark:text-surface-foreground200-dark">
-              {item.label}
-            </dt>
-            <dd className={`m-0 font-merriweather font-light leading-tight text-teal-700 dark:text-teal-300
-              ${/\d/.test(item.value) ? 'text-4xl lg:text-5xl' : 'text-2xl lg:text-[1.75rem]'}`}>
-              {item.value}
-            </dd>
-          </div>
-        ))}
-      </dl>
-    </Reveal>
-  );
-}
-
 // A section heading in the write-up. The words are always there. The first
-// time it is seen, a pen underline draws under it and the arrow doodle pops.
+// time it is seen, a pen underline draws under it. The arrow doodle that used to sit
+// beside it is gone (Erica, 2026-11-21: "remove on all headers").
 // Exported so other long-form pages can use the same heading (pages/EducationPage.js).
 export function SectionHeading({ children }) {
   const ref = useRef(null);
@@ -104,11 +75,6 @@ export function SectionHeading({ children }) {
 
   return (
     <div ref={ref} className="relative flex items-center mb-5">
-      <span className="hidden lg:block absolute -left-16 top-1/2 -translate-y-1/2 w-12 h-12" aria-hidden="true">
-        <Stamp inView delay={0.5} className="block w-full h-full">
-          <ArrowSvg className="w-full h-full text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current" />
-        </Stamp>
-      </span>
       <h2 className="flex-1 text-2xl lg:text-3xl font-merriweather font-light text-surface-foreground100-light dark:text-surface-foreground100-dark">
         <Underline lines show={seen || !!reduce} delay={reduce ? 0 : 150}>
           {children}
@@ -337,7 +303,13 @@ function CaseStudyPage() {
             </motion.div>
           </div>
 
-          {study.results && <Results items={study.results} />}
+          {/* "In short" is the summary at the top of every study (Erica,
+              2026-11-21). It used to be the last section. The result strip she
+              tried the same day is gone; `results` in the data is unused. */}
+          <section className="mt-10">
+            <SectionHeading>In short</SectionHeading>
+            <Stickies items={study.highlights} />
+          </section>
 
           {study.brief && <Brief items={study.brief} />}
         </header>
@@ -374,11 +346,6 @@ function CaseStudyPage() {
             </div>
           </section>
         ))}
-
-        <section className="mt-14">
-          <SectionHeading>In short</SectionHeading>
-          <Stickies items={study.highlights} />
-        </section>
 
         {nextCard}
 

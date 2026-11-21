@@ -12,6 +12,7 @@ import couch from '../assets/photos/p4.png';
 import { Reveal } from '../components/caseStudy/Blocks';
 import { Circle, Stage, WireImage } from '../components/sketch/Sketch';
 import Stamp from '../components/sketch/Stamp';
+import { land } from '../components/sketch/motion';
 import FloatingNav from '../components/FloatingNav';
 import { intro, hobbies } from '../data/about';
 import { pageSeen } from '../data/opening';
@@ -168,7 +169,7 @@ function PhotoSlots({ photos = [], title }) {
           <img
             key={i}
             src={photos[i]}
-            alt={`${title}, ${i + 1} of 4`}
+            alt={`${title}, ${i + 1} of ${photos.length}`}
             loading="lazy"
             className="w-full h-16 object-cover rounded-md"
           />
@@ -180,7 +181,63 @@ function PhotoSlots({ photos = [], title }) {
   );
 }
 
+// A hobby's own photos, scattered like prints on a desk (Erica, 2026-11-21:
+// "scatter the image and give them the same treatment as the hero image").
+// Same treatment as the collage at the top: a white frame, a tilt, a soft
+// shadow, each print lands like paper and lifts when hovered. No empty slots.
+const TILT = [-4, 3, 2, -3, 4, -2, 3, -3];
+const NUDGE = [0, 10, -4, 8, 2, 12, -2, 6];
+
+function PhotoScatter({ photos, title, className = '', itemClass = '', start = 0, total = photos.length, align = 'justify-center', slide = 0 }) {
+  const reduce = useReducedMotion();
+  return (
+    <div className={`flex flex-wrap ${align} ${className}`}>
+      {photos.map((src, n) => {
+        const i = start + n;
+        const tilt = TILT[i % TILT.length];
+        return (
+          <motion.div
+            key={src}
+            variants={land(i)}
+            initial={reduce ? 'visible' : 'hidden'}
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            className={`relative hover:z-10 ${itemClass}`}
+            // `slide` pushes every print after the first to the right, toward
+            // whatever sits beside the group.
+            style={{ marginTop: NUDGE[i % NUDGE.length], marginRight: slide && n > 0 ? -slide : undefined }}
+          >
+            {/* The frame matches the family photos at the top: a rounded white
+                border with a thin grey edge, and a rounded picture inside
+                (Erica, 2026-11-21: "make sure the images have this treatment"). */}
+            <motion.div
+              className="bg-white p-[5px] rounded-[9px] border border-gray-300 shadow-md hover:shadow-xl transition-shadow duration-300"
+              style={{ rotate: tilt }}
+              whileHover={reduce ? undefined : { y: -6, rotate: tilt + 2, scale: 1.08 }}
+              transition={{ duration: 0.3, ease }}
+            >
+              <img
+                src={src}
+                alt={`${title}, ${i + 1} of ${total}`}
+                loading="lazy"
+                className="block w-full aspect-[4/3] object-cover rounded-[5px]"
+              />
+            </motion.div>
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+}
+
+// How many prints sit beside the text. Any more go under it.
+const BESIDE = 4;
+
 function HobbyRow({ hobby }) {
+  const hasPhotos = hobby.photos && hobby.photos.length > 0;
+  // A hobby can set its own count with `beside`. An odd one out is centered.
+  const beside = hobby.beside || BESIDE;
+  const more = hasPhotos ? hobby.photos.slice(beside) : [];
   return (
     <Reveal>
       <article className="flex gap-4 sm:gap-6">
@@ -198,8 +255,41 @@ function HobbyRow({ hobby }) {
           <p className="mt-2 font-inter text-base leading-relaxed text-surface-foreground300-light dark:text-surface-foreground300-dark">
             {hobby.text}
           </p>
+          {/* On a phone the prints go under the text. */}
+          {hasPhotos && (
+            <PhotoScatter photos={hobby.photos} title={hobby.title} className="sm:hidden mt-3 -ml-2" itemClass="w-[32%] -mx-[1%]" />
+          )}
+          {/* More than four: the rest go in the space under the text, so the
+              side stack stays short (Erica, 2026-11-21). */}
+          {more.length > 0 && (
+            <PhotoScatter
+              photos={more}
+              title={hobby.title}
+              start={beside}
+              total={hobby.photos.length}
+              // Right aligned, so they read as part of the stack beside them.
+              align={hobby.moreStacked ? 'flex-col items-end' : 'justify-end'}
+              // Moved over toward the stack (Erica, 2026-11-21: "move it over a
+              // bit more"). A row tucks in under the stack's edge, and further
+              // when the stack ends on one centered print. In a column, the
+              // lower prints slide across to whatever is beside them.
+              slide={hobby.moreStacked ? 78 : 0}
+              className={`hidden sm:flex mt-4 ${hobby.moreStacked ? '-mr-2' : beside % 2 ? '-mr-[84px]' : '-mr-14'}`}
+              itemClass="w-[122px] -mx-1"
+            />
+          )}
         </div>
-        <PhotoSlots photos={hobby.photos} title={hobby.title} />
+        {hasPhotos ? (
+          <PhotoScatter
+            photos={hobby.photos.slice(0, beside)}
+            title={hobby.title}
+            total={hobby.photos.length}
+            className="hidden sm:flex w-[230px] shrink-0 self-start -mt-1"
+            itemClass="w-[52%] -mx-[2%]"
+          />
+        ) : (
+          <PhotoSlots photos={hobby.photos} title={hobby.title} />
+        )}
       </article>
     </Reveal>
   );

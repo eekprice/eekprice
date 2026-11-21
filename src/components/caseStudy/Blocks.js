@@ -142,6 +142,29 @@ export function Figure({ src, alt, caption, invert = false, maxWidth, frame = fa
   );
 }
 
+// Two or more pictures side by side at the same height (Erica, 2026-11-21:
+// "make these two photos horizontal aligned"). Each item is a figure with a
+// `ratio` (width / height), which sets how much of the row it takes. On a
+// phone they stack.
+export function FigureRow({ items }) {
+  return (
+    <Reveal>
+      <div className="my-2 flex flex-col sm:flex-row sm:items-start gap-4">
+        {items.map((item) => (
+          <figure key={item.src} className="m-0 min-w-0 sm:[flex:var(--r)_1_0%]" style={{ '--r': item.ratio || 1 }}>
+            <img src={item.src} alt={item.alt} loading="lazy" decoding="async" className="block w-full h-auto rounded-lg" />
+            {item.caption && (
+              <figcaption className="mt-2 text-sm font-inter text-surface-foreground400-light dark:text-surface-foreground400-dark">
+                {item.caption}
+              </figcaption>
+            )}
+          </figure>
+        ))}
+      </div>
+    </Reveal>
+  );
+}
+
 // A screen recording in the write-up. It shows a still frame and a play
 // button, and plays on a tap, so it does not run while someone is reading.
 // `ratio` is the recording's width / height. Shown whole, on black, no wider
@@ -243,10 +266,11 @@ export function QuoteGrid({ items }) {
 
 // Yellow sticky note for an aside. Slight tilt, like the stickies elsewhere.
 // It is paper, so it lands: drops in from above and settles with a spring.
+// Centered in the column at every width (Erica, 2026-11-21).
 export function Note({ text }) {
   const reduce = useReducedMotion();
   return (
-    <div className="my-2 flex justify-center lg:justify-start">
+    <div className="my-2 flex justify-center">
       <motion.div
         variants={land()}
         initial={reduce ? 'visible' : 'hidden'}
@@ -395,6 +419,8 @@ export function Block({ block }) {
       return <Subheading text={block.text} />;
     case 'figure':
       return <Figure src={block.src} alt={block.alt} caption={block.caption} invert={block.invert} maxWidth={block.maxWidth} frame={block.frame} />;
+    case 'figures':
+      return <FigureRow items={block.items} />;
     case 'clip':
       return <Clip src={block.src} poster={block.poster} alt={block.alt} caption={block.caption} ratio={block.ratio} maxWidth={block.maxWidth} center={block.center} />;
     case 'quote':
