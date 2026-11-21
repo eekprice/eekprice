@@ -9,6 +9,25 @@
       name="description"
       content="Erica Price, design leader and founding designer. Enterprise products and AI products. Columbus, remote."
     />
+    <!-- Link previews (Erica, 2026-11-21). Without these, a preview picks the
+         first picture it finds on the page, which on the resume was a logo.
+         The picture is a screenshot of the top of the home page, 1200 by 630.
+         Every page shares it, because this is one HTML file for all routes.
+         Retake it when the hero changes. The address must be absolute. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Erica Price" />
+    <meta property="og:title" content="Erica Price" />
+    <meta
+      property="og:description"
+      content="Erica Price, design leader and founding designer. Enterprise products and AI products. Columbus, remote."
+    />
+    <meta property="og:image" content="https://eekprice.vercel.app/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="The top of Erica Price's portfolio: her photo, the title Product Design Leader, and a short introduction" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Erica Price" />
+    <meta name="twitter:image" content="https://eekprice.vercel.app/og-image.jpg" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
