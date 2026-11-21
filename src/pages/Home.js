@@ -14,6 +14,7 @@ import { leadershipCards, sectionTitles } from '../data/home';
 import ExperienceCard from '../components/ExperienceCard';
 import { getCaseStudy } from '../data/caseStudies';
 import { useHeroCopy } from '../data/heroCopy';
+import { openingSeen, markOpeningSeen, holdStill } from '../data/opening';
 import HeroSectionMobile from '../components/section/HeroSectionMobile.js';
 import EmergencyStop from '../components/EmergencyStop';
 import { useIsMobile } from '../hooks/useMediaQuery';
@@ -32,18 +33,28 @@ const HeroSection = lazy(() => import('../components/section/HeroSectionDesktop.
 const AFTER_HERO_MS = 700; // a beat after the about text, so the star and heart land first
 const HERO_MAX_MS = 7000; // never hold the page longer than this, whatever the hero does
 
+
 function Home() {
   const isMobile = useIsMobile();
   const heroRef = useRef(null);
 
   const [isHeroVisible, setIsHeroVisible] = useState(true);
-  const [showNav, setShowNav] = useState(false);
-  const [doodleOpacity, setDoodleOpacity] = useState(1);
-  const [loadingComplete, setLoadingComplete] = useState(false);
-  const [minLoadingTimePassed, setMinLoadingTimePassed] = useState(false);
-  const [showHeroSection, setShowHeroSection] = useState(false);
+  // Coming back to Home after the opening has played: everything starts in
+  // its finished state, and the hero gets `instant`.
+  // The wireframe sketches are held still by the `sk-still` class on the page
+  // (styles/sketch.css), and framer-motion skips its entrances for a moment.
+  const [seen] = useState(() => {
+    const was = openingSeen();
+    if (was) holdStill();
+    return was;
+  });
+  const [showNav, setShowNav] = useState(seen);
+  const [doodleOpacity, setDoodleOpacity] = useState(seen ? 0.1 : 1);
+  const [loadingComplete, setLoadingComplete] = useState(seen);
+  const [minLoadingTimePassed, setMinLoadingTimePassed] = useState(seen);
+  const [showHeroSection, setShowHeroSection] = useState(seen);
   const [heroRevealed, setHeroRevealed] = useState(false);
-  const [heroDone, setHeroDone] = useState(false);
+  const [heroDone, setHeroDone] = useState(seen);
   const reduce = useReducedMotion();
   // Arriving with a hash (a link straight to a section) still shows the hero
   // first. It just skips the hero's choreography, so the sections follow
@@ -70,6 +81,7 @@ function Home() {
   // takes 500ms). `minimum` is when the hero may appear. `nav` is the earliest
   // the nav may show; it also waits for the sections.
   useEffect(() => {
+    if (seen) return undefined;
     const t = isMobile
       ? { doodle: 400, minimum: 500, nav: 1200 }
       : { doodle: 400, minimum: 800, nav: 1200 };
@@ -86,7 +98,12 @@ function Home() {
     ];
 
     return () => timers.forEach(clearTimeout);
-  }, [isMobile]);
+  }, [isMobile, seen]);
+
+  // Once the opening is done, remember it for the rest of the visit.
+  useEffect(() => {
+    if (heroDone) markOpeningSeen();
+  }, [heroDone]);
 
   useEffect(() => {
     if (loadingComplete && minLoadingTimePassed) {
@@ -152,7 +169,7 @@ function Home() {
 
   return (
     // The home page sits on the dot grid canvas from the design system.
-    <div className="sk-canvas min-h-screen">
+    <div className={`sk-canvas min-h-screen${seen ? ' sk-still' : ''}`}>
       {/* Desktop-only gag. On touch there's no hover warning and one tap blocks the page. */}
       <header className="hidden lg:flex p-4 justify-end items-center gap-4 fixed top-0 right-0 z-50">
         <EmergencyStop />
@@ -169,10 +186,10 @@ function Home() {
         />
         {showHeroSection && (
           isMobile ? (
-            <HeroSectionMobile onReady={onHeroReady} instant={arrivedWithHash} />
+            <HeroSectionMobile onReady={onHeroReady} instant={arrivedWithHash || seen} />
           ) : (
             <Suspense fallback={null}>
-              <HeroSection onReady={onHeroReady} instant={arrivedWithHash} />
+              <HeroSection onReady={onHeroReady} instant={arrivedWithHash || seen} />
             </Suspense>
           )
         )}
@@ -199,23 +216,30 @@ function Home() {
                       case study links its client or product studies at the top. */}
                   {/* The current role first: Principal Product Consultant, then
                       Yum (Erica, 2026-11-19). */}
-                  {[...supportingRoles, ...featuredRoles].map((card) => (
-                    <ExperienceCard key={card.where} card={card} compact />
+                  {[...supportingRoles, ...featuredRoles].map((card, i) => (
+                    <ExperienceCard
+                      key={card.where}
+                      card={card}
+                      compact
+                      order={i}
+                      mostInView={cardInView === card.role}
+                      peekSide={i % 2 ? 'right' : 'left'}
+                    />
                   ))}
                 </div>
               ) : (
               <div className="relative space-y-6">
-                {featuredRoles.map((card) => (
-                  <ExperienceCard key={card.role} card={card} mostInView={cardInView === card.role} />
+                {featuredRoles.map((card, i) => (
+                  <ExperienceCard key={card.role} card={card} order={i} mostInView={cardInView === card.role} />
                 ))}
                 {supportingRoles.length > 0 && (
                   <div className="grid gap-4 sm:grid-cols-2">
-                    {supportingRoles.map((card) => {
+                    {supportingRoles.map((card, i) => {
                       // A role's case studies are drawn inside its card.
                       const studies = (card.studies || [])
                         .map(({ slug, label }) => ({ study: getCaseStudy(slug), label }))
                         .filter((s) => s.study);
-                      return <ExperienceCard key={card.where} card={card} studies={studies} />;
+                      return <ExperienceCard key={card.where} card={card} studies={studies} order={featuredRoles.length + i} mostInView={cardInView === card.role} />;
                     })}
                   </div>
                 )}
@@ -258,7 +282,7 @@ function Home() {
             <div className="relative space-y-6">
               <span
                 aria-hidden="true"
-                className="absolute -right-8 top-[38%] hidden lg:block z-10 select-none font-inter font-extrabold text-2xl text-purple-500 drop-shadow-md"
+                className="absolute -right-8 top-[38%] hidden lg:block z-10 select-none font-inter font-extrabold text-2xl text-teal-600 drop-shadow-md"
                 style={{ transform: 'rotate(-6deg)' }}
               >
                 +1

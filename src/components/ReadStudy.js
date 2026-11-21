@@ -31,11 +31,13 @@ export const ArrowRight = ({ className = 'w-4 h-4' }) => (
   </svg>
 );
 
-function ReadStudy({ to, about, inside = false, className = '' }) {
+// `label` is for the same button on a card that leads somewhere other than a
+// case study (the Education card on Side Projects).
+function ReadStudy({ to, about, inside = false, label = READ_LABEL, className = '' }) {
   const link = inside ? { as: 'span' } : { as: Link, to };
   return (
     <Button {...link} variant="outline" size="sm" className={`group/read ${className}`}>
-      {READ_LABEL}
+      {label}
       {about && !inside && <span className="sr-only">: {about}</span>}
       <ArrowRight />
     </Button>

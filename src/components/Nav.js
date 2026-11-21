@@ -1,22 +1,38 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-// Side Projects is off for now (Erica, 2026-11-19: "i do eventually want to
-// have it but not right now"). To bring it back, uncomment this import and the
-// button further down.
-// import SideProjectsButton from './SideProjectsButton';
-import AtomContact from './atoms/atomContact';
+// Side Projects was off from 2026-11-19 and is back as of 2026-11-20 (Erica:
+// "bring back the side project button ... and have the education item that way
+// a user can find it"). The page it opens lists Education.
+import SideProjectsButton from './SideProjectsButton';
+import NavMenu from './NavMenu';
+// Contact is off the nav at every size (Erica, 2026-11-20: it "can be found on
+// resume"). The Resume page has the Email Me button. Kept so it can come back.
+// import AtomContact from './atoms/atomContact';
 import AtomResume from './atoms/atomResume';
 import Stickies from './atoms/atomStickies.js';
 import NavItem, { navFocusClass } from './atoms/NavItem';
 import StickyFan from './StickyFan';
 import { getCaseStudy } from '../data/caseStudies';
-import { useTheme } from '../hooks/useTheme';
 
-// The three notes in the sticky fan, back to front: green, blue, yellow.
+// The four notes in the sticky fan, back to front: pink, green, blue, yellow.
+// Erica, 2026-11-20: a note for the Principal Product Consultant role (pink).
 // Erica, 2026-11-16: the yellow one is the leadership study. Helix Booking
 // used to be there; it is still on Past Work, behind the fan's "All" button.
-const fanStudies = ['yum-pos', 'menu-management', 'yum-ux-leadership'].map(getCaseStudy).filter(Boolean);
+const fanStudies = ['cgi-leadership', 'yum-pos', 'menu-management', 'yum-ux-leadership'].map(getCaseStudy).filter(Boolean);
+
+// The same studies as a menu, for the Work icon on screens with no sticky
+// pile. Each row has its note's color and name. The last row is the Past
+// Work page.
+const NOTE_SWATCH = ['bg-pink-200', 'bg-green-300', 'bg-blue-300', 'bg-yellow-200'];
+const workMenu = [
+  ...fanStudies.map((study, i) => ({
+    title: study.note?.title || study.title,
+    to: `/case-study/${study.slug}`,
+    swatch: NOTE_SWATCH[i],
+  })),
+  { title: 'All Past Work', to: '/work', divided: true },
+];
 
 // Floating bottom nav, laid out like a FigJam toolbar: a white bar with
 // groups split by thin dividers.
@@ -54,32 +70,6 @@ const PersonIcon = (props) => (
   </svg>
 );
 
-const ThemeIcon = ({ className = '', ...props }) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    className={`${className} transition-transform duration-500 rotate-0 dark:rotate-[360deg]`}
-    {...props}
-  >
-    {/* sun, shown in dark mode */}
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={1.75}
-      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-      className="hidden dark:block"
-    />
-    {/* moon, shown in light mode */}
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={1.75}
-      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646"
-      className="block dark:hidden"
-    />
-  </svg>
-);
 
 const Divider = () => (
   <span
@@ -101,13 +91,7 @@ const GridIcon = (props) => (
 
 const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
-const goToWork = () => {
-  // The work starts at the leadership section, the first one under the hero.
-  (document.getElementById('leadership') || document.getElementById('case-studies'))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-};
-
 function Nav({ showHome = false }) {
-  const { isDark, toggle } = useTheme();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const onHome = pathname === '/';
@@ -116,11 +100,6 @@ function Nav({ showHome = false }) {
   // On the home page the Home item is the current page, and it scrolls to the
   // top. Anywhere else it goes home.
   const homeAction = onHome ? scrollToTop : () => navigate('/');
-
-  // "All the work": on the home page that is the case studies section,
-  // anywhere else the Past Work page. The Work icon on phones and the "All"
-  // button in the sticky fan both use it.
-  const workAction = onHome ? goToWork : () => navigate('/work');
 
   // On desktop the sticky pile opens a fan of the case studies. The pile's
   // notes leave the bar to make the fan, so the pile is hidden from the moment
@@ -170,7 +149,7 @@ function Nav({ showHome = false }) {
           {showHome && (
             <motion.div
               key="nav-home"
-              className="flex flex-row items-center"
+              className="hidden lg:flex flex-row items-center"
               initial={{ width: 0, opacity: 0 }}
               animate={{ width: 'auto', opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
@@ -221,12 +200,11 @@ function Nav({ showHome = false }) {
               open={fanOpen}
               studies={fanStudies}
               onClose={closeFan}
-              onAll={workAction}
+              onAll={() => navigate('/work')}
               onExited={fanExited}
             />
           </div>
-          {/* Off for now, see the note at the import. */}
-          {/* <SideProjectsButton /> */}
+          <SideProjectsButton />
         </div>
 
         <span className="hidden lg:inline-flex">
@@ -234,33 +212,40 @@ function Nav({ showHome = false }) {
         </span>
 
 
-        <ul className="flex flex-row items-center gap-1 sm:gap-4 lg:gap-5 m-0 p-0 list-none">
+        <ul className="flex flex-row items-center gap-1 sm:gap-2 lg:gap-3 m-0 p-0 list-none">
+          {/* Under 1024px: Home, Side Projects, Work, About, Resume. Work is in
+              the middle (Erica, 2026-11-20). She tried it as a raised circle
+              and then a raised tile and did not like the emphasis, so it is
+              a plain item like the rest; `prominent` on NavItem still draws
+              the tile if it is wanted back. Home is always in the bar here,
+              so Work stays in the middle on every page. There is no sticky
+              pile at these sizes, so Work opens a menu of the same featured
+              studies, then All Past Work. */}
           <li className="inline-flex lg:hidden m-0 p-0">
-            <NavItem icon={GridIcon} label="Work" onClick={workAction} active={inWork} />
+            <NavItem icon={HomeIcon} label="Home" onClick={homeAction} active={onHome} />
           </li>
+          <li className="inline-flex lg:hidden m-0 p-0">
+            <SideProjectsButton compact />
+          </li>
+          <li className="inline-flex lg:hidden m-0 p-0">
+            <NavMenu id="work-menu" icon={GridIcon} label="Work" heading="Case Studies" items={workMenu} active={inWork} width="w-60" />
+          </li>
+          {/* About sits just left of Resume (Erica, 2026-11-20). */}
           <li className="inline-flex m-0 p-0">
             <NavItem
               icon={PersonIcon}
-              label="About"
+              // Erica, 2026-11-20: the nav says Hobbies, which is what the page is.
+              // The address is still /about.
+              label="Hobbies"
               onClick={() => navigate('/about')}
               active={pathname === '/about'}
             />
           </li>
           <li className="inline-flex m-0 p-0">
-            <AtomContact />
-          </li>
-          <li className="inline-flex m-0 p-0">
             <AtomResume onClick={() => navigate('/resume')} active={pathname === '/resume'} />
           </li>
-          <li className="inline-flex m-0 p-0">
-            <NavItem
-              icon={ThemeIcon}
-              label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-              shortLabel="Theme"
-              onClick={toggle}
-              pressed={isDark}
-            />
-          </li>
+          {/* Theme is not in the bar any more (Erica, 2026-11-20). It is its own
+              button in a corner of the screen: components/ThemeToggle.js. */}
         </ul>
       </motion.nav>
     </div>

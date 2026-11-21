@@ -12,6 +12,7 @@ import { Stage, Swap, Underline } from '../components/sketch/Sketch';
 import Stamp from '../components/sketch/Stamp';
 import { ease } from '../components/sketch/motion';
 import FloatingNav from '../components/FloatingNav';
+import useTrail from '../hooks/useTrail';
 
 const ChevronLeft = (props) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" {...props}>
@@ -66,7 +67,8 @@ function Brief({ items }) {
 
 // A section heading in the write-up. The words are always there. The first
 // time it is seen, a pen underline draws under it and the arrow doodle pops.
-function SectionHeading({ children }) {
+// Exported so other long-form pages can use the same heading (pages/EducationPage.js).
+export function SectionHeading({ children }) {
   const ref = useRef(null);
   const seen = useInView(ref, { once: true, amount: 0.8 });
   const reduce = useReducedMotion();
@@ -90,6 +92,33 @@ function SectionHeading({ children }) {
 // Small cards for other studies, shown at the top of a study that has no
 // cards of its own. Each is a thumbnail, the title, and a link. They sit in
 // the same column as the write-up.
+function RelatedMark({ logo }) {
+  if (!logo) return null;
+  const box = 'shrink-0 grid place-items-center w-20 h-14 rounded border border-surface-outline-light dark:border-surface-outline-dark';
+  if (logo.icon) {
+    return (
+      <span aria-hidden="true" className={`${box} bg-primary-surface-light dark:bg-primary-surface-dark text-primary-foreground-light dark:text-primary-foreground-dark`}>
+        {logo.icon === 'scissors' ? (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+            <circle cx="6" cy="6" r="3" />
+            <circle cx="6" cy="18" r="3" />
+            <path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+            <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
+          </svg>
+        )}
+      </span>
+    );
+  }
+  return (
+    <span aria-hidden="true" className={`${box} ${logo.chip === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
+      <img src={logo.src} alt="" className={`w-auto h-auto max-h-8 ${logo.chip === 'dark' ? 'max-w-[64px]' : 'max-w-[52px]'}`} />
+    </span>
+  );
+}
+
 function RelatedStudies({ related }) {
   const studies = related.slugs.map(getCaseStudy).filter(Boolean);
   if (!studies.length) return null;
@@ -112,6 +141,9 @@ function RelatedStudies({ related }) {
                 focus-visible:ring-primary-foreground-light dark:focus-visible:ring-primary-foreground-dark
                 focus-visible:ring-offset-backdrop-background-light dark:focus-visible:ring-offset-backdrop-background-dark"
             >
+              {/* A study with no picture shows its mark: a logo (on a dark box
+                  when the logo is white) or an icon. */}
+              {!s.hero && <RelatedMark logo={[].concat(s.workLogo || [])[0]} />}
               {s.hero && (
                 <img
                   src={s.hero.src}
@@ -132,6 +164,43 @@ function RelatedStudies({ related }) {
         </div>
       </Reveal>
     </section>
+  );
+}
+
+// Where a crumb's words come from.
+const CRUMB_LABEL = { '/work': 'Past Work', '/resume': 'Resume', '/about': 'About', '/education': 'Education', '/founding-designer': 'Founding Designer' };
+function crumbLabel(path) {
+  if (CRUMB_LABEL[path]) return CRUMB_LABEL[path];
+  const found = path.startsWith('/case-study/') && getCaseStudy(path.replace('/case-study/', ''));
+  return found ? found.title : null;
+}
+
+// Breadcrumbs at the top of a case study (Erica, 2026-11-20). They follow the
+// path the visitor took: Home, then the pages that led here (hooks/useTrail.js).
+// Straight from Home it is just Home, which lands on the section the study's
+// card is in (`homeSection`), as the back link always did.
+function Crumbs({ study }) {
+  const { home, trail } = useTrail();
+  const crumbs = trail.map((path) => ({ path, label: crumbLabel(path) })).filter((c) => c.label);
+  const homeTo = !crumbs.length && study.homeSection ? `${home === '/' ? '/' : home}#${study.homeSection}` : home;
+  const link = `underline underline-offset-2 rounded-sm
+    text-surface-foreground200-light dark:text-surface-foreground200-dark
+    hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark`;
+  return (
+    <nav aria-label="Breadcrumb">
+      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 list-none p-0 m-0 font-inter text-sm">
+        <li className="inline-flex items-center gap-1">
+          <ChevronLeft className="w-4 h-4 text-surface-foreground200-light dark:text-surface-foreground200-dark" />
+          <Link to={homeTo} className={link}>Home</Link>
+        </li>
+        {crumbs.map((c) => (
+          <li key={c.path} className="inline-flex items-center gap-2 min-w-0">
+            <span aria-hidden="true" className="text-surface-foreground400-light dark:text-surface-foreground400-dark">/</span>
+            <Link to={c.path} className={`${link} truncate max-w-[16rem]`}>{c.label}</Link>
+          </li>
+        ))}
+      </ol>
+    </nav>
   );
 }
 
@@ -183,17 +252,7 @@ function CaseStudyPage() {
         />
 
         <header className="relative max-w-[760px] mx-auto px-4 lg:px-0 pt-8 lg:pt-14 pb-6">
-          {/* Erica, 2026-11-19: back goes to the home page and says Home. It used to go to Past Work.
-              It lands on the section the study's card is in (`homeSection`). */}
-          <Link
-            to={study.homeSection ? `/#${study.homeSection}` : '/'}
-            className="inline-flex items-center gap-1 text-sm font-inter underline underline-offset-2
-              text-surface-foreground200-light dark:text-surface-foreground200-dark
-              hover:text-surface-foreground100-light dark:hover:text-surface-foreground100-dark"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Home
-          </Link>
+          <Crumbs study={study} />
 
           <motion.div
             initial={reduce ? false : { opacity: 0, y: 12 }}

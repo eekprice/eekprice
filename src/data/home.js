@@ -77,6 +77,13 @@ export const leadershipCards = [
     // The leadership write-up for this role (CaseStudy/cgi-consulting.md, drafted
     // 2026-11-19). Not cleared for public use yet.
     href: '/case-study/cgi-leadership',
+    // Erica, 2026-11-20: a sticky for this role too, like the Yum card's. Pink,
+    // the same as its note in the nav fan. The color is a first pick.
+    peek: { title: 'Leading product work at CGI', color: 'pink' },
+    // The CGI logo pops in with the sticky, like Yum's (Erica, 2026-11-20).
+    stickers: [
+      { image: '/images/case-studies/brands/cgi.png', name: 'CGI', className: 'w-11 lg:w-12 right-5 -top-4', rotate: -5 },
+    ],
     // Erica, 2026-11-19: "put the two case studies here", with the space to the
     // right of this card marked, then "should be one container actually". So
     // the role and its two studies are one card: the role on the left, two link

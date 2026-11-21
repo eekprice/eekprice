@@ -5,9 +5,10 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import Button from './Button';
 import { focusRingClass } from './atoms/NavItem';
 
-// The sticky pile in the nav, fanned out. Clicking the pile sends its three
+// The sticky pile in the nav, fanned out. Clicking the pile sends its four
 // notes out of the bar and spreads them above it, one per case study, each a
-// link to that study. An "All" button sits between them for the full list.
+// link to that study. An "All Past Work" button sits between them and goes
+// to the Past Work page.
 // While the notes are out, Nav.js hides the pile and puts a close button in
 // its place. Closing sends the notes back. Desktop only, like the pile.
 //
@@ -16,21 +17,27 @@ import { focusRingClass } from './atoms/NavItem';
 
 // For each note: `from` is where it sits in the pile (the same place, tilt and
 // size as the pile's own note in atoms/atomStickies.js), `to` is where it
-// comes to rest. Green is the back note, blue the middle, yellow the front.
+// comes to rest. Back to front: pink, green, blue, yellow. Four notes sit in
+// an arc, with room under the middle two for the "All" button.
 const NOTES = [
   {
+    from: { x: -26, y: 104, rotate: -11, scale: 0.89 },
+    to: { x: -252, y: -84, rotate: -12, scale: 1 },
+    paper: 'bg-pink-200 text-slate-800',
+  },
+  {
     from: { x: -16, y: 96, rotate: -8, scale: 0.89 },
-    to: { x: -165, y: -95, rotate: -10, scale: 1 },
+    to: { x: -86, y: -150, rotate: -4, scale: 1 },
     paper: 'bg-green-300 text-slate-800',
   },
   {
     from: { x: -8, y: 84, rotate: -5, scale: 0.89 },
-    to: { x: 0, y: -158, rotate: 1.5, scale: 1 },
+    to: { x: 86, y: -150, rotate: 4, scale: 1 },
     paper: 'bg-blue-300 text-slate-800',
   },
   {
     from: { x: 0, y: 72, rotate: 0, scale: 0.89 },
-    to: { x: 165, y: -95, rotate: 10, scale: 1 },
+    to: { x: 252, y: -84, rotate: 12, scale: 1 },
     paper:
       'bg-highlight-backgroundSticky-light dark:bg-highlight-backgroundSticky-dark text-highlight-foregroundSticky-light dark:text-highlight-foregroundSticky-dark',
   },
@@ -53,7 +60,13 @@ const brandClass = `absolute h-auto pointer-events-none select-none
   motion-reduce:scale-100 motion-reduce:transition-opacity`;
 
 // A white patch behind an outline button, so it reads on top of the page.
-const patch = 'inline-flex rounded-md bg-surface-background100-light dark:bg-surface-background100-dark shadow-md';
+// The patch draws the edge itself, a plain 1px border, and the button's
+// hand-drawn loop is hidden: the loop sits a little inside the button, which
+// left a rim of white outside the line (Erica, 2026-11-20).
+const patch = `inline-flex rounded-md overflow-hidden shadow-md
+  bg-surface-background100-light dark:bg-surface-background100-dark
+  border border-surface-outline-light dark:border-surface-outline-dark
+  [&_.sk-frame]:hidden`;
 
 function StickyFan({ id, open, studies, onClose, onAll, onExited }) {
   const reduce = useReducedMotion();
@@ -187,13 +200,12 @@ function StickyFan({ id, open, studies, onClose, onAll, onExited }) {
                   <Button
                     variant="outline"
                     size="sm"
-                    aria-label="All case studies"
                     onClick={() => {
                       onClose();
                       onAll();
                     }}
                   >
-                    All
+                    All Past Work
                   </Button>
                 </span>
               </div>

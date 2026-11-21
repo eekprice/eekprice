@@ -143,18 +143,19 @@ export function Figure({ src, alt, caption, invert = false }) {
 // button, and plays on a tap, so it does not run while someone is reading.
 // `ratio` is the recording's width / height. Shown whole, on black, no wider
 // than `maxWidth` (the recording's own width) so it is not blown up.
-export function Clip({ src, poster, alt, caption, ratio = 16 / 9, maxWidth }) {
+// `center` puts a narrow recording, like a phone, in the middle of the column.
+export function Clip({ src, poster, alt, caption, ratio = 16 / 9, maxWidth, center = false }) {
   return (
     <Reveal>
       <figure className="my-2">
         <div
-          className="relative w-full overflow-hidden rounded-lg bg-black"
+          className={`relative w-full overflow-hidden rounded-lg bg-black ${center ? 'mx-auto' : ''}`}
           style={{ aspectRatio: `${ratio}`, maxWidth: maxWidth ? `${maxWidth}px` : undefined }}
         >
           <ControlledGif src={src} poster={poster} alt={alt} className="w-full h-full object-contain" />
         </div>
         {caption && (
-          <figcaption className="mt-2 text-sm font-inter text-surface-foreground400-light dark:text-surface-foreground400-dark">
+          <figcaption className={`mt-2 text-sm font-inter text-surface-foreground400-light dark:text-surface-foreground400-dark ${center ? 'text-center' : ''}`}>
             {caption}
           </figcaption>
         )}
@@ -392,7 +393,7 @@ export function Block({ block }) {
     case 'figure':
       return <Figure src={block.src} alt={block.alt} caption={block.caption} invert={block.invert} />;
     case 'clip':
-      return <Clip src={block.src} poster={block.poster} alt={block.alt} caption={block.caption} ratio={block.ratio} maxWidth={block.maxWidth} />;
+      return <Clip src={block.src} poster={block.poster} alt={block.alt} caption={block.caption} ratio={block.ratio} maxWidth={block.maxWidth} center={block.center} />;
     case 'quote':
       return <Quote text={block.text} who={block.who} person={block.person} />;
     case 'quotes':

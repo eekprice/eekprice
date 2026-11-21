@@ -25,6 +25,13 @@ const img = (name) => `/images/case-studies/${name}.webp`;
 export const caseStudies = [
   {
     slug: 'yum-pos',
+    // The mark that pops in on this study's Past Work card on hover (Erica, 2026-11-20).
+    // Yum is the main mark (top right). Then the brands from this study's home card.
+    workLogo: [
+      { src: '/images/case-studies/brands/yum.webp', name: 'Yum' },
+      { src: '/images/case-studies/brands/kfc.webp', name: 'KFC', h: 'h-7' },
+      { src: '/images/case-studies/brands/taco-bell.webp', name: 'Taco Bell', h: 'h-10' },
+    ],
     homeSection: 'case-studies',
     title: 'Speeding up the drive thru',
     linkLabel: 'Read the drive thru case study',
@@ -233,12 +240,22 @@ export const caseStudies = [
 
   {
     slug: 'menu-management',
+    // The mark that pops in on this study's Past Work card on hover (Erica, 2026-11-20).
+    // Yum is the main mark (top right). Then the brands from this study's home card.
+    workLogo: [
+      { src: '/images/case-studies/brands/yum.webp', name: 'Yum' },
+      { src: '/images/case-studies/brands/pizza-hut.webp', name: 'Pizza Hut', h: 'h-10' },
+      { src: '/images/case-studies/brands/kfc.webp', name: 'KFC', h: 'h-7' },
+    ],
     homeSection: 'case-studies',
     title: 'Simplifying schemas in menus',
     // What the link on the home card says, so it names the study it opens.
     linkLabel: 'Read the menu case study',
     tagline: "Yum's Menu Management tool, rebuilt around the people who publish menus instead of the API.",
     hero: { src: img('menu-management-final-ui-tree-grid'), alt: 'Menu Management with the tree grid and action panel' },
+    // The picture on this study's Past Work card: just the screen, not the
+    // one on the black monitor (Erica, 2026-11-20). It floats on the grey, tilted.
+    workImage: img('menu-management-final-ui-screen'),
     // Erica, 2026-11-18: the same logos as the home card pop out around this
     // study's blue note in the nav fan on hover. Then she asked for the menu
     // screenshot on the note too. Same picture as the home card's blue sticky.
@@ -490,6 +507,9 @@ export const caseStudies = [
 
   {
     slug: 'helix-booking',
+    // The mark that pops in on this study's Past Work card on hover (Erica, 2026-11-20).
+    // Helix has no logo on file. Erica asked for a hair salon icon: scissors.
+    workLogo: { icon: 'scissors', name: 'Hair salon' },
     linkLabel: 'Read the Helix Booking case study',
     title: 'Making booking a breeze',
     tagline: 'Helix Booking. A native iOS and Android booking app I started with two developers.',
@@ -548,8 +568,8 @@ export const caseStudies = [
       {
         heading: 'Where it landed',
         blocks: [
-          // TODO(Erica): what happened after the planned early 2024 beta. See CaseStudy/helix-booking.md.
-          { type: 'p', text: 'We planned to open a beta in early 2024 to get real feedback from early users before going wider.' },
+          // Erica, 2026-11-20: Helix has not launched yet.
+          { type: 'p', text: 'We planned to open a beta in early 2024 to get real feedback from early users before going wider. It has not launched yet.' },
         ],
       },
     ],
@@ -557,6 +577,189 @@ export const caseStudies = [
       'Started a product from zero with two developers and no budget.',
       'Owned a two-platform design system built on native components.',
       'Ran product process for a tiny team so it actually shipped.',
+    ],
+  },
+  // An older study, from Alliance Data (now Bread Financial). Source:
+  // CaseStudy/credit-limit-increase.md, drafted 2026-11-20 from Erica's Framer
+  // page at /CLI and the pictures she sent. Open questions are at the top of
+  // the markdown. TODO(Erica): the outcome numbers. Her spreadsheet picture
+  // dates the 203K requests to Jan-Jun 2017 on the web, which may be the
+  // baseline, not the result. Her sentence is used as written until she checks.
+  // TODO(Erica): the title is a first pass. No Years row until she gives dates.
+  {
+    slug: 'credit-limit-increase',
+    // Erica, 2026-11-20: this one goes at the bottom of Past Work under an
+    // "Older Work" heading, so readers know it is more than five years old.
+    older: true,
+    workLogo: { src: '/images/case-studies/brands/bread-financial.png', name: 'Bread Financial', h: 'h-5' },
+    linkLabel: 'Read the credit limit increase case study',
+    title: 'Asking for a higher credit limit',
+    tagline: "Alliance Data, now Bread Financial. A way to ask for a credit limit increase inside a store brand's app.",
+    // `position` centers the phone in the Past Work card's picture (her ask).
+    hero: { src: img('cli-hero-phone'), alt: "The credit limit increase prompt on the Victoria's Secret card screen", position: 'center' },
+    meta: {
+      role: 'Lead interaction designer. I validated the user requirements and designed a feature that was easy to use, delightful, and feasible to build.',
+      company: 'Alliance Data, now Bread Financial',
+      team: 'A product owner, a development team, and me',
+      tags: ['Mobile app', 'White label', 'User research', 'Credit cards'],
+    },
+    summary:
+      "Cardmembers assumed their credit limit would go up on its own if they were good customers. In 2017 it didn't work that way. They had to ask. I was the lead interaction designer on the feature that told eligible cardmembers they could ask, and let them do it inside the store's app.",
+    sections: [
+      {
+        heading: 'The problem',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Our customer journey research found that cardmembers assume the credit provider will raise their limit automatically if they are seen as a valuable customer. This mattered most to the cardmembers we called credit builders.',
+          },
+          {
+            type: 'quote',
+            text: 'Cardmembers assume the credit issuer will automatically increase their credit if they are seen as a valuable customer.',
+            who: 'Customer journey research',
+          },
+          {
+            type: 'p',
+            text: "In 2017 the product didn't work that way. A cardmember had to request an increase, and nothing in our channel told the people who might qualify that they could.",
+          },
+          {
+            type: 'p',
+            text: 'The question we set: how might we generate credit limit increase revenue and boost spending for customers who want to build credit for critical purchases?',
+          },
+          {
+            type: 'figure',
+            src: img('cli-journey-research'),
+            alt: 'The store card journey map, its insights, and a remote live conversation',
+            caption: 'The journey map, the insight about credit limits, and a remote live conversation.',
+          },
+        ],
+      },
+      {
+        heading: 'What I did',
+        blocks: [
+          { type: 'heading', text: 'Understand' },
+          {
+            type: 'list',
+            items: [
+              'Went through the customer journey research.',
+              'Pulled the user quotes that showed what motivates someone to make the request, and how people saw credit limit increases in general.',
+              'Reviewed the web experience to learn how applying for an increase worked at the time.',
+              'Aligned stakeholders on the research about the customer.',
+              'Interviewed stakeholders to hear past views on the feature.',
+              'Reviewed the business requirements and scope.',
+            ],
+          },
+          { type: 'heading', text: 'Research' },
+          {
+            type: 'p',
+            text: 'I pulled together all the past research so we knew what we had to get right. Questions that came up along the way were written down and answered with more research: remote live conversations and remote usability testing. From that I made user scenario storyboards to guide the design.',
+          },
+          {
+            type: 'figure',
+            src: img('cli-scenario-storyboards'),
+            alt: 'A user scenario storyboard and the screen flows',
+            caption: 'A scenario storyboard, and the flows that came from it.',
+          },
+          { type: 'heading', text: 'Concept' },
+          {
+            type: 'p',
+            text: "Now we knew what people wanted. The next question was how the request should feel. I wanted people to be excited to ask, and excited if they got it. If they didn't get it, the experience had to respect how that feels and still leave them feeling appreciated.",
+          },
+          {
+            type: 'figure',
+            src: img('cli-concept-wireframes'),
+            alt: 'Four wireframes of the account screen',
+            caption: 'Four versions of the account screen. Each one tells the cardmember about the increase in a different way.',
+          },
+          { type: 'heading', text: 'Design' },
+          {
+            type: 'p',
+            text: 'High fidelity and testing. We tested the full experience, picked the concepts that tested best, and built those.',
+          },
+          // Erica's recording from the Framer page (2026-11-20: the first file she
+          // sent was a still). 210 by 420, about 26 seconds. Tap to play.
+          // TODO(Erica): the caption and the description are a first pass.
+          {
+            type: 'clip',
+            src: '/images/case-studies/cli-design-in-app.gif',
+            poster: '/images/case-studies/cli-design-in-app-poster.png',
+            alt: "A recording of the Victoria's Secret app on a phone, moving through the feature",
+            caption: "The feature in the Victoria's Secret app. Tap to play.",
+            ratio: 210 / 420,
+            maxWidth: 240,
+            center: true,
+          },
+          { type: 'heading', text: 'Deliver' },
+          {
+            type: 'p',
+            text: 'We were confident people could do three things: understand the experience, get through it with ease, and come away feeling good whether or not they got the increase.',
+          },
+          {
+            type: 'figure',
+            src: img('cli-zeplin-spec'),
+            alt: 'The approved screen in Zeplin with notes for developers',
+            caption: 'The approved screen in Zeplin, with my notes for the developers.',
+          },
+          { type: 'heading', text: 'Support' },
+          {
+            type: 'p',
+            text: 'The product owner and I guided the development team through the build. I made icons and extra flows as they were needed. The design spec lived in Zeplin and kept changing through development, which left room to end up with the best experience we could.',
+          },
+        ],
+      },
+      {
+        heading: 'What made it hard',
+        blocks: [
+          {
+            type: 'points',
+            items: [
+              { title: 'New animations.', text: 'We wanted delightful ones, and there were technical limits on what we could do.' },
+              { title: 'How hard to advertise.', text: 'We had to decide how loudly to tell people about the feature.' },
+              { title: 'An app within an app.', text: "The feature is a plugin that lives inside the client's app, which made every ask harder to build." },
+              { title: 'White label.', text: "One solution had to take on each brand's style and voice." },
+            ],
+          },
+        ],
+      },
+      {
+        heading: 'The solution',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Eligible cardmembers got a subtle but clear way to learn about the feature, and more requests succeeded. That helped the business. It also gave cardmembers the buying power for the item that was just within reach, while they built their credit. Something people assumed was automatic became something they knew to ask for.',
+          },
+        ],
+      },
+      {
+        heading: 'Outcome',
+        blocks: [
+          // TODO(Erica): check these numbers. See the note above this study.
+          {
+            type: 'p',
+            text: 'There were about 203,000 requests after launch and two thirds of them were approved. We almost doubled our requests and our success rate.',
+          },
+          {
+            type: 'figure',
+            src: img('cli-results-data'),
+            alt: 'Spreadsheets of credit limit increase requests by card tier, decline reason, and device',
+            caption: 'Requests by card tier, decline reason, and device.',
+          },
+        ],
+      },
+      {
+        heading: 'What I learned',
+        blocks: [
+          {
+            type: 'p',
+            text: 'What users assume can hurt their experience with a brand, and it can hurt the business too. This project showed me how much it matters to understand them.',
+          },
+        ],
+      },
+    ],
+    highlights: [
+      'Found the gap in research: people thought increases were automatic.',
+      "Designed one white label flow that lives inside each store brand's app.",
+      'About 203,000 requests after launch, two thirds approved.',
     ],
   },
   // The leadership story. Source: CaseStudy/yum-ux-leadership.md, imported
@@ -567,6 +770,8 @@ export const caseStudies = [
   // studies) doesn't change.
   {
     slug: 'yum-ux-leadership',
+    // The mark that pops in on this study's Past Work card on hover (Erica, 2026-11-20).
+    workLogo: { src: '/images/case-studies/brands/yum.webp', name: 'Yum' },
     linkLabel: 'Read the Yum leadership case study',
     homeSection: 'leadership',
     title: 'Leading UX at Yum Brands',
@@ -819,6 +1024,16 @@ export const caseStudies = [
   // be public. Not pushed.
   {
     slug: 'topstep',
+    // The mark that pops in on this study's Past Work card on hover (Erica, 2026-11-20).
+    // The wordmark from topstep.com is white, so it sits on a dark chip.
+    // Erica, 2026-11-20: tie this study back to CGI. The CGI logo is its
+    // second mark on Past Work, and its page opens with a link to the CGI study.
+    workLogo: [
+      { src: '/images/case-studies/brands/topstep-white.png', name: 'Topstep', chip: 'dark' },
+      { src: '/images/case-studies/brands/cgi.png', name: 'CGI', h: 'h-6', spot: 'bottomLeft' },
+    ],
+    // The CGI study, and the other client study beside it (Erica, 2026-11-20).
+    related: { label: 'More from my work at CGI', slugs: ['cgi-leadership', 'aerospace-program'] },
     homeSection: 'leadership',
     title: 'Cutting dropped trade data by 100% at Topstep',
     tagline: 'From daily trade loss to zero dropped trades.',
@@ -951,13 +1166,24 @@ export const caseStudies = [
   // July 2026, Canon says 2025), and everything on her "Before publishing" list.
   {
     slug: 'aerospace-program',
+    // The mark that pops in on this study's Past Work card on hover (Erica, 2026-11-20).
+    // No client logo: the client is not named. A plane icon stands in.
+    // Erica, 2026-11-20: tie this study back to CGI. The CGI logo is its
+    // second mark on Past Work, and its page opens with a link to the CGI study.
+    workLogo: [
+      { icon: 'plane', name: 'Aerospace' },
+      { src: '/images/case-studies/brands/cgi.png', name: 'CGI', h: 'h-6', spot: 'bottomLeft' },
+    ],
+    // The CGI study, and the other client study beside it (Erica, 2026-11-20:
+    // "should have the topstep one too").
+    related: { label: 'More from my work at CGI', slugs: ['cgi-leadership', 'topstep'] },
     homeSection: 'leadership',
     title: 'Taking over an enterprise AI platform program mid-flight',
     tagline: "I made the work visible, cut what didn't serve the vision, reorganized the team into pods, and gave stakeholders a plan with a fallback.",
     linkLabel: 'Read the aerospace program case study',
     meta: {
       role: 'Program lead and product consultant. My focus was visibility, prioritization, team structure, and stakeholder expectations.',
-      company: 'A global aerospace manufacturer',
+      company: 'A global aerospace manufacturer, through CGI',
       // Erica, 2026-11-19, asked July 2026 or 2025: that it is ongoing. So no start
       // date is shown. TODO(Erica): the start date, when you want one here.
       years: 'Ongoing',
@@ -1100,6 +1326,9 @@ export const caseStudies = [
   // yourself, the 43, how many sessions, the title and tagline (both mine).
   {
     slug: 'cgi-leadership',
+    // The mark that pops in on this study's Past Work card on hover (Erica, 2026-11-20).
+    // The CGI logo is from Wikimedia Commons (CGI_logo.svg, as a PNG).
+    workLogo: { src: '/images/case-studies/brands/cgi.png', name: 'CGI', h: 'h-6' },
     homeSection: 'leadership',
     title: 'Leading product work at CGI',
     tagline: 'Two client programs, two workshops for the whole company, and the people I coach.',

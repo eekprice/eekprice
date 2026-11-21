@@ -17,6 +17,12 @@ import { Frame, Stage, Swap } from './sketch/Sketch';
 // takes its place.
 const SKETCH_AT = 150; // ms after the card is first seen
 const HOLD = 1100; // how long the wireframe shows
+// Cards in the same section do not load together (Erica, 2026-11-20: "should
+// animate a little bit off in timing making it more organic"). Each card
+// after the first starts its sketch this much later, and holds its wireframe
+// a touch longer, so the real cards arrive one after the other.
+export const CARD_LAG = 280; // ms between one card's start and the next
+const HOLD_LAG = 90; // extra wireframe time per card
 
 const Squiggle = ({ width, delay }) => (
   <span className="sk-squiggle" style={{ width, '--sk-delay': `${delay}ms` }} />
@@ -29,7 +35,7 @@ const WireBox = ({ at, className }) => (
 
 // The featured card: where and when, the role, two lines of text, the three
 // points, then tags and the button.
-const featuredWire = (
+const featuredWire = (start) => (
   <div className="sk-wire sk-framed h-full">
     <Frame tone="pencil" />
     <Squiggle width="30%" delay={200} />
@@ -37,9 +43,9 @@ const featuredWire = (
     <Squiggle width="88%" delay={420} />
     <Squiggle width="54%" delay={520} />
     <div className="flex flex-1 min-h-[72px] gap-3 pt-2">
-      <WireBox className="flex-1" at={SKETCH_AT + 100} />
-      <WireBox className="hidden sm:block flex-1" at={SKETCH_AT + 200} />
-      <WireBox className="hidden sm:block flex-1" at={SKETCH_AT + 300} />
+      <WireBox className="flex-1" at={start + 100} />
+      <WireBox className="hidden sm:block flex-1" at={start + 200} />
+      <WireBox className="hidden sm:block flex-1" at={start + 300} />
     </div>
     <span className="sk-squiggle self-end" style={{ width: '22%', '--sk-delay': '700ms' }} />
   </div>
@@ -47,7 +53,7 @@ const featuredWire = (
 
 // A supporting card: the role's lines, and one box for each case study beside
 // them (under them on a phone).
-const smallWire = (count, stacked) => (
+const smallWire = (count, stacked, start) => (
   <div className={`sk-wire sk-framed h-full ${count && !stacked ? 'sm:!grid sm:grid-cols-2 sm:gap-4' : ''}`}>
     <Frame tone="pencil" />
     <div className="flex flex-col gap-3">
@@ -59,7 +65,7 @@ const smallWire = (count, stacked) => (
     {count > 0 && (
       <div className="flex flex-col gap-3 min-h-[120px]">
         {Array.from({ length: count }, (_, i) => (
-          <WireBox key={i} className="flex-1" at={SKETCH_AT + 100 + i * 120} />
+          <WireBox key={i} className="flex-1" at={start + 100 + i * 120} />
         ))}
       </div>
     )}
@@ -120,8 +126,13 @@ function StudyLinks({ studies, stacked = false }) {
 // `compact` draws any card as a small one that is half the section's width,
 // with its studies under the role. Home uses it so the roles sit side by side
 // (Erica, 2026-11-19); /leadership keeps the big featured card.
-function ExperienceCard({ card, mostInView = false, studies = [], compact = false }) {
+// `peekSide` is the edge a small card's sticky comes out of.
+// `order` is the card's place in its section (0 is first). Later cards start
+// sketching later.
+function ExperienceCard({ card, mostInView = false, studies = [], compact = false, peekSide = 'left', order = 0 }) {
   const navigate = useNavigate();
+  const start = SKETCH_AT + order * CARD_LAG;
+  const hold = HOLD + order * HOLD_LAG;
   // The whole card goes to the role's case study, not just the button (Erica,
   // 2026-11-19). Links and buttons inside keep their own job. A mouse
   // convenience: the Read Case Study link is the real link for the keyboard.
@@ -151,11 +162,15 @@ function ExperienceCard({ card, mostInView = false, studies = [], compact = fals
     const wide = hasStudies && !compact;
     return (
       <Stage className={`h-full ${wide ? 'sm:col-span-2' : ''}`}>
-        <Swap at={SKETCH_AT} hold={HOLD} wire={smallWire(studies.length, compact)}>
+        <Swap at={start} hold={hold} wire={smallWire(studies.length, compact, start)}>
+        {/* Small cards have a sticky too, on wide screens (Erica, 2026-11-20):
+            yellow for Yum, pink for CGI. It comes out on the side the card is on. */}
+        <div className="relative h-full" data-in-view-key={card.role}>
+        {card.peek && <Peek peek={card.peek} href={card.href} out={mostInView} side={peekSide} flat />}
         {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}
         <article
           onClick={openStudy}
-          className={`h-full rounded-lg border border-surface-outline-light dark:border-surface-outline-dark
+          className={`relative z-[1] h-full rounded-lg border border-surface-outline-light dark:border-surface-outline-dark
             bg-surface-background100-light dark:bg-surface-background100-dark ${clickable}
             ${wide ? 'grid sm:grid-cols-2 overflow-hidden' : ''}
             ${compact ? 'flex flex-col overflow-hidden' : ''}
@@ -195,6 +210,11 @@ function ExperienceCard({ card, mostInView = false, studies = [], compact = fals
           </div>
           {hasStudies && <StudyLinks studies={studies} stacked={compact} />}
         </article>
+        {/* The brand logo pops in with the sticky. */}
+        {card.stickers?.map((sticker, i) => (
+          <LogoSticker key={sticker.name} sticker={sticker} show={mostInView} order={i} />
+        ))}
+        </div>
         </Swap>
       </Stage>
     );
@@ -202,7 +222,7 @@ function ExperienceCard({ card, mostInView = false, studies = [], compact = fals
 
   return (
     <Stage>
-      <Swap at={SKETCH_AT} hold={HOLD} wire={featuredWire}>
+      <Swap at={start} hold={hold} wire={featuredWire(start)}>
       <div className="relative group/card" data-in-view-key={card.role}>
       {card.peek && <Peek peek={card.peek} href={card.href} out={mostInView} />}
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */}

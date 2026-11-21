@@ -82,7 +82,7 @@ function ConnectionNote({ note, order = 0 }) {
 function KindConnections() {
   return (
     <section aria-labelledby="kind-connections" className="relative max-w-[800px] mx-auto px-4 py-8">
-      <SectionHeading id="kind-connections" lines={false}>
+      <SectionHeading id="kind-connections">
         {sectionTitles.connections}
       </SectionHeading>
 

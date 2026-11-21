@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useId, useLayoutEffect, useRef, useState
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import Button from '../Button';
+import { openingSeen } from '../../data/opening';
 
 // Comment pins, like the ones on a Figma or FigJam board. A row of small
 // bubbles with an avatar in each. Every pin holds one comment.
@@ -65,7 +66,7 @@ function placeCard(row, card) {
 const Avatar = ({ author, className = '' }) => (
   <span
     aria-hidden="true"
-    className={`grid place-items-center shrink-0 rounded-full bg-purple-600 text-white font-inter font-medium ${className}`}
+    className={`grid place-items-center shrink-0 rounded-full bg-teal-700 text-white font-inter font-medium ${className}`}
   >
     {author.charAt(0)}
   </span>
@@ -115,7 +116,7 @@ function Pin({ comment, meta, isOpen, peeking, controls, reduce, buttonRef, onPr
           onFocus={(e) => e.currentTarget.matches(':focus-visible') && onPeek(true)}
           onBlur={() => onPeek(false)}
           // White in both themes, like the white edge on the star and heart.
-          // In dark mode a dark bubble would vanish into the purple box.
+          // In dark mode a dark bubble would vanish into the tinted box.
           className={`peer pointer-events-auto flex h-full items-center gap-2 pl-1.5 pr-4 text-left outline-none ${BUBBLE}
             bg-white transition-[clip-path] duration-200 ease-out motion-reduce:transition-none`}
           style={{ clipPath: peeking ? CLIP.open : CLIP.tucked }}
@@ -229,6 +230,8 @@ function Card({ id, comment, meta, rowRef, reduce, onClose }) {
 
 function CommentPins({ comments, meta, show = true, onOpen, className = '' }) {
   const reduce = useReducedMotion();
+  // Back on Home after the opening has played: the pins are already posted.
+  const still = useRef(openingSeen()).current;
   const rowRef = useRef(null);
   const pinRefs = useRef([]);
   const cardId = useId();
@@ -243,7 +246,7 @@ function CommentPins({ comments, meta, show = true, onOpen, className = '' }) {
   // Post the comments, one after the other.
   useEffect(() => {
     if (!show) return undefined;
-    if (reduce) {
+    if (reduce || still) {
       setPosted(count);
       return undefined;
     }
@@ -254,7 +257,7 @@ function CommentPins({ comments, meta, show = true, onOpen, className = '' }) {
       timers.push(setTimeout(() => setFresh((now) => (now === i ? -1 : now)), at + POST.hold));
     }
     return () => timers.forEach(clearTimeout);
-  }, [show, reduce, count]);
+  }, [show, reduce, still, count]);
 
   const close = useCallback(({ refocus = false } = {}) => {
     // Hand focus back to the pin first, while we still know which one it was.

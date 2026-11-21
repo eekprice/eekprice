@@ -14,7 +14,9 @@ import React from 'react';
 // but they need retaking when a site changes. The card only shows on devices
 // that can hover, so a phone never gets it stuck open.
 
-const NewTabIcon = () => (
+// Exported for buttons that leave the site (the Resume page's Email Me and
+// LinkedIn), so they carry the same mark.
+export const NewTabIcon = () => (
   <svg
     viewBox="0 0 24 24"
     fill="none"

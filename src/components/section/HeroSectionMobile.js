@@ -1,3 +1,4 @@
+import { openingSeen } from '../../data/opening';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ReactComponent as Mesm } from '../../assets/mesm.svg';
@@ -25,9 +26,11 @@ const item = {
   hidden: { opacity: 0, y: 12 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease } },
 };
+// The about box draws itself out from its top left corner (PersonalityScene),
+// so its wrapper only has to be there.
 const box = {
-  hidden: { opacity: 0, scale: 0.96 },
-  visible: { opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 160, damping: 18 } },
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.01 } },
 };
 const pop = (delay) => ({
   hidden: { scale: 0, opacity: 0 },
@@ -47,7 +50,9 @@ function HeroSectionMobile({ onReady, instant = false }) {
   const hero = useHeroCopy();
   const { handleSecretClick, EasterEggModal } = useEasterEgg();
   const heroRef = useRef(null);
-  const [hasAnimated, setHasAnimated] = useState(false);
+  // Back on Home after the opening has played: the hero starts finished.
+  const still = useRef(openingSeen()).current;
+  const [hasAnimated, setHasAnimated] = useState(still);
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -70,7 +75,7 @@ function HeroSectionMobile({ onReady, instant = false }) {
     <motion.div
       ref={heroRef}
       className="w-full max-w-md sm:max-w-xl mx-auto flex flex-col items-center px-4 pt-6 pb-4 text-center"
-      initial="hidden"
+      initial={still ? false : 'hidden'}
       animate={hasAnimated ? 'visible' : 'hidden'}
       variants={container}
     >
@@ -87,7 +92,7 @@ function HeroSectionMobile({ onReady, instant = false }) {
         variants={item}
         className="mt-3 text-base font-inter font-normal text-surface-foreground200-light dark:text-surface-foreground200-dark"
       >
-        <TypingEffect text={hero.greeting} maxBlinksAfterTyping={1} instant={!!reduceMotion} />
+        <TypingEffect text={hero.greeting} maxBlinksAfterTyping={1} instant={!!reduceMotion || instant} />
       </motion.h1>
 
       <motion.h2
@@ -108,7 +113,11 @@ function HeroSectionMobile({ onReady, instant = false }) {
       </motion.p>
 
       <motion.div variants={box} className="relative w-full mt-7" style={{ transformOrigin: 'top center' }}>
-        <PersonalityScene revealDelay={reduceMotion || instant ? 0 : 700} onRevealed={onReady} />
+        <PersonalityScene
+          drawDelay={reduceMotion || instant ? 0 : 450}
+          revealDelay={reduceMotion || instant ? 0 : 1050}
+          onRevealed={onReady}
+        />
 
         <motion.div variants={pop(0.55)} className="absolute -right-3 -top-4 z-20" aria-hidden="true">
           <StarSvg className="w-8 h-8" />

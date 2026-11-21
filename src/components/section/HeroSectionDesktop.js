@@ -1,3 +1,4 @@
+import { openingSeen } from '../../data/opening';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ReactComponent as Melg } from '../../assets/melg.svg';
@@ -16,7 +17,7 @@ import { useHeroCopy } from '../../data/heroCopy';
 const START = {
   photo: 0.15, // slides in from the left
   title: 0.25, // starts typing. The underline and subline follow the last letter.
-  box: 0.9, // the about box grows from its top edge
+  box: 0.9, // the about box is drawn out from its top left corner (0.6s)
   aboutText: 1.6, // the words in the box fade in
   star: 1.7,
   heart: 1.85,
@@ -32,7 +33,9 @@ function HeroSection({ onReady, instant = false }) {
   const hero = useHeroCopy();
   const at = instant ? AT_ONCE : START;
   const heroRef = useRef(null);
-  const [hasAnimated, setHasAnimated] = useState(false);
+  // Back on Home after the opening has played: the hero starts finished.
+  const still = useRef(openingSeen()).current;
+  const [hasAnimated, setHasAnimated] = useState(still);
   const [starsSettled, setStarsSettled] = useState(false);
   // Once the heart has popped in it stays put. Without this, any re-render
   // (like opening the easter egg) replays the pop-in and hides it for 4s.
@@ -101,7 +104,7 @@ function HeroSection({ onReady, instant = false }) {
     <motion.div
       ref={heroRef}
       className="w-full max-w-[880px] mx-auto flex flex-col items-center relative mt-16 px-8 pt-8"
-      initial="hidden"
+      initial={still ? false : 'hidden'}
       animate={hasAnimated ? "visible" : "hidden"}
       variants={containerVariants}
     >
@@ -165,14 +168,7 @@ function HeroSection({ onReady, instant = false }) {
       {/* The about box, centered on the page, with a clear gap under the row.
           The star and heart are pinned to its right corners. */}
         <motion.div
-          initial={{ scale: 0 }}
-          animate={hasAnimated ? { scale: 1 } : { scale: 0 }}
-          transition={{
-            type: 'spring',
-            stiffness: 100,
-            damping: 10,
-            delay: at.box,
-          }}
+          // The box draws itself (PersonalityScene), so this wrapper no longer scales.
           className="flex items-start justify-center w-full max-w-[680px] relative -mt-2 z-10"
           style={{ transformOrigin: 'top center' }}
           custom={8}
@@ -201,7 +197,7 @@ function HeroSection({ onReady, instant = false }) {
           >
             <StarSvg className="w-10 h-10" />
           </motion.div>
-          <PersonalityScene revealDelay={at.aboutText * 1000} onRevealed={onReady} />
+          <PersonalityScene drawDelay={at.box * 1000} revealDelay={at.aboutText * 1000} onRevealed={onReady} />
           <motion.div 
             className="absolute -bottom-6 -right-6 z-10"
             initial={{ scale: 0, opacity: 0 }}

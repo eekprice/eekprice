@@ -4,7 +4,8 @@
 export const intro = {
   kicker: 'Hobbies...',
   heading: "I'm a bit chaotic...",
-  // The part of the heading that gets circled in red marker. Remove this line
+  // The part of the heading that gets circled in teal marker, after the
+  // heading has typed itself in. Remove this line
   // for a plain heading.
   circled: 'chaotic...',
   text:

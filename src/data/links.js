@@ -2,6 +2,7 @@
 
 export const EMAIL = 'eekprice@gmail.com';
 export const MAILTO = `mailto:${EMAIL}`;
+export const LINKEDIN_URL = 'https://www.linkedin.com/in/eekprice';
 
 // The resume is a page now (/resume, pages/ResumePage.js). This is kept for a
 // download button once the file exists.

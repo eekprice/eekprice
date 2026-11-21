@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ReactComponent as HeroDoodle } from '../assets/doodle.svg';
-import { ReactComponent as ArrowSvg } from '../assets/Arrow.svg';
 import { ReactComponent as StarSvg } from '../assets/Star.svg';
 import { ReactComponent as StarsSvg } from '../assets/Stars.svg';
 import { ReactComponent as HeartSvg } from '../assets/Heart.svg';
@@ -15,9 +14,10 @@ import { Circle, Stage, WireImage } from '../components/sketch/Sketch';
 import Stamp from '../components/sketch/Stamp';
 import FloatingNav from '../components/FloatingNav';
 import { intro, hobbies } from '../data/about';
+import { pageSeen } from '../data/opening';
 
 // From the design system: the page sits on the dot grid, the photos land like
-// paper, the stickers and emoji pop, one word in the title gets circled, and
+// paper, the stickers and emoji pop, the title types itself and one word gets circled, and
 // photo slots with no picture yet are drawn as a wireframe.
 
 const ease = [0.22, 1, 0.36, 1];
@@ -40,19 +40,24 @@ function PhotoCollage() {
   const reduce = useReducedMotion();
   const ink = 'text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current';
 
+  // Smaller than it was (Erica, 2026-11-20): 300px came down to 230px.
   return (
-    <div className="relative w-[260px] sm:w-[300px] shrink-0 mx-auto lg:mx-0">
-      {/* A marker word, so it is set in handwriting. */}
-      <div className="-ml-6 mb-1" aria-hidden="true">
-        <p className="sk-scribble" style={{ transformOrigin: 'left bottom' }}>
+    <div className="relative w-[220px] sm:w-[230px] shrink-0 mx-auto md:mx-0">
+      {/* Set like the page's headers, same font and color (Erica, 2026-11-20).
+          It keeps the tilt it had as a marker word. */}
+      <div className="-ml-6 mb-2" aria-hidden="true">
+        <p
+          className="m-0 font-merriweather font-normal text-2xl lg:text-3xl text-surface-foreground200-light dark:text-surface-foreground100-dark"
+          style={{ rotate: '-6deg', transformOrigin: 'left bottom' }}
+        >
           {intro.kicker}
         </p>
       </div>
 
-      <Stamp className="absolute left-[42%] top-7 w-9 h-9 z-10" delay={0.7}>
+      <Stamp className="absolute left-[42%] top-7 w-7 h-7 z-10" delay={0.7}>
         <StarSvg className="w-full h-full" />
       </Stamp>
-      <Stamp className="absolute left-[52%] top-12 w-9 h-9 z-10" delay={0.8}>
+      <Stamp className="absolute left-[52%] top-11 w-7 h-7 z-10" delay={0.8}>
         <HeartSvg className="w-full h-full drop-shadow-md" />
       </Stamp>
 
@@ -79,28 +84,72 @@ function PhotoCollage() {
         ))}
       </div>
 
-      <Stamp className="absolute -left-8 -bottom-7 w-12 h-12" delay={0.9}>
+      <Stamp className="absolute -left-8 -bottom-7 w-10 h-10" delay={0.9}>
         <StarsSvg className={`w-full h-full ${ink}`} />
       </Stamp>
     </div>
   );
 }
 
-// The page title, with one word circled in red marker. Which word is set in
-// the copy file (`intro.circled`). Without it the title is plain.
-function Title({ delay }) {
+// The page title types itself in on load, then one word gets circled in teal
+// marker (Erica, 2026-11-20). Which word is set in the copy file
+// (`intro.circled`). Without it the title is typed and left plain.
+//
+// The whole title is laid out from the start and the letters not typed yet
+// are invisible, so nothing moves as it types. Screen readers get the full
+// title at once from the heading's label.
+const TYPE_START = 450; // after the block has faded in
+const TYPE_EVERY = 65; // ms per letter
+const CIRCLE_AFTER = 250; // pause between the last letter and the circle
+
+function Title() {
+  const reduce = useReducedMotion();
   const { heading, circled } = intro;
+  // Back on this page in the same visit: the title is already typed and circled.
+  const [still] = useState(() => !!reduce || pageSeen());
+  const [typed, setTyped] = useState(still ? heading.length : 0);
+  const [circle, setCircle] = useState(still);
+  const done = typed >= heading.length;
+
+  useEffect(() => {
+    if (done) {
+      const t = setTimeout(() => setCircle(true), CIRCLE_AFTER);
+      return () => clearTimeout(t);
+    }
+    const t = setTimeout(() => setTyped((n) => n + 1), typed === 0 ? TYPE_START : TYPE_EVERY);
+    return () => clearTimeout(t);
+  }, [typed, done]);
+
+  // A stretch of the title, from `from` to `to`: the typed letters, the
+  // caret if it is in this stretch, then the letters still to come.
+  const part = (from, to) => {
+    const shown = Math.max(0, Math.min(typed, to) - from);
+    const caretHere = !circle && typed >= from && (typed < to || to === heading.length);
+    return (
+      <>
+        {heading.slice(from, from + shown)}
+        {caretHere && (
+          <span className="relative inline-block w-0 align-baseline">
+            <span className="absolute left-[2px] bottom-[-0.08em] h-[0.95em] w-[2px] bg-current animate-pulse" />
+          </span>
+        )}
+        <span className="opacity-0">{heading.slice(from + shown, to)}</span>
+      </>
+    );
+  };
+
   const at = circled ? heading.indexOf(circled) : -1;
-  if (at < 0) return heading;
+  if (at < 0) return <span aria-hidden="true">{part(0, heading.length)}</span>;
+  const end = at + circled.length;
   return (
-    <>
-      {heading.slice(0, at)}
+    <span aria-hidden="true">
+      {part(0, at)}
       {/* The margin keeps the circle off the word before it. */}
-      <Circle delay={delay} className="ml-[0.25em]">
-        {circled}
+      <Circle show={circle} tone="teal" className="ml-[0.25em]">
+        {part(at, end)}
       </Circle>
-      {heading.slice(at + circled.length)}
-    </>
+      {end < heading.length && part(end, heading.length)}
+    </span>
   );
 }
 
@@ -179,22 +228,22 @@ function AboutPage() {
             Home
           </Link>
 
-          <div className="mt-10 flex flex-col lg:flex-row lg:items-center gap-10 lg:gap-14 pl-6 lg:pl-10">
+          {/* Photos on the left and the words on the right from 768px, where there
+              is room for both (Erica, 2026-11-20). Stacked below that. */}
+          <div className="mt-10 flex flex-col md:flex-row md:items-start gap-10 lg:gap-14 pl-6 md:pl-8 lg:pl-10">
             <PhotoCollage />
 
             <motion.div
-              className="relative max-w-md"
+              // Top aligned with the photos (Erica, 2026-11-20). The top padding
+              // clears the "Hobbies..." label.
+              className="relative max-w-md md:pt-12"
               initial={reduce ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, ease, delay: 0.2 }}
             >
-              <Stamp className="hidden lg:block absolute -left-12 -top-10 w-12 h-12" delay={1}>
-                <ArrowSvg
-                  className="w-full h-full rotate-[60deg] text-surface-foreground100-light dark:text-surface-foreground100-dark [&>path]:fill-current"
-                />
-              </Stamp>
-              <h1 className="text-3xl lg:text-5xl font-merriweather font-light leading-tight text-surface-foreground200-light dark:text-surface-foreground100-dark">
-                <Title delay={reduce ? 0 : 750} />
+              {/* The arrow doodle that pointed here from the photos is gone (Erica, 2026-11-20). */}
+              <h1 aria-label={intro.heading} className="text-3xl lg:text-5xl font-merriweather font-light leading-tight text-surface-foreground200-light dark:text-surface-foreground100-dark">
+                <Title />
               </h1>
               <p className="mt-5 font-inter text-base lg:text-lg leading-relaxed text-surface-foreground300-light dark:text-surface-foreground300-dark">
                 {intro.text}

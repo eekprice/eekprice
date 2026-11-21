@@ -41,9 +41,12 @@ module.exports = {
             light: colors.slate[50],
             dark: colors.slate[700],
           },
+          // The soft tinted surface: the hero about box, tinted slides.
+          // Erica, 2026-11-20: a soft teal in place of the purple, to explore.
+          // To go back: purple[50] and purple[800].
           background300: {
-            light: colors.purple[50],
-            dark: colors.purple[800],
+            light: colors.teal[50],
+            dark: colors.teal[900],
           },
           foreground100: {
             light: colors.slate[800],

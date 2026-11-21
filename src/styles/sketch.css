@@ -12,6 +12,12 @@
    Every sk- class that asks for the hand font gets Inter. */
 :root { --font-hand: var(--font-inter, Inter, sans-serif); }
 
+/* Erica, 2026-11-20: a soft teal in place of the purple, to explore. tokens.css
+   is generated and still has the purple values, so the override is here.
+   Delete these two rules to go back. */
+:root { --surface-background300: #f0fdfa; --marker-purple: #0d9488; }
+:root[data-theme="dark"], .dark { --surface-background300: #134e4a; --marker-purple: #2dd4bf; }
+
 /* ---------- Canvas ---------- */
 
 .sk-canvas {
@@ -541,15 +547,19 @@ textarea.sk-input-group__control { min-height: 76px; padding: var(--space-3); re
    A stage (components/sketch Stage) gets is-in the first time it is seen. Until then its
    pen lines are undrawn and its risers are hidden, so nothing flashes before it plays. */
 
+/* `.sk-still` on a page holds every stage in its finished state: nothing
+   starts hidden and nothing sketches. Home uses it when a visitor comes back
+   after the opening has already played (pages/Home.js). */
 @media (prefers-reduced-motion: no-preference) {
-  .sk-stage:not(.is-in) .sk-draw { stroke-dashoffset: 1.1; }
-  .sk-stage:not(.is-in) .sk-squiggle { clip-path: inset(0 100% 0 0); }
-  .sk-stage:not(.is-in) .sk-rise,
-  .sk-stage:not(.is-in) .sk-annotation { opacity: 0; }
-  .sk-stage:not(.is-in) .sk-swap__wire { opacity: 1; }
-  .sk-stage:not(.is-in) .sk-swap__real { opacity: 0; }
-  .sk-stage:not(.is-in) .sk-heading__rule { transform: scaleX(0); }
+  .sk-stage:not(.is-in):not(.sk-still *) .sk-draw { stroke-dashoffset: 1.1; }
+  .sk-stage:not(.is-in):not(.sk-still *) .sk-squiggle { clip-path: inset(0 100% 0 0); }
+  .sk-stage:not(.is-in):not(.sk-still *) .sk-rise,
+  .sk-stage:not(.is-in):not(.sk-still *) .sk-annotation { opacity: 0; }
+  .sk-stage:not(.is-in):not(.sk-still *) .sk-swap__wire { opacity: 1; }
+  .sk-stage:not(.is-in):not(.sk-still *) .sk-swap__real { opacity: 0; }
+  .sk-stage:not(.is-in):not(.sk-still *) .sk-heading__rule { transform: scaleX(0); }
 }
+.sk-still .is-in *, .sk-still .is-in *::before, .sk-still .is-in *::after { animation: none !important; }
 .sk-stage.is-in .sk-annotation {
   animation: sk-rise var(--duration-enter, 450ms) var(--ease-out, ease-out) both;
   animation-delay: var(--sk-delay, 0ms);

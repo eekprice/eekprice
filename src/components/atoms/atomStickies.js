@@ -1,6 +1,10 @@
 function Stickie({ text }) {
   return (
     <div className="relative w-40 h-40 pl-4 pr-4 mt-4 group hover:cursor-pointer">
+      {/* The back note, pink: the Principal Product Consultant study (Erica, 2026-11-20).
+          A pale pink, tucked close behind the green, so it carries less weight (her ask). */}
+      <div className="absolute top-[64px] -left-2.5 w-32 h-40 bg-pink-200 transform rotate-[-11deg] shadow-sm transition-transform duration-300 group-hover:rotate-[-12deg] rounded-md"></div>
+
       {/* Background sticky layer with a slight rotation */}
       <div className="absolute top-14 left-0 w-32 h-40 bg-green-300 transform rotate-[-8deg] shadow-md transition-transform duration-300 group-hover:rotate-[-10deg] rounded-md"></div>
       

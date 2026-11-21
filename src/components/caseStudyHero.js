@@ -59,16 +59,26 @@ export const LogoSticker = ({ sticker, show, order = 0 }) => (
 const PEEK_PAPER = {
   green: 'bg-green-300 text-slate-800',
   blue: 'bg-blue-300 text-slate-800',
+  pink: 'bg-pink-200 text-slate-800',
   yellow:
     'bg-highlight-backgroundSticky-light dark:bg-highlight-backgroundSticky-dark text-highlight-foregroundSticky-light dark:text-highlight-foregroundSticky-dark',
 };
 
-export const Peek = ({ peek, href, out }) => {
-  const paper = `hidden lg:block absolute left-2 top-3 z-0 w-36 h-36 p-4 rounded-md shadow-lg
+// `side` is the edge it comes out of: left by default, right for a card that
+// sits in the right column (the small Yum card on Home).
+// `flat` is for a card barely taller than the note (the small role cards on
+// Home): tucked in, the note sits straight with no shadow, so nothing shows
+// past the card (Erica, 2026-11-20).
+export const Peek = ({ peek, href, out, side = 'left', flat = false }) => {
+  const right = side === 'right';
+  const hidden = flat && !out;
+  const tilt = hidden ? 'rotate-0' : out ? (right ? 'rotate-[8deg]' : '-rotate-[8deg]') : (right ? 'rotate-3' : '-rotate-3');
+  const slide = out ? (right ? 'translate-x-[138px]' : '-translate-x-[138px]') : '';
+  const paper = `hidden lg:block absolute ${right ? 'right-2' : 'left-2'} ${flat ? 'top-1' : 'top-3'} z-0 w-36 h-36 p-4 rounded-md ${hidden ? 'shadow-none' : 'shadow-lg'}
     ${PEEK_PAPER[peek.color] || PEEK_PAPER.green} font-inter text-[15px] leading-5 font-semibold
     transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]
-    ${out ? '-translate-x-[138px] -rotate-[8deg]' : '-rotate-3'}
-    hover:shadow-xl hover:-translate-y-1 motion-reduce:transition-none`;
+    ${slide} ${tilt}
+    ${hidden ? '' : 'hover:shadow-xl hover:-translate-y-1'} motion-reduce:transition-none`;
   const inside = (
     <>
       {peek.title}
