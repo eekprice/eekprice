@@ -44,21 +44,10 @@ function PhotoCollage() {
   // Smaller than it was (Erica, 2026-11-20): 300px came down to 230px.
   return (
     <div className="relative w-[220px] sm:w-[230px] shrink-0 mx-auto md:mx-0">
-      {/* Set like the page's headers, same font and color (Erica, 2026-11-20).
-          It keeps the tilt it had as a marker word. */}
-      <div className="-ml-6 mb-2" aria-hidden="true">
-        <p
-          className="m-0 font-merriweather font-normal text-2xl lg:text-3xl text-surface-foreground200-light dark:text-surface-foreground100-dark"
-          style={{ rotate: '-6deg', transformOrigin: 'left bottom' }}
-        >
-          {intro.kicker}
-        </p>
-      </div>
-
-      <Stamp className="absolute left-[42%] top-7 w-7 h-7 z-10" delay={0.7}>
+      <Stamp className="absolute left-[42%] -top-3 w-7 h-7 z-10" delay={0.7}>
         <StarSvg className="w-full h-full" />
       </Stamp>
-      <Stamp className="absolute left-[52%] top-11 w-7 h-7 z-10" delay={0.8}>
+      <Stamp className="absolute left-[52%] top-1 w-7 h-7 z-10" delay={0.8}>
         <HeartSvg className="w-full h-full drop-shadow-md" />
       </Stamp>
 
@@ -318,21 +307,31 @@ function AboutPage() {
             Home
           </Link>
 
-          {/* Photos on the left and the words on the right from 768px, where there
-              is room for both (Erica, 2026-11-20). Stacked below that. */}
-          <div className="mt-10 flex flex-col md:flex-row md:items-start gap-10 lg:gap-14 pl-6 md:pl-8 lg:pl-10">
+          {/* Rearranged 2026-11-21 (Erica: "this section needs a rearrange") to
+              match the hobby rows under it: the words on the left, starting
+              where the hobby text starts, and the photos on the right, over the
+              column of prints. On a phone the words come first. */}
+          <div className="mt-10 flex flex-col-reverse md:flex-row-reverse md:items-start md:justify-between gap-10 md:gap-6">
             <PhotoCollage />
 
             <motion.div
-              // Top aligned with the photos (Erica, 2026-11-20). The top padding
-              // clears the "Hobbies..." label.
-              className="relative max-w-md md:pt-12"
+              // Lines up with the hobby text: past the emoji column from 640px.
+              className="relative md:flex-1 md:min-w-0 sm:pl-[72px]"
               initial={reduce ? false : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, ease, delay: 0.2 }}
             >
               {/* The arrow doodle that pointed here from the photos is gone (Erica, 2026-11-20). */}
-              <h1 aria-label={intro.heading} className="text-3xl lg:text-5xl font-merriweather font-light leading-tight text-surface-foreground200-light dark:text-surface-foreground100-dark">
+              {/* The "Hobbies..." label sits over the title now. Same font and
+                  color as the headers, and it keeps its tilt. */}
+              <p
+                aria-hidden="true"
+                className="m-0 mb-3 font-merriweather font-normal text-2xl lg:text-3xl text-surface-foreground200-light dark:text-surface-foreground100-dark"
+                style={{ rotate: '-6deg', transformOrigin: 'left bottom' }}
+              >
+                {intro.kicker}
+              </p>
+              <h1 aria-label={intro.heading} className="text-3xl lg:text-[2.75rem] font-merriweather font-light leading-tight text-surface-foreground200-light dark:text-surface-foreground100-dark">
                 <Title />
               </h1>
               <p className="mt-5 font-inter text-base lg:text-lg leading-relaxed text-surface-foreground300-light dark:text-surface-foreground300-dark">

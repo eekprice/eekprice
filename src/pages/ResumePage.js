@@ -129,15 +129,16 @@ function RoleLogo({ logo }) {
 }
 
 // The company's logo on the left, the role's card on the right (Erica,
-// 2026-11-20, as on her Framer resume). From 1024px the logo hangs in the
-// margin left of the column, so the cards keep their width and still line up
-// with the title. Between 640px and 1024px it takes a narrow column inside.
+// 2026-11-20, as on her Framer resume). From 640px the logo has a column
+// inside the page, so its left edge lines up with the title and the Home link
+// (Erica, 2026-11-21: "the logo should be lined up with the resume page"). It
+// used to hang out in the left margin from 1024px.
 // On a phone it sits inside its card, top right. The logo pictures have black in them, so
 // in dark mode they get a white chip.
 function Role({ item }) {
   return (
     <Reveal>
-      <div className="grid gap-3 sm:gap-4 lg:gap-6 sm:grid-cols-[104px_minmax(0,1fr)] lg:grid-cols-[136px_minmax(0,1fr)] lg:-ml-[160px]">
+      <div className="grid gap-3 sm:gap-4 lg:gap-6 sm:grid-cols-[104px_minmax(0,1fr)] lg:grid-cols-[136px_minmax(0,1fr)]">
         {/* From 640px the logo has its own column. On a phone it sits inside
             the card, top right (Erica, 2026-11-21). */}
         <div className="hidden sm:block sm:pt-4">
