@@ -118,19 +118,22 @@ export function Paragraph({ text, link }) {
 // No box, border or drop shadow (Erica's call): most of these are cut-out
 // PNG collages, and a box around them showed up as an empty white panel.
 // `invert` flips a black-on-transparent graphic to light in dark mode.
-export function Figure({ src, alt, caption, invert = false }) {
+// `maxWidth` (px) keeps a tall screenshot from filling the column, and
+// `frame` gives a white screenshot a thin edge so it reads on the dot grid.
+export function Figure({ src, alt, caption, invert = false, maxWidth, frame = false }) {
   return (
     <Reveal>
-      <figure className="my-2">
+      <figure className={`my-2 ${maxWidth ? 'mx-auto' : ''}`} style={maxWidth ? { maxWidth: `${maxWidth}px` } : undefined}>
         <img
           src={src}
           alt={alt}
           loading="lazy"
           decoding="async"
-          className={`w-full h-auto rounded-lg ${invert ? 'dark:invert' : ''}`}
+          className={`w-full h-auto rounded-lg ${invert ? 'dark:invert' : ''}
+            ${frame ? 'border border-surface-outline-light dark:border-surface-outline-dark' : ''}`}
         />
         {caption && (
-          <figcaption className="mt-2 text-sm font-inter text-surface-foreground400-light dark:text-surface-foreground400-dark">
+          <figcaption className={`mt-2 text-sm font-inter text-surface-foreground400-light dark:text-surface-foreground400-dark ${maxWidth ? 'text-center' : ''}`}>
             {caption}
           </figcaption>
         )}
@@ -391,7 +394,7 @@ export function Block({ block }) {
     case 'heading':
       return <Subheading text={block.text} />;
     case 'figure':
-      return <Figure src={block.src} alt={block.alt} caption={block.caption} invert={block.invert} />;
+      return <Figure src={block.src} alt={block.alt} caption={block.caption} invert={block.invert} maxWidth={block.maxWidth} frame={block.frame} />;
     case 'clip':
       return <Clip src={block.src} poster={block.poster} alt={block.alt} caption={block.caption} ratio={block.ratio} maxWidth={block.maxWidth} center={block.center} />;
     case 'quote':

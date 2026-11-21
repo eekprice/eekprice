@@ -579,6 +579,218 @@ export const caseStudies = [
       'Ran product process for a tiny team so it actually shipped.',
     ],
   },
+  // Grier Forensics, through Bitovi, 2020. Source: CaseStudy/grier-forensics.md,
+  // drafted 2026-11-21 from Assets/grier/ and Erica's answers in chat. Title is
+  // hers ("AI forensics before AI"). It sits above the credit limit study in
+  // the older section of Past Work (her ask), so it comes first in this list.
+  // Erica confirmed on 2026-11-21 that the screens are sample data and that
+  // the storyboard and journey map can be public.
+  // TODO(Erica): whether the product's name can be used (it is left off the
+  // page, and the pictures that show it are not used); the dates (she said
+  // 2020, the files run December 2020 to January 2021).
+  {
+    slug: 'grier-forensics',
+    older: true,
+    workLogo: { icon: 'search' },
+    linkLabel: 'Read the AI forensics case study',
+    title: 'AI forensics before AI',
+    tagline: 'Screens that show how one forensic case connects to another. Six weeks, 2020.',
+    hero: { src: img('grier-related-cases-tablets'), alt: 'Two tablets showing the related cases screen, as a diagram of links and as a table', position: 'center' },
+    meta: {
+      role: 'Sole UX designer',
+      company: 'Grier Forensics, through Bitovi',
+      years: '2020, six weeks',
+      team: 'Me, the product owner and the developers',
+      tags: ['UX research', 'Journey mapping', 'Prototyping', 'AI'],
+    },
+    summary:
+      'I was the sole UX designer on a six week project for Grier Forensics, through Bitovi. They were building a tool that finds connections between forensic cases. A person, a phone number or a chemical that shows up in one case might show up in another. My job was to learn how the people who do this work think. Then I designed the screens that show them those connections.',
+    sections: [
+      {
+        heading: 'The problem',
+        blocks: [
+          {
+            type: 'p',
+            text: 'Evidence gets collected at a site, carried to a lab, laid out on tables, tagged and processed. Then someone has to read through all of it and work out what story it tells.',
+          },
+          {
+            type: 'figure',
+            src: img('grier-storyboard'),
+            alt: 'Four sketched frames: site exploitation, evidence processing and custody tracking, analyzing the evidence, and building a report or brief',
+            caption: 'My storyboard of one case, from the site to the brief.',
+          },
+          {
+            type: 'p',
+            text: 'That last part was the hard part. The low point on my journey map is the line "Combing through the evidence is strenuous and complicated." Notes went on paper and a whiteboard, and at the end someone built a PowerPoint to brief a commander.',
+          },
+          {
+            type: 'figure',
+            src: img('grier-journey-map'),
+            alt: 'A journey map for a team leader across site exploitation, evidence processing and analysis, with feelings, actions and mindset',
+            caption: 'The journey of a team leader, before the tool.',
+          },
+        ],
+      },
+      {
+        heading: 'What I did',
+        blocks: [
+          { type: 'heading', text: 'Learn the work' },
+          {
+            type: 'p',
+            text: 'I did desk research, ran a round table session and interviewed users. Then I drew what I heard as the storyboard and the journey map above.',
+          },
+          { type: 'heading', text: 'Put the product on the journey' },
+          {
+            type: 'p',
+            text: 'I drew the journey again with the points where the tool could help. That gave us a flow built on three things they ask. What types of connections were found, is this relevant to my case, and what makes this connection strong. Then they document it.',
+          },
+          {
+            type: 'figure',
+            src: img('grier-user-flow'),
+            alt: 'A flow diagram that starts with an alert for a new connection and branches on whether it is relevant, with sticky notes for features',
+            caption: 'The flow for a new connection, with feature ideas on stickies.',
+          },
+          { type: 'heading', text: 'Cut it down to an MVP' },
+          {
+            type: 'p',
+            text: 'I turned the flow into a backlog in Notion. 17 features made the MVP. 11 went to phase 2 and 5 to phase 3. Alerts, export and a map view all waited.',
+          },
+          {
+            type: 'figure',
+            src: img('grier-backlog'),
+            alt: 'A Notion board of features in three columns: MVP with 17, Phase 2 with 11, Phase 3 with 5',
+            caption: 'The backlog, split into MVP, phase 2 and phase 3.',
+            frame: true,
+          },
+          { type: 'heading', text: 'Design and test' },
+          {
+            type: 'p',
+            text: 'I designed four screens, built a click through prototype at medium fidelity and ran usability tests on it. We had a weekly check-in with the client.',
+          },
+          // Erica, 2026-11-21: "it stayed intentionally wireframed so we can move
+          // fast and use the microsoft design system since military thats what
+          // they used".
+          {
+            type: 'p',
+            text: 'The screens stayed as wireframes on purpose. That let us move fast. The developers could build with the Microsoft design system, because that\'s what the military used.',
+          },
+          // Erica's screenshot of a session, sent 2026-11-21 ("add this
+          // screenshot doing usability testing"). It shows her and one other
+          // person on camera. TODO(Erica): the caption is a first pass.
+          {
+            type: 'figure',
+            src: img('grier-usability-testing'),
+            alt: 'A video call with the wireframes for the related cases screen shared on screen, and two people on camera',
+            caption: 'Usability testing on the wireframes, over a video call.',
+          },
+          {
+            type: 'clip',
+            src: '/images/case-studies/grier-drill-down.gif',
+            poster: '/images/case-studies/grier-drill-down-poster.png',
+            alt: 'A recording of the prototype, drilling from a case into one of its entities',
+            caption: 'Drilling from a case into an entity. Tap to play.',
+            ratio: 1026 / 1038,
+            maxWidth: 520,
+            center: true,
+          },
+        ],
+      },
+      {
+        heading: 'The solution',
+        blocks: [
+          { type: 'heading', text: 'Dashboard' },
+          {
+            type: 'p',
+            text: 'A list of active cases with the date, the location and a favorite tag. One table and a search box.',
+          },
+          {
+            type: 'figure',
+            src: img('grier-dashboard'),
+            alt: 'The dashboard: a table of active cases with date, location and tags',
+            maxWidth: 560,
+            frame: true,
+          },
+          { type: 'heading', text: 'Case view' },
+          {
+            type: 'p',
+            text: 'Everything about one case: the details, the photos and a list of every piece of evidence, called entities. Each entity has a weight, a type and where it came from. It also shows how many times it turns up and which other cases it\'s in.',
+          },
+          {
+            type: 'figure',
+            src: img('grier-case-details'),
+            alt: 'The case view: case details, a photo grid, and a sortable list of entities',
+            maxWidth: 440,
+            frame: true,
+          },
+          { type: 'heading', text: 'Related cases' },
+          {
+            type: 'p',
+            text: 'Cases that share entities with this one. There are two ways to look at it. Grid view is a table you can sort and search. Link view draws the target case, the entities it shares and the cases those lead to. "Tables vs mind map" was the first item in the backlog, and the answer was both.',
+          },
+          {
+            type: 'figure',
+            src: img('grier-related-cases-link-view'),
+            alt: 'Link view: the target case at the top, shared entities under it, and lines down to two other cases',
+            caption: 'Link view.',
+            maxWidth: 520,
+            frame: true,
+          },
+          {
+            type: 'figure',
+            src: img('grier-related-cases-grid-view'),
+            alt: 'Grid view: a small tree of shared entities beside a table of related cases with counts',
+            caption: 'Grid view.',
+            maxWidth: 520,
+            frame: true,
+          },
+          { type: 'heading', text: 'Entity view' },
+          {
+            type: 'p',
+            text: 'One person, email or chemical across every case. Each row shows the case, where it was found and a snippet with the match highlighted. It also has the file, the software that read it and a confidence score. A match at 98% and a match at 14% sit in the same table, so both are there to see.',
+          },
+          {
+            type: 'figure',
+            src: img('grier-entity-occurrences'),
+            alt: 'The entity view: a table of every place one person shows up, with a confidence percentage on each row',
+            caption: 'Every match has a confidence score.',
+            maxWidth: 520,
+            frame: true,
+          },
+        ],
+      },
+      {
+        heading: 'Outcome',
+        blocks: [
+          {
+            type: 'p',
+            text: 'The team built it. The connections it found helped solve cases.',
+          },
+          {
+            type: 'p',
+            text: 'They created an LLM before AI was something most people talked about. The designs gave the developers something to build to.',
+          },
+        ],
+      },
+      {
+        heading: 'What I learned',
+        blocks: [
+          {
+            type: 'list',
+            items: [
+              'How to design for AI before it was popular.',
+              'How to work with ambiguity.',
+              'How to work with highly sensitive information.',
+            ],
+          },
+        ],
+      },
+    ],
+    highlights: [
+      'Sole UX designer on a six week project, from interviews to a tested prototype.',
+      "Designed how an LLM's matches are shown, with a confidence score on each one.",
+      'The team built it, and the connections helped solve cases.',
+    ],
+  },
   // An older study, from Alliance Data (now Bread Financial). Source:
   // CaseStudy/credit-limit-increase.md, drafted 2026-11-20 from Erica's Framer
   // page at /CLI and the pictures she sent. Open questions are at the top of

@@ -56,7 +56,7 @@ const ChevronLeft = (props) => (
 // `spot` (her sketch, same day: "logos need to be displaced"): one on the top
 // edge where the picture meets the text, one hanging off the bottom left corner.
 // A mark is a logo file (`src`), or an `icon` when there is no logo to show
-// ('plane', 'scissors'). `chip: 'dark'` puts a white logo on a dark chip.
+// ('plane', 'scissors', 'search'). `chip: 'dark'` puts a white logo on a dark chip.
 const SPOT = {
   main: 'right-4 top-3 lg:right-5 lg:top-4 rotate-3',
   top: 'left-[44%] -translate-x-1/2 -top-5 -rotate-6',
@@ -74,7 +74,13 @@ function Mark({ logo, show, order = 0, spot = 'main' }) {
   if (logo.icon) {
     return (
       <span aria-hidden="true" style={style} className={`${pop} grid place-items-center w-9 h-9 rounded-full bg-primary-surface-light dark:bg-primary-surface-dark text-primary-foreground-light dark:text-primary-foreground-dark`}>
-        {logo.icon === 'scissors' ? (
+        {logo.icon === 'search' ? (
+          // Forensics: a magnifying glass.
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
+          </svg>
+        ) : logo.icon === 'scissors' ? (
           // Hair salon: a pair of scissors.
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
             <circle cx="6" cy="6" r="3" />
