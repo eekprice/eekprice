@@ -38,7 +38,6 @@ function Home() {
   const isMobile = useIsMobile();
   const heroRef = useRef(null);
 
-  const [isHeroVisible, setIsHeroVisible] = useState(true);
   // Coming back to Home after the opening has played: everything starts in
   // its finished state, and the hero gets `instant`.
   // The wireframe sketches are held still by the `sk-still` class on the page
@@ -63,18 +62,9 @@ function Home() {
   const showSections = showHeroSection && heroDone;
   const onHeroReady = useCallback(() => setHeroRevealed(true), []);
 
-  // Track whether the hero is on screen. Once it scrolls away the nav shows
-  // its Home item, which scrolls back to the top.
-  useEffect(() => {
-    const node = heroRef.current;
-    if (!node) return undefined;
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsHeroVisible(entry.isIntersecting),
-      { threshold: 0.1 }
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
+  // Home is always in the nav (Erica, 2026-11-21: "home should stay
+  // persistently on the nav"). It used to appear only once the hero had
+  // scrolled away.
 
   // Loading choreography, in ms after the page mounts. `doodle` is how long
   // the illustration stays at full strength before it fades back (the fade
@@ -307,7 +297,7 @@ function Home() {
 
       {/* The nav is fixed, so it stays outside the block that rises. It arrives
           with the rest of the page, so its Work links always have somewhere to go. */}
-      {showHeroSection && <FloatingNav show={showNav && showSections} showHome={!isHeroVisible} />}
+      {showHeroSection && <FloatingNav show={showNav && showSections} showHome />}
     </div>
   );
 }
