@@ -47,7 +47,7 @@ const place = ({ left, top, width, tilt = 0 }) => ({
 });
 function Scatter({ logo }) {
   return (
-    <div className="relative w-36 sm:w-full aspect-[5/4] dark:bg-white dark:rounded-md dark:outline dark:outline-8 dark:outline-white">
+    <div className="relative w-full aspect-[5/4] dark:bg-white dark:rounded-md dark:outline dark:outline-8 dark:outline-white">
       <img src={logo.src} alt={logo.alt} loading="lazy" decoding="async" className="absolute h-auto" style={place(logo.at)} />
       {logo.clients.map((c) => (
         <img
@@ -64,86 +64,105 @@ function Scatter({ logo }) {
   );
 }
 
+// A role's logo art: a collage picture, a scattered group, or a logo with
+// client marks under it. It fills the width of whatever box it is put in.
+function RoleLogo({ logo }) {
+  return (
+    <>
+      {logo && logo.scatter && <Scatter logo={logo} />}
+      {logo && !logo.scatter && (
+        <div className="flex flex-col items-end gap-2 sm:items-start sm:gap-2.5">
+          <img
+            src={logo.src}
+            alt={logo.alt}
+            loading="lazy"
+            decoding="async"
+            className={`block w-auto dark:bg-white dark:rounded-md dark:p-2
+              ${logo.small ? 'h-auto w-[58%]' : 'h-auto w-full'}`}
+          />
+          {/* Client marks under a plain logo, for a role whose picture is
+              not a ready-made collage. */}
+          {logo.clients && (
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 dark:bg-white dark:rounded-md dark:p-2">
+              {logo.clients.map((c) =>
+                c.icon ? (
+                  <span
+                    key={c.alt}
+                    role="img"
+                    aria-label={c.alt}
+                    className="grid place-items-center w-7 h-7 rounded-full bg-primary-surface-light dark:bg-primary-surface-dark text-primary-foreground-light dark:text-primary-foreground-dark"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="w-4 h-4">
+                      <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
+                    </svg>
+                  </span>
+                ) : (
+                  <img
+                    key={c.alt}
+                    src={c.src}
+                    alt={c.alt}
+                    loading="lazy"
+                    decoding="async"
+                    className={`block w-auto ${c.h || 'h-6'} ${c.chip === 'dark' ? 'bg-slate-900 rounded px-1.5 py-1' : ''}`}
+                  />
+                )
+              )}
+            </div>
+          )}
+          {/* The company's own clients, under a label that says so. */}
+          {logo.also && (
+            <div className="w-full sm:mt-1.5 sm:pt-2.5 sm:border-t border-surface-outline-light dark:border-surface-outline-dark">
+              <p className="m-0 mb-2 text-[10px] uppercase tracking-wide font-inter font-medium text-surface-foreground400-light dark:text-surface-foreground400-dark">
+                {logo.also.label}
+              </p>
+              <div className="flex flex-row flex-wrap items-center gap-x-3 gap-y-2.5 dark:bg-white dark:rounded-md dark:p-2">
+                {logo.also.items.map((c) => (
+                  <img key={c.alt} src={c.src} alt={c.alt} loading="lazy" decoding="async" className={`block w-auto ${c.h || 'h-4'}`} />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </>
+  );
+}
+
 // The company's logo on the left, the role's card on the right (Erica,
 // 2026-11-20, as on her Framer resume). From 1024px the logo hangs in the
 // margin left of the column, so the cards keep their width and still line up
 // with the title. Between 640px and 1024px it takes a narrow column inside.
-// On a phone it sits above its card. The logo pictures have black in them, so
+// On a phone it sits inside its card, top right. The logo pictures have black in them, so
 // in dark mode they get a white chip.
 function Role({ item }) {
   return (
     <Reveal>
       <div className="grid gap-3 sm:gap-4 lg:gap-6 sm:grid-cols-[104px_minmax(0,1fr)] lg:grid-cols-[136px_minmax(0,1fr)] lg:-ml-[160px]">
-        <div className="sm:pt-4">
-          {item.logo && item.logo.scatter && <Scatter logo={item.logo} />}
-          {item.logo && !item.logo.scatter && (
-            <div className="flex flex-row flex-wrap items-center gap-3 sm:flex-col sm:items-start sm:gap-2.5">
-              <img
-                src={item.logo.src}
-                alt={item.logo.alt}
-                loading="lazy"
-                decoding="async"
-                className={`block w-auto dark:bg-white dark:rounded-md dark:p-2
-                  ${item.logo.small ? 'h-8 sm:h-auto sm:w-[58%]' : 'h-14 sm:h-auto sm:w-full'}`}
-              />
-              {/* Client marks under a plain logo, for a role whose picture is
-                  not a ready-made collage. */}
-              {item.logo.clients && (
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-2 dark:bg-white dark:rounded-md dark:p-2">
-                  {item.logo.clients.map((c) =>
-                    c.icon ? (
-                      <span
-                        key={c.alt}
-                        role="img"
-                        aria-label={c.alt}
-                        className="grid place-items-center w-7 h-7 rounded-full bg-primary-surface-light dark:bg-primary-surface-dark text-primary-foreground-light dark:text-primary-foreground-dark"
-                      >
-                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="w-4 h-4">
-                          <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
-                        </svg>
-                      </span>
-                    ) : (
-                      <img
-                        key={c.alt}
-                        src={c.src}
-                        alt={c.alt}
-                        loading="lazy"
-                        decoding="async"
-                        className={`block w-auto ${c.h || 'h-6'} ${c.chip === 'dark' ? 'bg-slate-900 rounded px-1.5 py-1' : ''}`}
-                      />
-                    )
-                  )}
-                </div>
-              )}
-              {/* The company's own clients, under a label that says so. */}
-              {item.logo.also && (
-                <div className="w-full sm:mt-1.5 sm:pt-2.5 sm:border-t border-surface-outline-light dark:border-surface-outline-dark">
-                  <p className="m-0 mb-2 text-[10px] uppercase tracking-wide font-inter font-medium text-surface-foreground400-light dark:text-surface-foreground400-dark">
-                    {item.logo.also.label}
-                  </p>
-                  <div className="flex flex-row flex-wrap items-center gap-x-3 gap-y-2.5 dark:bg-white dark:rounded-md dark:p-2">
-                    {item.logo.also.items.map((c) => (
-                      <img key={c.alt} src={c.src} alt={c.alt} loading="lazy" decoding="async" className={`block w-auto ${c.h || 'h-4'}`} />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
+        {/* From 640px the logo has its own column. On a phone it sits inside
+            the card, top right (Erica, 2026-11-21). */}
+        <div className="hidden sm:block sm:pt-4">
+          <RoleLogo logo={item.logo} />
         </div>
       <article className={`min-w-0 ${cardClass}`}>
+        {item.logo && (
+          <div className="sm:hidden float-right w-28 ml-3 mb-2">
+            <RoleLogo logo={item.logo} />
+          </div>
+        )}
         <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 sm:gap-4">
           <p className={`m-0 ${eyebrow}`}>{[item.company, item.place].filter(Boolean).join(' · ')}</p>
-          <p className={`m-0 shrink-0 ${eyebrow}`}>{item.when}</p>
+          <p className={`m-0 shrink-0 hidden sm:block ${eyebrow}`}>{item.when}</p>
         </div>
         <h2 className={`m-0 mt-1 font-merriweather font-light text-xl lg:text-2xl leading-snug ${ink}`}>{item.role}</h2>
+        {/* On a phone the dates go under the title (Erica, 2026-11-21). */}
+        <p className={`m-0 mt-1 sm:hidden ${eyebrow}`}>{item.when}</p>
         {item.reports && (
           <p className={`m-0 mt-2 inline-flex items-center gap-1.5 font-inter text-sm font-medium ${ink}`}>
             <PeopleIcon />
             {item.reports}
           </p>
         )}
-        <ul className="mt-3 pl-5 list-disc space-y-2 font-inter text-sm lg:text-base leading-relaxed text-surface-foreground200-light dark:text-surface-foreground200-dark marker:text-primary-outline-light dark:marker:text-primary-outline-dark">
+        <ul className="clear-both mt-3 pl-5 list-disc space-y-2 font-inter text-sm lg:text-base leading-relaxed text-surface-foreground200-light dark:text-surface-foreground200-dark marker:text-primary-outline-light dark:marker:text-primary-outline-dark">
           {item.points.map((point) => (
             <li key={point}>{point}</li>
           ))}

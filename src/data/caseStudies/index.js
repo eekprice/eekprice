@@ -25,6 +25,12 @@ const img = (name) => `/images/case-studies/${name}.webp`;
 export const caseStudies = [
   {
     slug: 'yum-pos',
+    // The strip under the role box. Each line is cut from this study's own copy.
+    results: [
+      { value: '35+', label: 'studies' },
+      { value: '200+', label: 'participants' },
+      { value: '60+', label: 'hours in store' },
+    ],
     // The mark that pops in on this study's Past Work card on hover (Erica, 2026-11-20).
     // Yum is the main mark (top right). Then the brands from this study's home card.
     workLogo: [
@@ -240,6 +246,12 @@ export const caseStudies = [
 
   {
     slug: 'menu-management',
+    // The strip under the role box. Each line is cut from this study's own copy.
+    results: [
+      { value: 'Tree view', label: 'shows how menu items relate' },
+      { value: 'Action panel', label: 'only the actions for what you selected' },
+      { value: 'Diffing', label: 'review a change before it goes live' },
+    ],
     // The mark that pops in on this study's Past Work card on hover (Erica, 2026-11-20).
     // Yum is the main mark (top right). Then the brands from this study's home card.
     workLogo: [
@@ -507,6 +519,9 @@ export const caseStudies = [
 
   {
     slug: 'helix-booking',
+    // Erica, 2026-11-21: "put helix booking in the older case studies". It is
+    // the first card under "A Peek Into the Past" on Past Work.
+    older: true,
     // The mark that pops in on this study's Past Work card on hover (Erica, 2026-11-20).
     // Helix has no logo on file. Erica asked for a hair salon icon: scissors.
     workLogo: { icon: 'scissors', name: 'Hair salon' },
@@ -590,8 +605,20 @@ export const caseStudies = [
   // 2020, the files run December 2020 to January 2021).
   {
     slug: 'grier-forensics',
+    // The strip under the role box. Each line is cut from this study's own copy.
+    results: [
+      { value: '6 weeks', label: 'from interviews to a tested prototype' },
+      { value: '17 features', label: 'in the MVP, with 16 more phased for later' },
+      { value: 'Built', label: 'and the connections helped solve cases' },
+    ],
     older: true,
-    workLogo: { icon: 'search' },
+    // Erica, 2026-11-21: "the grier case study was done at bitovi so add that
+    // logo". Bitovi is the main mark, like CGI on the client studies, and the
+    // magnifying glass hangs off the bottom left. The logo is from bitovi.com.
+    workLogo: [
+      { src: '/images/case-studies/brands/bitovi.svg', name: 'Bitovi', h: 'h-5', wide: true },
+      { icon: 'search', name: 'Forensics', spot: 'bottomLeft' },
+    ],
     linkLabel: 'Read the AI forensics case study',
     // 2026-11-21: Erica asked for a more interesting title than "AI forensics
     // before AI", gave her own wording, then took this shorter version of it.
@@ -984,6 +1011,12 @@ export const caseStudies = [
   // studies) doesn't change.
   {
     slug: 'yum-ux-leadership',
+    // The strip under the role box. Each line is cut from this study's own copy.
+    results: [
+      { value: '6', label: 'direct reports' },
+      { value: '1 quarter', label: 'design involved ahead of implementation' },
+      { value: '4 brands', label: 'in the field research I planned' },
+    ],
     // The mark that pops in on this study's Past Work card on hover (Erica, 2026-11-20).
     workLogo: { src: '/images/case-studies/brands/yum.webp', name: 'Yum' },
     linkLabel: 'Read the Yum leadership case study',
@@ -1238,13 +1271,22 @@ export const caseStudies = [
   // be public. Not pushed.
   {
     slug: 'topstep',
+    // The strip under the role box. Each line is cut from this study's own copy.
+    results: [
+      { value: '0', label: 'dropped trades after the migration' },
+      { value: '6', label: 'Topstep engineers on the team' },
+      { value: 'Side by side', label: 'old and new ran together, with flags to roll back' },
+    ],
     // The mark that pops in on this study's Past Work card on hover (Erica, 2026-11-20).
     // The wordmark from topstep.com is white, so it sits on a dark chip.
     // Erica, 2026-11-20: tie this study back to CGI. The CGI logo is its
     // second mark on Past Work, and its page opens with a link to the CGI study.
+    // Erica, 2026-11-21: "switch CGI and icon placement, same for topstep". CGI
+    // is the main mark in the top right corner now and the client's mark hangs
+    // off the bottom left.
     workLogo: [
-      { src: '/images/case-studies/brands/topstep-white.png', name: 'Topstep', chip: 'dark' },
-      { src: '/images/case-studies/brands/cgi.png', name: 'CGI', h: 'h-6', spot: 'bottomLeft' },
+      { src: '/images/case-studies/brands/cgi.png', name: 'CGI', h: 'h-6' },
+      { src: '/images/case-studies/brands/topstep-white.png', name: 'Topstep', chip: 'dark', spot: 'bottomLeft' },
     ],
     // The CGI study, and the other client study beside it (Erica, 2026-11-20).
     related: { label: 'More from my work at CGI', slugs: ['cgi-leadership', 'aerospace-program'] },
@@ -1380,13 +1422,22 @@ export const caseStudies = [
   // July 2026, Canon says 2025), and everything on her "Before publishing" list.
   {
     slug: 'aerospace-program',
+    // The strip under the role box. Each line is cut from this study's own copy.
+    results: [
+      { value: 'Visible', label: 'all of the work in one place, mapped to the vision' },
+      { value: 'Pods', label: 'named leaders with their own commitments' },
+      { value: 'A fallback', label: 'and a date to decide' },
+    ],
     // The mark that pops in on this study's Past Work card on hover (Erica, 2026-11-20).
     // No client logo: the client is not named. A plane icon stands in.
     // Erica, 2026-11-20: tie this study back to CGI. The CGI logo is its
     // second mark on Past Work, and its page opens with a link to the CGI study.
+    // Erica, 2026-11-21: "switch CGI and icon placement, same for topstep". CGI
+    // is the main mark in the top right corner now and the client's mark hangs
+    // off the bottom left.
     workLogo: [
-      { icon: 'plane', name: 'Aerospace' },
-      { src: '/images/case-studies/brands/cgi.png', name: 'CGI', h: 'h-6', spot: 'bottomLeft' },
+      { src: '/images/case-studies/brands/cgi.png', name: 'CGI', h: 'h-6' },
+      { icon: 'plane', name: 'Aerospace', spot: 'bottomLeft' },
     ],
     // The CGI study, and the other client study beside it (Erica, 2026-11-20:
     // "should have the topstep one too").
@@ -1540,6 +1591,12 @@ export const caseStudies = [
   // yourself, the 43, how many sessions, the title and tagline (both mine).
   {
     slug: 'cgi-leadership',
+    // The strip under the role box. Each line is cut from this study's own copy.
+    results: [
+      { value: '2', label: 'workshops written and taught for the whole company' },
+      { value: '43', label: 'people completed both by July 2026' },
+      { value: '4', label: 'direct reports' },
+    ],
     // The mark that pops in on this study's Past Work card on hover (Erica, 2026-11-20).
     // The CGI logo is from Wikimedia Commons (CGI_logo.svg, as a PNG).
     workLogo: { src: '/images/case-studies/brands/cgi.png', name: 'CGI', h: 'h-6' },

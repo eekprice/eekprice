@@ -91,6 +91,10 @@ export const roles = [
       'I led research to find what customers needed, and I started the accessibility practice.',
       'I cut feature iteration time from 6 months to 6 weeks. I moved the UX team to Figma and pushed for usertesting.com.',
     ],
+    // Erica, 2026-11-21: the Grier study was done at Bitovi, so link it here.
+    links: [
+      { label: 'Connecting forensic cases with AI before it was popular', to: '/case-study/grier-forensics' },
+    ],
   },
   {
     role: 'UX Designer',
@@ -138,7 +142,8 @@ export const sideProjects = [
   { name: 'Ariso', role: 'Founding experience designer', when: 'July 2025 to present', href: ARISO_URL, preview: PREVIEWS.ariso },
   { name: 'SciSummary', role: 'Founding experience designer', when: 'November 2023 to present', href: SCISUMMARY_URL, preview: PREVIEWS.scisummary },
   { name: 'Helix Booking', role: 'Founder and lead designer', when: 'June 2019 to present', to: '/case-study/helix-booking' },
-  { name: 'Memorisely', role: 'UX bootcamp teacher', when: 'October 2021 to October 2026' },
+  // Erica, 2026-11-21: link this to the Education page under Side Projects.
+  { name: 'Memorisely', role: 'UX bootcamp teacher', when: 'October 2021 to October 2026', to: '/education' },
 ];
 
 export const education = [

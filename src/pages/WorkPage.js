@@ -160,7 +160,7 @@ function WorkCard({ study, at = 150, active = false }) {
           {study.meta.company}
         </p>
         {/* Room on the right for the main mark, so a long title wraps before it. */}
-        <h2 className={`mt-1 font-merriweather text-xl lg:text-2xl font-normal text-surface-foreground100-light dark:text-surface-foreground100-dark ${mainLogo ? (mainLogo.chip ? 'pr-24' : 'pr-14') : ''}`}>
+        <h2 className={`mt-1 font-merriweather text-xl lg:text-2xl font-normal text-surface-foreground100-light dark:text-surface-foreground100-dark ${mainLogo ? (mainLogo.chip || mainLogo.wide ? 'pr-24' : 'pr-14') : ''}`}>
           {study.title}
         </h2>
         <p className="mt-2 font-inter text-sm lg:text-base leading-relaxed text-surface-foreground200-light dark:text-surface-foreground200-dark">
@@ -264,9 +264,10 @@ function WorkPage() {
           <section aria-labelledby="older-work" className="mt-14 lg:mt-16">
             <SectionHeading id="older-work">A Peek Into the Past</SectionHeading>
             {/* Erica, 2026-11-20: "maybe call it a peak into the past and mention, what
-                time to be in UX". The first sentence says how old the work is. */}
+                time to be in UX". 2026-11-21: "instead of more than 5 years old I
+                need to say early career case studies". */}
             <p className="-mt-4 lg:-mt-5 mb-8 text-center font-inter text-sm lg:text-base text-surface-foreground200-light dark:text-surface-foreground200-dark">
-              More than five years old. What a time to be in UX.
+              Early career case studies. What a time to be in UX.
             </p>
             <div className="space-y-6">
               {olderWork.map((study) => (
