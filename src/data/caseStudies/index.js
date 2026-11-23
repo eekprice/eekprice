@@ -1023,7 +1023,7 @@ export const caseStudies = [
     // Unused since 2026-11-21: Erica didn't like the result strip. "In short"
     // (`highlights`) is the summary at the top now.
     results: [
-      { value: '6', label: 'direct reports' },
+      { value: '18', label: 'direct reports' },
       { value: '1 quarter', label: 'design involved ahead of implementation' },
       { value: '4 brands', label: 'in the field research I planned' },
     ],
@@ -1044,9 +1044,9 @@ export const caseStudies = [
       role: 'Joined as a senior designer, promoted to UX Manager and Principal Product Designer. I led the design strategy for Byte, the way the team worked, and the plan for field research across four brands.',
       company: 'Yum Brands (KFC, Taco Bell, Pizza Hut, Habit Burger)',
       years: 'March 2022 to September 2025',
-      // Six direct reports is from Canon/about.md (Erica pointed to it, 2026-11-16).
-      // The table below is the wider team (16 designers, 2 researchers). Six of them reported to her.
-      team: 'Six direct reports, within a wider UX team of designers and researchers across six product areas. Partners in product, engineering, brand operations and an outside research partner',
+      // Erica, 2026-11-23: the count was wrong at six. She had two teams, designers
+      // and researchers, and everyone in the table below reported to her: 18.
+      team: '18 direct reports on two teams: 16 designers across six product areas, and 2 researchers. Partners in product, engineering, brand operations and an outside research partner',
       tags: ['Leadership', 'Design ops', 'Design strategy', 'Field research'],
     },
     // The cards at the top of this page are the two product case studies from
@@ -1059,7 +1059,7 @@ export const caseStudies = [
     // work, because none are in your doc. Change it if you have some.
     brief: [
       { label: 'The problem', text: 'UX reported into engineering and came in after the decisions were made. Designers were spread across products with no shared way of working, right as Yum planned to bring its restaurant tools into one platform, Byte.' },
-      { label: 'My role', text: 'UX Manager and Principal Product Designer, with six direct reports. I owned the design direction for Byte, how the team worked, and the plan for field research.' },
+      { label: 'My role', text: 'UX Manager and Principal Product Designer, with 18 direct reports on two teams, designers and researchers. I owned the design direction for Byte, how the team worked, and the plan for field research.' },
       { label: 'Who I worked with', text: 'Product owners, engineering, brand operations, our design director, and an outside research partner who ran the store sessions.' },
       { label: 'Scope and status', text: 'The intake checklist, the Jira workflow and the critiques were how the team ran. For Byte I proposed four workstreams. The store research one went ahead as Project Keystone.' },
       { label: 'Key decisions', text: 'A checklist every request had to pass before design took it on. Critiques at 30, 60 and 90. For menu reverts, undo the whole publish in the first version and write down the risks.' },
@@ -1077,7 +1077,7 @@ export const caseStudies = [
           },
           {
             type: 'table',
-            caption: 'The wider UX team, by product area. Six of these people reported to me.',
+            caption: 'My direct reports, by product area. 16 designers and 2 researchers.',
             head: ['Area', 'People'],
             rows: [
               ['Byte Coach', '8'],

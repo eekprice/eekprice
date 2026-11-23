@@ -33,8 +33,9 @@ export const sectionTitles = {
 export const leadershipCards = [
   {
     where: 'Yum Brands · March 2022 to September 2025',
-    // Six, from Canon/about.md. Erica pointed to it on 2026-11-16.
-    reports: '6 direct reports',
+    // Erica, 2026-11-23: 18, not six. Two teams, 16 designers and 2 researchers
+    // (the team table on the Yum leadership study).
+    reports: '18 direct reports',
     // TODO(Erica): your doc says "UX Manager and Principal Product Designer". Change it here if the card should say something else.
     role: 'UX Manager and Principal Product Designer',
     text: 'I set the direction for how design should support the move to Byte, built the system the team ran on, and pushed for research in real stores.',

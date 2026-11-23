@@ -66,7 +66,7 @@ export const roles = [
     // Erica, 2026-11-20: "bitovi and yum were remote". (LinkedIn says Chicago.)
     place: 'Remote',
     when: 'March 2022 to September 2025',
-    reports: '6 direct reports',
+    reports: '18 direct reports',
     points: [
       'I led the push to bring all Yum UX into one team with a North Star plan. I defined the roles and responsibilities, mapped how work moved, and set a vision for products including Poseidon and Dragontail.',
       'I worked with KFC, Taco Bell, and Pizza Hut to improve their digital experiences, with simpler user flows and better usability across the brands.',
