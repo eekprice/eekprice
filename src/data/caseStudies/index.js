@@ -1464,7 +1464,8 @@ export const caseStudies = [
       // Erica, 2026-11-19, asked July 2026 or 2025: that it is ongoing. So no start
       // date is shown. TODO(Erica): the start date, when you want one here.
       years: 'Ongoing',
-      team: 'One platform team spread across government and commercial environments, plus a strategy group and an internal customer team',
+      // Erica, 2026-11-24: "i was working with 2 product folks and many engineers and tech leads".
+      team: 'Two product people and many engineers and tech leads, on one platform team spread across government and commercial environments. Plus a strategy group and an internal customer team',
       tags: ['Program leadership', 'Team structure', 'Prioritization', 'AI platform'],
     },
     // Every line is cut from the sections below.
@@ -1599,14 +1600,17 @@ export const caseStudies = [
   // The client parts are lines from her two studies. The training part is from
   // AI meeting summaries in her Notion, so each line there is hers to check.
   // TODO(Erica), all in the markdown: the format and reach of the practice
-  // training (she gave the four topics), whether you wrote both workshops
-  // yourself, the 43, how many sessions, the title and tagline (both mine).
+  // training (she gave the four topics), the 43, how many sessions, the title
+  // and tagline (both mine).
+  // Erica, 2026-11-24: the two company workshops were written and taught by
+  // Ryan Wilson and her together, not by her alone. The page credits him
+  // wherever it mentions them. The practice training in section 3 is hers.
   {
     slug: 'cgi-leadership',
     // Unused since 2026-11-21: Erica didn't like the result strip. "In short"
     // (`highlights`) is the summary at the top now.
     results: [
-      { value: '2', label: 'workshops written and taught for the whole company' },
+      { value: '2', label: 'workshops written and taught with Ryan Wilson' },
       { value: '43', label: 'people completed both by July 2026' },
       { value: '4', label: 'direct reports' },
     ],
@@ -1620,25 +1624,25 @@ export const caseStudies = [
       role: 'Principal Product Consultant. I lead client programs, teach inside the company, and coach product people.',
       company: 'CGI, which bought Callibrity. Clients: a global aerospace manufacturer and Topstep',
       years: 'June 2025 to present',
-      team: 'Four direct reports. On client work, six Topstep engineers, then one platform team at an aerospace client',
+      team: 'Four direct reports. On client work, six Topstep engineers, then two product people and many engineers and tech leads at an aerospace client',
       tags: ['Leadership', 'Consulting', 'Training', 'Program delivery'],
     },
     related: { label: 'The two client case studies', slugs: ['aerospace-program', 'topstep'] },
     brief: [
       { label: 'My role', text: 'Principal Product Consultant, with four direct reports.' },
       { label: 'Client programs', text: 'At Topstep I led an engineering team of 6 through a migration, and dropped trades went to zero. At a global aerospace manufacturer I took over a platform program and still run it.' },
-      { label: 'Company training', text: 'I wrote and taught two workshops, Discovery and Land and Expand. By July 2026, 43 people had completed both.' },
-      { label: 'Who I worked with', text: 'Ryan Wilson, my director. I worked closely with him to drive his vision and enable the team.' },
+      { label: 'Company training', text: 'Ryan Wilson, my director, and I wrote and taught two workshops, Discovery and Land and Expand. By July 2026, 43 people had completed both.' },
+      { label: 'Who I worked with', text: 'Ryan Wilson, my director. We wrote and taught the workshops together, and I worked closely with him to drive his vision and enable the team.' },
       { label: 'What ties it together', text: 'The hard part of this work is usually communication, clarity, and expectations. So that is what I spend my time on.' },
     ],
     summary:
-      "I'm a Principal Product Consultant at CGI, with four direct reports. In this role I lead in three places. On client work, I ran programs at Topstep and a global aerospace manufacturer. Inside the company, I wrote and taught two workshops that every salaried employee is asked to take. And I coach the product people around me.",
+      "I'm a Principal Product Consultant at CGI, with four direct reports. In this role I lead in three places. On client work, I ran programs at Topstep and a global aerospace manufacturer. Inside the company, my director Ryan Wilson and I wrote and taught two workshops that every salaried employee is asked to take. And I coach the product people around me.",
     sections: [
       {
         heading: '1. Leading client programs',
         blocks: [
           { type: 'heading', text: 'A global aerospace manufacturer' },
-          { type: 'p', text: 'I joined as the previous program lead was rolling off. Within weeks I was running day-to-day delivery for the team behind an internal AI assistant platform.' },
+          { type: 'p', text: 'I joined as the previous program lead was rolling off. Within weeks I was running day-to-day delivery for the team behind an internal AI assistant platform. I worked with two product people and many engineers and tech leads.' },
           {
             type: 'list',
             items: [
@@ -1668,7 +1672,7 @@ export const caseStudies = [
       {
         heading: '2. Training the whole company',
         blocks: [
-          { type: 'p', text: 'I wrote and taught two workshops, Discovery and Land and Expand. Both are for everyone, engineers included.' },
+          { type: 'p', text: 'Ryan Wilson, my director, and I wrote and taught two workshops, Discovery and Land and Expand. Both are for everyone, engineers included.' },
           { type: 'p', text: 'The Discovery workshop came out of resistance I saw when I asked people to do things outside their role. People heard "discovery" and thought meetings and delay.' },
           { type: 'heading', text: 'Discovery' },
           {
@@ -1694,12 +1698,12 @@ export const caseStudies = [
               { title: 'It is a long game.', text: "It doesn't happen in big dramatic instances." },
             ],
           },
-          { type: 'heading', text: 'How I ran it' },
+          { type: 'heading', text: 'How we ran it' },
           {
             type: 'list',
             items: [
               'Small sessions, with each workshop taught many times.',
-              'A tracker of who has completed what, so I could see who still needed a session.',
+              'A tracker of who has completed what, so we could see who still needed a session.',
               'By July 2026, 43 people had completed both.',
             ],
           },
@@ -1736,7 +1740,7 @@ export const caseStudies = [
         blocks: [
           {
             type: 'p',
-            text: 'Ryan Wilson was my director and my partner in this work. I worked closely with him to drive his vision and enable the team.',
+            text: 'Ryan Wilson was my director and my partner in this work. We wrote the Discovery and Land and Expand workshops together, and we both taught them. I worked closely with him to drive his vision and enable the team.',
             link: { label: "Ryan's portfolio", href: 'https://ryangwilson.com/', preview: PREVIEWS.ryan },
           },
         ],
@@ -1751,7 +1755,7 @@ export const caseStudies = [
     // TODO(Erica): cut from the text above. Reword as you like.
     highlights: [
       'Led programs at two clients, and reused my own framework at the second.',
-      'Wrote and taught two workshops for the whole company.',
+      'Wrote and taught two workshops for the whole company with my director, Ryan Wilson.',
       'Trained the product practice on AI, consulting and accessibility, with four direct reports.',
     ],
   },
