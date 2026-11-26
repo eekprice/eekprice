@@ -1628,6 +1628,9 @@ export const caseStudies = [
       tags: ['Leadership', 'Consulting', 'Training', 'Program delivery'],
     },
     related: { label: 'The two client case studies', slugs: ['aerospace-program', 'topstep'] },
+    // Erica, 2026-11-24: "Ryan wilsoned linked". His name is a link to his
+    // portfolio wherever it appears on this page (components/caseStudy/Mentions.js).
+    mentions: [{ text: 'Ryan Wilson', href: 'https://ryangwilson.com/', preview: PREVIEWS.ryan }],
     brief: [
       { label: 'My role', text: 'Principal Product Consultant, with four direct reports.' },
       { label: 'Client programs', text: 'At Topstep I led an engineering team of 6 through a migration, and dropped trades went to zero. At a global aerospace manufacturer I took over a platform program and still run it.' },
@@ -1740,8 +1743,10 @@ export const caseStudies = [
         blocks: [
           {
             type: 'p',
+            // His name is the link to his portfolio (`mentions` above), so there is
+            // no separate "Ryan's portfolio" link after this paragraph. Erica,
+            // 2026-11-25, after seeing both in one paragraph: "revert that".
             text: 'Ryan Wilson was my director and my partner in this work. We wrote the Discovery and Land and Expand workshops together, and we both taught them. I worked closely with him to drive his vision and enable the team.',
-            link: { label: "Ryan's portfolio", href: 'https://ryangwilson.com/', preview: PREVIEWS.ryan },
           },
         ],
       },

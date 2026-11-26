@@ -50,7 +50,7 @@ function SideProjectsPage() {
           aria-hidden="true"
         />
 
-        <header className="relative max-w-[800px] mx-auto px-4 pt-8 lg:pt-14 pb-8">
+        <header className="relative max-w-[800px] mx-auto px-2 sm:px-4 pt-8 lg:pt-14 pb-8">
           <Link
             to="/"
             className="inline-flex items-center gap-1 text-sm font-inter underline underline-offset-2
@@ -75,7 +75,7 @@ function SideProjectsPage() {
         </header>
       </div>
 
-      <main className="max-w-[800px] mx-auto px-4 pb-12">
+      <main className="max-w-[800px] mx-auto px-2 sm:px-4 pb-12">
         <div className="space-y-6">
           {sideProjects.filter((item) => item.image).map((item, i) => (
             <SketchedCard key={item.to} item={item} at={500 + i * 220} />

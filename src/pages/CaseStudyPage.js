@@ -7,11 +7,14 @@ import { ReactComponent as StarsSvg } from '../assets/Stars.svg';
 import { getCaseStudy, nextCaseStudy } from '../data/caseStudies';
 import ReadStudy, { ArrowRight } from '../components/ReadStudy';
 import { Block, OutlinedBlock, Reveal, Stickies, bodyClass, chipClass } from '../components/caseStudy/Blocks';
+import { Linked, Mentions } from '../components/caseStudy/Mentions';
 import { Stage, Swap, Underline } from '../components/sketch/Sketch';
 import Stamp from '../components/sketch/Stamp';
 import { ease } from '../components/sketch/motion';
 import FloatingNav from '../components/FloatingNav';
 import useTrail from '../hooks/useTrail';
+
+const NO_MENTIONS = [];
 
 const ChevronLeft = (props) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true" {...props}>
@@ -54,7 +57,7 @@ function Brief({ items }) {
                 {item.label}
               </dt>
               <dd className="m-0 mt-1 font-inter text-sm lg:text-base leading-relaxed text-surface-foreground200-light dark:text-surface-foreground200-dark">
-                {item.text}
+                <Linked text={item.text} preview={false} />
               </dd>
             </div>
           ))}
@@ -237,6 +240,8 @@ function CaseStudyPage() {
   return (
     // Same dot grid canvas as the rest of the site. The write-up is finished
     // work, so its cards and figures keep straight hairlines.
+    // Mentions: people whose names are links in this study's copy.
+    <Mentions.Provider value={study.mentions || NO_MENTIONS}>
     <div className="sk-canvas min-h-screen">
       {/* Faint doodle behind the header, same as home */}
       <div className="relative w-full overflow-hidden">
@@ -319,7 +324,7 @@ function CaseStudyPage() {
 
       <main className={`max-w-[760px] mx-auto px-4 lg:px-0 pb-12 ${hasCards ? 'pt-8' : ''}`}>
         <Reveal>
-          <p className={`${bodyClass} text-base lg:text-lg`}>{study.summary}</p>
+          <p className={`${bodyClass} text-base lg:text-lg`}><Linked text={study.summary} /></p>
         </Reveal>
 
         {/* Wire to real: the first picture is sketched as a crossed box, then the real one takes its place. */}
@@ -355,6 +360,7 @@ function CaseStudyPage() {
 
       <FloatingNav show showHome />
     </div>
+    </Mentions.Provider>
   );
 }
 

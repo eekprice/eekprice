@@ -13,7 +13,8 @@ import { focusRingClass } from '../atoms/NavItem';
 // under "Slide cards" in Canon/design-references.md):
 //   - arrows and dots in a row under the strip (dots only on a phone)
 //   - left and right arrow keys, Home and End, once the strip has focus
-//   - a click on a slide that is cut off at the edge brings it in
+//   - a click on a slide that is mostly off the edge brings it in (a click on
+//     any other slide opens the case study, through the card around it)
 //   - dragging with a mouse
 //   - a swipe or a trackpad, as before
 
@@ -50,6 +51,7 @@ const Chevron = ({ flip = false }) => (
 
 const DRAG_START = 5; // px the mouse has to move before a press counts as a drag
 const NUDGE = 28; // px the strip slides, once, the first time it is seen
+const SHOWN_ENOUGH = 0.5; // a slide showing less than this share of itself is cut off
 const sameList = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 
 // `label` names the strip for screen readers: the case study's title.
@@ -64,7 +66,8 @@ const CaseStudySlides = ({ slides, heightClass = 'h-64', label }) => {
   // scrolled all the way. Each one gets a dot.
   const [stops, setStops] = useState([0]);
   const [index, setIndex] = useState(0);
-  // Slides that are partly off the side. A click on one brings it in.
+  // Slides that are mostly off the side. A click on one brings it in. A click
+  // on any other slide goes to the case study, on every screen size.
   const [cut, setCut] = useState([]);
   const [nudged, setNudged] = useState(false);
   const drag = useRef(null);
@@ -94,10 +97,15 @@ const CaseStudySlides = ({ slides, heightClass = 'h-64', label }) => {
     });
     setIndex(nearest);
 
+    // A slide counts as cut off only when less than half of it is showing.
+    // It used to be any slide with more than 8px hidden, and on a phone that
+    // was every slide (each is a little wider than the strip), so a tap never
+    // opened the case study (Erica, 2026-11-25).
     const hidden = [];
     items.forEach((el, i) => {
       const left = el.offsetLeft - scrollLeft;
-      if (left < -8 || left + el.offsetWidth > clientWidth + 8) hidden.push(i);
+      const showing = Math.min(left + el.offsetWidth, clientWidth) - Math.max(left, 0);
+      if (showing < el.offsetWidth * SHOWN_ENOUGH) hidden.push(i);
     });
     setCut((prev) => (sameList(prev, hidden) ? prev : hidden));
   }, []);
@@ -251,7 +259,9 @@ const CaseStudySlides = ({ slides, heightClass = 'h-64', label }) => {
             ${focusRingClass}`}
           // Inside the side padding the slides also thin out to nothing, so
           // there is no hard cut where the strip ends.
-          style={EDGE_FADE}
+          // No fade or blur at the edges on a phone (Erica, 2026-11-25): there the
+          // slides are nearly as wide as the screen, so it washed out their sides.
+          style={isPhone ? undefined : EDGE_FADE}
         >
           {slides.map((slide, i) => (
             <div
@@ -266,8 +276,8 @@ const CaseStudySlides = ({ slides, heightClass = 'h-64', label }) => {
           ))}
         </div>
 
-        {showLeftOverlay && <EdgeBlur side="left" />}
-        {showRightOverlay && <EdgeBlur side="right" />}
+        {!isPhone && showLeftOverlay && <EdgeBlur side="left" />}
+        {!isPhone && showRightOverlay && <EdgeBlur side="right" />}
       </div>
 
       {/* Arrows and dots, in one row under the strip so nothing sits on the

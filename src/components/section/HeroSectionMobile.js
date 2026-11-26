@@ -74,7 +74,7 @@ function HeroSectionMobile({ onReady, instant = false }) {
   return (
     <motion.div
       ref={heroRef}
-      className="w-full max-w-md sm:max-w-xl mx-auto flex flex-col items-center px-4 pt-6 pb-4 text-center"
+      className="w-full max-w-md sm:max-w-xl mx-auto flex flex-col items-center px-2 sm:px-4 pt-6 pb-4 text-center"
       initial={still ? false : 'hidden'}
       animate={hasAnimated ? 'visible' : 'hidden'}
       variants={container}

@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { land } from '../sketch/motion';
 import Diagram from './Diagrams';
 import ExternalLink from '../ExternalLink';
+import { Linked } from './Mentions';
 import MenuPrototype from './MenuPrototype';
 import ControlledGif from '../atoms/ControlledGif';
 
@@ -97,7 +98,7 @@ export function OutlinedBlock({ children, className = '' }) {
 export function Paragraph({ text, link }) {
   return (
     <p className={bodyClass}>
-      {text}
+      <Linked text={text} />
       {link && (
         <>
           {' '}
@@ -311,7 +312,7 @@ export function Stickies({ items }) {
               text-highlight-foregroundSticky-light dark:text-highlight-foregroundSticky-dark"
             style={{ transform: `rotate(${[-1.5, 1, -0.5][i % 3]}deg)` }}
           >
-            {item}
+            <Linked text={item} preview={false} />
           </div>
         </motion.div>
       ))}

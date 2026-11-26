@@ -197,7 +197,7 @@ function ResumePage() {
           aria-hidden="true"
         />
 
-        <header className="relative max-w-[800px] mx-auto px-4 pt-8 lg:pt-14 pb-8">
+        <header className="relative max-w-[800px] mx-auto px-2 sm:px-4 pt-8 lg:pt-14 pb-8">
           <Link
             to="/"
             className="inline-flex items-center gap-1 text-sm font-inter underline underline-offset-2
@@ -258,7 +258,7 @@ function ResumePage() {
         </header>
       </div>
 
-      <main className="max-w-[800px] mx-auto px-4 pb-12">
+      <main className="max-w-[800px] mx-auto px-2 sm:px-4 pb-12">
         <div className="space-y-6 sm:space-y-4">
           {roles.map((item) => (
             <Role key={`${item.company} ${item.when}`} item={item} />

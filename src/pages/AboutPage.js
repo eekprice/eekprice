@@ -296,7 +296,7 @@ function AboutPage() {
           aria-hidden="true"
         />
 
-        <header className="relative max-w-[860px] mx-auto px-4 pt-8 lg:pt-14 pb-10">
+        <header className="relative max-w-[860px] mx-auto px-2 sm:px-4 pt-8 lg:pt-14 pb-10">
           <Link
             to="/"
             className="inline-flex items-center gap-1 text-sm font-inter underline underline-offset-2
@@ -342,7 +342,7 @@ function AboutPage() {
         </header>
       </div>
 
-      <main className="max-w-[860px] mx-auto px-4 pb-12">
+      <main className="max-w-[860px] mx-auto px-2 sm:px-4 pb-12">
         <div className="space-y-12 lg:space-y-16">
           {hobbies.map((hobby) => (
             <HobbyRow key={hobby.title} hobby={hobby} />

@@ -194,7 +194,7 @@ function Home() {
         >
           {/* Leadership experience: cards, not slide strips */}
           {leadershipCards.length > 0 && (
-            <section id="leadership" className="relative max-w-[800px] mx-auto px-4 pt-10 pb-6 scroll-mt-24">
+            <section id="leadership" className="relative max-w-[800px] mx-auto px-2 sm:px-4 pt-10 pb-6 scroll-mt-24">
               <SectionHeading>{sectionTitles.leadership}</SectionHeading>
               {/* The featured card first, then the smaller supporting ones in a row. */}
               {compactLeadership ? (
@@ -239,7 +239,7 @@ function Home() {
           )}
 
           {/* Product design case studies */}
-          <section id="case-studies" className="relative max-w-[800px] mx-auto px-4 pt-10 pb-6 scroll-mt-24">
+          <section id="case-studies" className="relative max-w-[800px] mx-auto px-2 sm:px-4 pt-10 pb-6 scroll-mt-24">
             <SectionHeading>{sectionTitles.caseStudies}</SectionHeading>
 
             <div className="relative space-y-6">
@@ -267,7 +267,7 @@ function Home() {
           {/* Program and Delivery Lead is off for now (Erica, 2026-11-19: "remove
               program delivery lead too"). Kept here so it can come back: uncomment
               this block and put deliveryCards back in the import at the top.
-          <section id="delivery" className="relative max-w-[800px] mx-auto px-4 pt-10 pb-6 scroll-mt-24">
+          <section id="delivery" className="relative max-w-[800px] mx-auto px-2 sm:px-4 pt-10 pb-6 scroll-mt-24">
             <SectionHeading>{sectionTitles.delivery}</SectionHeading>
             <div className="relative space-y-6">
               <span
